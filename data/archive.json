@@ -1,0 +1,24 @@
+{
+    "archives": [
+        {
+            "id": 1,
+            "name": "Kaichan"
+        },
+        {
+            "id": 2,
+            "name": "Daisho"
+        },
+        {
+            "id": 3,
+            "name": "Michi"
+        },
+        {
+            "id": 4,
+            "name": "Yomo"
+        },
+        {
+            "id": 5,
+            "name": "Kenji"
+        }
+    ]
+}
