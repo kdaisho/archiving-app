@@ -1,24 +1,25 @@
 const express = require("express");
-const os = require("os");
 const fs = require("fs");
 
 const app = express();
 
 app.use(express.static("dist"));
 
-app.get("/api/getUsername", (req, res) => {
-    res.send({ username: os.userInfo().username });
+app.get("/api/getList", (req, res) => {
+    fs.readFile("./data/archive.json", (error, data) => {
+        if (error) throw error;
+        data = JSON.parse(data);
+        res.send(data["archives"]);
+    });
 });
 
 app.get("/action/sayHi", (req, res) => {
-    // console.log("yo", typeof archive);
     res.send("Holaa action 2");
 });
 
 app.get("/action/write/:name", (req, res) => {
     const data = req.params;
     const name = data.name;
-    console.log("NAME", name);
     const d = fs.readFileSync("./data/archive.json");
     const y = JSON.parse(d);
     createObj(y["archives"], name);
@@ -29,7 +30,6 @@ app.get("/action/write/:name", (req, res) => {
         obj.id = newId;
         obj.name = name;
         y["archives"].push(obj);
-        // const newY = JSON.stringify(y, null, 4);
         fs.writeFile(
             "./data/archive.json",
             JSON.stringify(y, null, 4),

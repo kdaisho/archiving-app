@@ -1,17 +1,16 @@
 import React, { Component } from "react";
+import List from "./List";
 
 class App extends Component {
     state = {
-        username: "",
-        greeting: "",
         archiveList: [],
         searchTerm: ""
     };
 
     componentDidMount() {
-        fetch("/api/getUsername")
+        fetch("/api/getList")
             .then(res => res.json())
-            .then(user => this.setState({ username: user.username }));
+            .then(archiveList => this.setState({ archiveList }));
     }
 
     sayHi = () => {
@@ -33,53 +32,38 @@ class App extends Component {
     };
 
     handleSearch = event => {
-        console.log("event", event.target.value);
         this.setState({ searchTerm: event.target.value.toLowerCase() });
     };
 
     render() {
-        const { username, greeting, archiveList, searchTerm } = this.state;
+        const { archiveList, searchTerm } = this.state;
         return (
-            <div>
-                {username ? (
-                    <h1>{`Hello ${username}`}</h1>
+            <div className="section">
+                <h1 className="title">Archive Everything</h1>
+                {archiveList ? (
+                    <List archiveList={archiveList} searchTerm={searchTerm} />
                 ) : (
-                    <h1>Loading...</h1>
+                    <h2>Loading...</h2>
                 )}
-                <div>
-                    <h1>{greeting}</h1>
-                    <ul>
-                        {archiveList
-                            .filter(
-                                item =>
-                                    `${item.name}`
-                                        .toLowerCase()
-                                        .indexOf(searchTerm) >= 0
-                            )
-                            .map(item => (
-                                <li key={item.id}>{item.name}</li>
-                            ))}
-                    </ul>
-                    <button onClick={this.sayHi}>Say Hi</button>
-                    <br />
-                    <br />
-                    <input
-                        id="myInput"
-                        type="text"
-                        name="name"
-                        placeholder="Your name here..."
-                    />
-                    <br />
-                    <br />
-                    <button onClick={() => this.write()}>Write</button>
-                    <br />
-                    <br />
-                    <input
-                        type="text"
-                        onChange={this.handleSearch}
-                        placeholder="Search"
-                    />
-                </div>
+                <button onClick={this.sayHi}>Say Hi</button>
+                <br />
+                <br />
+                <input
+                    id="myInput"
+                    type="text"
+                    name="name"
+                    placeholder="Your name here..."
+                />
+                <br />
+                <br />
+                <button onClick={() => this.write()}>Write</button>
+                <br />
+                <br />
+                <input
+                    type="text"
+                    onChange={this.handleSearch}
+                    placeholder="Search"
+                />
             </div>
         );
     }
