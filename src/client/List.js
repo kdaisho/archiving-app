@@ -2,21 +2,24 @@ import React, { Component } from "react";
 
 class List extends Component {
     state = {
-        archiveList: []
+        memberList: []
     };
 
     render() {
-        const { archiveList, searchTerm } = this.props;
+        const { memberList, searchTerm } = this.props;
         return (
             <ul>
-                {archiveList
+                {memberList
                     .filter(
-                        item =>
-                            `${item.name}`.toLowerCase().indexOf(searchTerm) >=
-                            0
+                        member =>
+                            `${member.firstName} ${member.lastName}`
+                                .toLowerCase()
+                                .indexOf(searchTerm) >= 0
                     )
-                    .map(item => (
-                        <li key={item.id}>{item.name}</li>
+                    .map(member => (
+                        <li key={member.id}>
+                            {member.firstName} {member.lastName}
+                        </li>
                     ))}
             </ul>
         );

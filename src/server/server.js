@@ -5,42 +5,42 @@ const app = express();
 
 app.use(express.static("dist"));
 
+//Enabling built-in body parser
+app.use(express.json());
+app.use(
+    express.urlencoded({
+        extended: true
+    })
+);
+
 app.get("/api/getList", (req, res) => {
-    fs.readFile("./data/archive.json", (error, data) => {
+    fs.readFile("./data/members.json", (error, data) => {
         if (error) throw error;
         data = JSON.parse(data);
-        res.send(data["archives"]);
+        res.send(data["members"]);
     });
 });
 
-app.get("/action/sayHi", (req, res) => {
-    res.send("Holaa action 2");
-});
+app.post("/api/addMember", (req, res) => {
+    const origin = fs.readFileSync("./data/members.json");
+    const jsonObj = JSON.parse(origin);
 
-app.get("/action/write/:name", (req, res) => {
-    const data = req.params;
-    const name = data.name;
-    const d = fs.readFileSync("./data/archive.json");
-    const y = JSON.parse(d);
-    createObj(y["archives"], name);
+    createObj(jsonObj["members"], req.body);
 
-    function createObj(array, name) {
+    function createObj(array, obj) {
         const newId = array.length + 1;
-        const obj = {};
         obj.id = newId;
-        obj.name = name;
-        y["archives"].push(obj);
+        jsonObj["members"].push(obj);
         fs.writeFile(
-            "./data/archive.json",
-            JSON.stringify(y, null, 4),
+            "./data/members.json",
+            JSON.stringify(jsonObj, null, 4),
             error => {
                 if (error) {
-                    console.error("ERROR:", error);
-                    return false;
+                    throw error;
                 }
 
                 console.log("Success");
-                res.send(y);
+                res.send(jsonObj);
             }
         );
     }
