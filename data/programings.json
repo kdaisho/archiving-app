@@ -1,0 +1,18 @@
+{
+    "langs": [
+        {
+            "name": "JavaScript",
+            "identifier": "javascript"
+        }
+    ],
+    "frameworks": [
+        {
+            "framework": "React",
+            "id": 0
+        },
+        {
+            "framework": "Angular",
+            "id": 1
+        }
+    ]
+}

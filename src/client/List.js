@@ -2,23 +2,23 @@ import React, { Component } from "react";
 
 class List extends Component {
     state = {
-        memberList: []
+        frameworkList: []
     };
 
     render() {
-        const { memberList, searchTerm } = this.props;
+        const { frameworkList, searchTerm } = this.props;
         return (
             <ul>
-                {memberList
+                {frameworkList
                     .filter(
-                        member =>
-                            `${member.firstName} ${member.lastName}`
+                        framework =>
+                            `${framework.firstName} ${framework.lastName}`
                                 .toLowerCase()
                                 .indexOf(searchTerm) >= 0
                     )
-                    .map(member => (
-                        <li key={member.id}>
-                            {member.firstName} {member.lastName}
+                    .map(framework => (
+                        <li key={framework.id}>
+                            {framework.firstName} {framework.lastName}
                         </li>
                     ))}
             </ul>

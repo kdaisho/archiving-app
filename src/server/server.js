@@ -14,25 +14,25 @@ app.use(
 );
 
 app.get("/api/getList", (req, res) => {
-    fs.readFile("./data/members.json", (error, data) => {
+    fs.readFile("./data/programings.json", (error, data) => {
         if (error) throw error;
         data = JSON.parse(data);
-        res.send(data["members"]);
+        res.send(data);
     });
 });
 
-app.post("/api/addMember", (req, res) => {
-    const origin = fs.readFileSync("./data/members.json");
+app.post("/api/addFramework", (req, res) => {
+    const origin = fs.readFileSync("./data/programings.json");
     const jsonObj = JSON.parse(origin);
 
-    createObj(jsonObj["members"], req.body);
+    createObj(jsonObj["frameworks"], req.body);
 
     function createObj(array, obj) {
-        const newId = array.length + 1;
-        obj.id = newId;
-        jsonObj["members"].push(obj);
+        obj.id = array.length;
+        obj.name = req.body.name;
+        jsonObj["frameworks"].push(obj);
         fs.writeFile(
-            "./data/members.json",
+            "./data/programings.json",
             JSON.stringify(jsonObj, null, 4),
             error => {
                 if (error) {

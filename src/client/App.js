@@ -1,18 +1,24 @@
 import React, { Component } from "react";
 import List from "./List";
+import LanguageDropdown from "./LanguageDropdown";
 
 class App extends Component {
     state = {
-        memberList: [],
-        firstName: "",
-        lastName: "",
+        langList: [],
+        frameworkList: [],
+        framework: "",
         searchTerm: ""
     };
 
     componentDidMount() {
         fetch("/api/getList")
             .then(res => res.json())
-            .then(memberList => this.setState({ memberList }));
+            .then(data => {
+                this.setState({
+                    langList: data["langs"],
+                    frameworkList: data["frameworks"]
+                });
+            });
     }
 
     handleSearch = event => {
@@ -25,17 +31,16 @@ class App extends Component {
     };
 
     clearField = () => {
-        this.setState({ firstName: "", lastName: "" });
+        this.setState({ framework: "" });
     };
 
     handleSubmit = event => {
         event.preventDefault();
         const data = {
-            firstName: this.state.firstName,
-            lastName: this.state.lastName
+            framework: this.state.framework
         };
 
-        fetch("/api/addMember", {
+        fetch("/api/addFramework", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -44,7 +49,7 @@ class App extends Component {
         })
             .then(res => res.json())
             .then(myobj => {
-                this.setState({ memberList: myobj.members });
+                this.setState({ frameworkList: myobj.frameworks });
                 this.clearField();
             })
             .catch(error => {
@@ -53,44 +58,32 @@ class App extends Component {
     };
 
     render() {
-        const { memberList, searchTerm } = this.state;
+        const { frameworkList, searchTerm } = this.state;
         return (
             <div className="section">
-                <h1 className="title">Team AA Members</h1>
+                <h1 className="title">Programings</h1>
+
                 <form onSubmit={this.handleSubmit}>
+                    <LanguageDropdown langList={this.state.langList} />
+
                     <div className="field">
-                        <label className="label">First Name</label>
+                        <label className="label">Framework</label>
                         <div className="control">
                             <input
-                                id="myInput"
                                 className="input"
                                 type="text"
-                                name="firstName"
-                                placeholder="First Name"
+                                name="framework"
+                                placeholder="Framework Name"
                                 onChange={this.handleChange}
-                                value={this.state.firstName}
+                                value={this.state.framework}
                             />
                         </div>
                     </div>
-                    <div className="field">
-                        <label className="label">Last Name</label>
-                        <div className="control">
-                            <input
-                                id="myInput2"
-                                className="input"
-                                type="text"
-                                name="lastName"
-                                placeholder="Last Name"
-                                onChange={this.handleChange}
-                                value={this.state.lastName}
-                            />
-                        </div>
-                    </div>
-                    <button className="button is-success">Submit</button>
+                    <button className="button">Save</button>
                 </form>
 
                 <div className="field">
-                    <label className="label">Search Members</label>
+                    <label className="label">Search Frameworks</label>
                     <div className="control">
                         <input
                             className="input"
@@ -101,8 +94,11 @@ class App extends Component {
                     </div>
                 </div>
 
-                {memberList ? (
-                    <List memberList={memberList} searchTerm={searchTerm} />
+                {frameworkList ? (
+                    <List
+                        frameworkList={frameworkList}
+                        searchTerm={searchTerm}
+                    />
                 ) : (
                     <h2>Loading...</h2>
                 )}
