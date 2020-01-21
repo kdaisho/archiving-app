@@ -2,11 +2,16 @@
     "langs": [
         {
             "id": 0,
+            "name": "JavaScript",
+            "identifier": "javascript"
+        },
+        {
+            "id": 1,
             "name": "C",
             "identifier": "c"
         },
         {
-            "id": 1,
+            "id": 2,
             "name": "Java",
             "identifier": "java"
         }
@@ -14,10 +19,14 @@
     "frameworks": [
         {
             "id": 0,
-            "name": "C sharp"
+            "name": "Vue"
         },
         {
             "id": 1,
+            "name": "C Sharp"
+        },
+        {
+            "id": 2,
             "name": "JSP"
         }
     ]

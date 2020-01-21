@@ -9,7 +9,6 @@ class App extends Component {
         langList: [],
         langName: "",
         frameworkList: [],
-        // name: "",
         frameworkName: "",
         searchTerm: ""
     };
@@ -32,7 +31,6 @@ class App extends Component {
     handleChange = event => {
         const { name, value } = event.target;
         this.setState({ [name]: value });
-        console.log(this.state);
     };
 
     clearField = () => {
