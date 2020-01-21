@@ -1,18 +1,24 @@
 {
     "langs": [
         {
-            "name": "JavaScript",
-            "identifier": "javascript"
+            "id": 0,
+            "name": "C",
+            "identifier": "c"
+        },
+        {
+            "id": 1,
+            "name": "Java",
+            "identifier": "java"
         }
     ],
     "frameworks": [
         {
-            "name": "Robot",
-            "id": 0
+            "id": 0,
+            "name": "C sharp"
         },
         {
-            "name": "Vue",
-            "id": 1
+            "id": 1,
+            "name": "JSP"
         }
     ]
 }

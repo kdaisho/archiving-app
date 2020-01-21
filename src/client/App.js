@@ -2,12 +2,15 @@ import React, { Component } from "react";
 import List from "./List";
 import LanguageDropdown from "./LanguageDropdown";
 import FrameworkInput from "./FrameworkInput";
+import LanguageInput from "./LanguageInput";
 
 class App extends Component {
     state = {
         langList: [],
+        langName: "",
         frameworkList: [],
-        name: "",
+        // name: "",
+        frameworkName: "",
         searchTerm: ""
     };
 
@@ -29,6 +32,7 @@ class App extends Component {
     handleChange = event => {
         const { name, value } = event.target;
         this.setState({ [name]: value });
+        console.log(this.state);
     };
 
     clearField = () => {
@@ -38,7 +42,8 @@ class App extends Component {
     handleSubmit = event => {
         event.preventDefault();
         const data = {
-            name: this.state.name
+            langName: this.state.langName,
+            frameworkName: this.state.frameworkName
         };
 
         fetch("/api/addFramework", {
@@ -66,10 +71,13 @@ class App extends Component {
 
                 <form onSubmit={this.handleSubmit}>
                     <LanguageDropdown langList={this.state.langList} />
-
+                    <LanguageInput
+                        handleChange={this.handleChange}
+                        langName={this.state.langName}
+                    />
                     <FrameworkInput
                         handleChange={this.handleChange}
-                        name={this.state.name}
+                        frameworkName={this.state.frameworkName}
                     />
 
                     <button className="button">Save</button>

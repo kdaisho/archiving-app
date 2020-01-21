@@ -24,13 +24,17 @@ app.get("/api/getList", (req, res) => {
 app.post("/api/addFramework", (req, res) => {
     const origin = fs.readFileSync("./data/programings.json");
     const jsonObj = JSON.parse(origin);
+    console.log("REQ.BODY", req.body, jsonObj);
 
-    createObj(jsonObj["frameworks"], req.body);
+    createLang(jsonObj["langs"], req.body.langName);
+    // createObj(jsonObj["frameworks"], req.body);
 
-    function createObj(array, obj) {
+    function createLang(array, langName) {
+        const obj = {};
         obj.id = array.length;
-        obj.name = req.body.name;
-        jsonObj["frameworks"].push(obj);
+        obj.name = langName;
+        obj.identifier = langName.replace(/\s+/g, "").toLowerCase();
+        jsonObj["langs"].push(obj);
         fs.writeFile(
             "./data/programings.json",
             JSON.stringify(jsonObj, null, 4),
@@ -40,7 +44,26 @@ app.post("/api/addFramework", (req, res) => {
                 }
 
                 console.log("Success");
+                createObj(jsonObj["frameworks"], req.body.frameworkName);
                 res.send(jsonObj);
+            }
+        );
+    }
+    function createObj(array, frameworkName) {
+        const obj = {};
+        obj.id = array.length;
+        obj.name = frameworkName;
+        jsonObj["frameworks"].push(obj);
+        fs.writeFile(
+            "./data/programings.json",
+            JSON.stringify(jsonObj, null, 4),
+            error => {
+                if (error) {
+                    throw error;
+                }
+
+                console.log("Success Freamework");
+                // res.send(jsonObj);
             }
         );
     }

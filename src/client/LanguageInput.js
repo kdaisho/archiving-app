@@ -1,20 +1,18 @@
 import React, { Component } from "react";
 
-class FrameworkInput extends Component {
-    state = {};
-
+class LanguageInput extends Component {
     render() {
         return (
             <div className="field">
-                <label className="label">Framework</label>
+                <label className="label">Language</label>
                 <div className="control">
                     <input
                         className="input"
                         type="text"
-                        name="frameworkName"
-                        placeholder="Framework Name"
+                        name="langName"
+                        placeholder="Language Name"
                         onChange={this.props.handleChange}
-                        value={this.props.frameworkName}
+                        value={this.props.langName}
                     />
                 </div>
             </div>
@@ -22,4 +20,4 @@ class FrameworkInput extends Component {
     }
 }
 
-export default FrameworkInput;
+export default LanguageInput;
