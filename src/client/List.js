@@ -12,14 +12,12 @@ class List extends Component {
                 {frameworkList
                     .filter(
                         framework =>
-                            `${framework.firstName} ${framework.lastName}`
+                            `${framework.name}`
                                 .toLowerCase()
                                 .indexOf(searchTerm) >= 0
                     )
                     .map(framework => (
-                        <li key={framework.id}>
-                            {framework.firstName} {framework.lastName}
-                        </li>
+                        <li key={framework.id}>{framework.name}</li>
                     ))}
             </ul>
         );
