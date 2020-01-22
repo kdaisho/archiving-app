@@ -28,15 +28,7 @@ app.post("/api/add", (req, res) => {
     sendData(langArray, req.body);
 
     function sendData(array, reqObj) {
-        const obj = {};
-        obj.id = array.length;
-        obj.name = reqObj.langName;
-        obj.frameworks = [];
-        const frameworkObj = {};
-        frameworkObj.name = reqObj.frameworkName;
-        frameworkObj.id = obj.frameworks.length;
-        obj.frameworks.push(frameworkObj);
-        array.push(obj);
+        handleDuplicate(array, reqObj);
 
         fs.writeFile(
             "./data/programings.json",
@@ -50,6 +42,38 @@ app.post("/api/add", (req, res) => {
                 res.json(array);
             }
         );
+    }
+
+    function handleDuplicate(targetArray, reqObj) {
+        for (let i = 0; i < targetArray.length; i++) {
+            if (
+                targetArray[i].name.toLowerCase() ===
+                reqObj.langName.toLowerCase()
+            ) {
+                for (let j = 0; j < targetArray[i].frameworks.length; j++) {
+                    if (
+                        targetArray[i].frameworks[j].name.toLowerCase() ===
+                        reqObj.frameworkName.toLowerCase()
+                    ) {
+                        return false;
+                    }
+                }
+                const fw = {};
+                fw.id = targetArray[i].frameworks.length;
+                fw.name = reqObj.frameworkName;
+                targetArray[i].frameworks.push(fw);
+                return false;
+            }
+        }
+        const obj = {};
+        obj.id = targetArray.length;
+        obj.name = reqObj.langName;
+        obj.frameworks = [];
+        const frameworkObj = {};
+        frameworkObj.name = reqObj.frameworkName;
+        frameworkObj.id = obj.frameworks.length;
+        obj.frameworks.push(frameworkObj);
+        targetArray.push(obj);
     }
 });
 
