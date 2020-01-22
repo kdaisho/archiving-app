@@ -18,8 +18,7 @@ class App extends Component {
             .then(res => res.json())
             .then(data => {
                 this.setState({
-                    langList: data["langs"],
-                    frameworkList: data["frameworks"]
+                    langList: data
                 });
             });
     }
@@ -34,7 +33,7 @@ class App extends Component {
     };
 
     clearField = () => {
-        this.setState({ name: "" });
+        this.setState({ langName: "", frameworkName: "" });
     };
 
     handleSubmit = event => {
@@ -44,7 +43,7 @@ class App extends Component {
             frameworkName: this.state.frameworkName
         };
 
-        fetch("/api/addFramework", {
+        fetch("/api/add", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -52,8 +51,8 @@ class App extends Component {
             body: JSON.stringify(data)
         })
             .then(res => res.json())
-            .then(myobj => {
-                this.setState({ frameworkList: myobj.frameworks });
+            .then(data => {
+                this.setState({ langList: data });
                 this.clearField();
             })
             .catch(error => {
@@ -62,20 +61,20 @@ class App extends Component {
     };
 
     render() {
-        const { frameworkList, searchTerm } = this.state;
+        const { langList, langName, frameworkName, searchTerm } = this.state;
         return (
             <div className="section">
                 <h1 className="title">Programings</h1>
 
                 <form onSubmit={this.handleSubmit}>
-                    <LanguageDropdown langList={this.state.langList} />
+                    <LanguageDropdown langList={langList} />
                     <LanguageInput
                         handleChange={this.handleChange}
-                        langName={this.state.langName}
+                        langName={langName}
                     />
                     <FrameworkInput
                         handleChange={this.handleChange}
-                        frameworkName={this.state.frameworkName}
+                        frameworkName={frameworkName}
                     />
 
                     <button className="button">Save</button>
@@ -93,11 +92,8 @@ class App extends Component {
                     </div>
                 </div>
 
-                {frameworkList ? (
-                    <List
-                        frameworkList={frameworkList}
-                        searchTerm={searchTerm}
-                    />
+                {langList ? (
+                    <List langList={langList} searchTerm={searchTerm} />
                 ) : (
                     <h2>Loading...</h2>
                 )}

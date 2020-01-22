@@ -21,36 +21,36 @@ app.get("/api/getList", (req, res) => {
     });
 });
 
-app.post("/api/addFramework", (req, res) => {
+app.post("/api/add", (req, res) => {
     const origin = fs.readFileSync("./data/programings.json");
-    const jsonObj = JSON.parse(origin);
+    const langArray = JSON.parse(origin);
 
-    sendData(jsonObj["langs"], req.body.langName, "langs");
-    sendData(jsonObj["frameworks"], req.body.frameworkName, "frameworks");
+    sendData(langArray, req.body);
 
-    function sendData(array, name, type) {
+    function sendData(array, reqObj) {
         const obj = {};
         obj.id = array.length;
-        obj.name = name;
-        type === "langs"
-            ? (obj.identifier = name.replace(/\s+/g, "").toLowerCase())
-            : null;
-        jsonObj[type].push(obj);
+        obj.name = reqObj.langName;
+        obj.frameworks = [];
+        const frameworkObj = {};
+        frameworkObj.name = reqObj.frameworkName;
+        frameworkObj.id = obj.frameworks.length;
+        obj.frameworks.push(frameworkObj);
+        array.push(obj);
 
         fs.writeFile(
             "./data/programings.json",
-            JSON.stringify(jsonObj, null, 4),
+            JSON.stringify(array, null, 4),
             error => {
                 if (error) {
                     throw error;
                 }
 
                 console.log("Success");
+                res.json(array);
             }
         );
     }
-
-    res.send(jsonObj);
 });
 
 app.listen(process.env.PORT || 8080, () =>

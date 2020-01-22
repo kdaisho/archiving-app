@@ -1,25 +1,19 @@
-import React, { Component } from "react";
+import React from "react";
 
-class FrameworkInput extends Component {
-    state = {};
-
-    render() {
-        return (
-            <div className="field">
-                <label className="label">Framework</label>
-                <div className="control">
-                    <input
-                        className="input"
-                        type="text"
-                        name="frameworkName"
-                        placeholder="Framework Name"
-                        onChange={this.props.handleChange}
-                        value={this.props.frameworkName}
-                    />
-                </div>
-            </div>
-        );
-    }
-}
+const FrameworkInput = props => (
+    <div className="field">
+        <label className="label">Framework</label>
+        <div className="control">
+            <input
+                className="input"
+                type="text"
+                name="frameworkName"
+                placeholder="Framework Name"
+                onChange={props.handleChange}
+                value={props.frameworkName}
+            />
+        </div>
+    </div>
+);
 
 export default FrameworkInput;

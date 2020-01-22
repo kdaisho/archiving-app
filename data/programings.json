@@ -1,33 +1,32 @@
-{
-    "langs": [
-        {
-            "id": 0,
-            "name": "JavaScript",
-            "identifier": "javascript"
-        },
-        {
-            "id": 1,
-            "name": "C",
-            "identifier": "c"
-        },
-        {
-            "id": 2,
-            "name": "Java",
-            "identifier": "java"
-        }
-    ],
-    "frameworks": [
-        {
-            "id": 0,
-            "name": "Vue"
-        },
-        {
-            "id": 1,
-            "name": "C Sharp"
-        },
-        {
-            "id": 2,
-            "name": "JSP"
-        }
-    ]
-}
+[
+    {
+        "id": 0,
+        "name": "Java",
+        "frameworks": [
+            {
+                "name": "JSP",
+                "id": 0
+            }
+        ]
+    },
+    {
+        "id": 1,
+        "name": "CSS",
+        "frameworks": [
+            {
+                "name": "Bootstrap",
+                "id": 0
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "C",
+        "frameworks": [
+            {
+                "name": "Silverlight",
+                "id": 0
+            }
+        ]
+    }
+]
