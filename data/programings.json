@@ -50,6 +50,10 @@
             {
                 "id": 1,
                 "name": "misty"
+            },
+            {
+                "id": 2,
+                "name": "Gacha-man"
             }
         ]
     },
@@ -68,6 +72,24 @@
             {
                 "id": 2,
                 "name": "Foundation"
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "name": "Scala",
+        "frameworks": [
+            {
+                "name": "Doink",
+                "id": 0
+            },
+            {
+                "id": 1,
+                "name": "Doink Advanced Capability"
+            },
+            {
+                "id": 2,
+                "name": "Peter-pang"
             }
         ]
     }

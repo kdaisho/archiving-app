@@ -39,8 +39,8 @@ class App extends Component {
     handleSubmit = event => {
         event.preventDefault();
         const data = {
-            langName: this.state.langName,
-            frameworkName: this.state.frameworkName
+            langName: this.state.langName.trim(),
+            frameworkName: this.state.frameworkName.trim()
         };
 
         fetch("/api/add", {
@@ -67,7 +67,11 @@ class App extends Component {
                 <h1 className="title">Programings</h1>
 
                 <form onSubmit={this.handleSubmit}>
-                    <LanguageDropdown langList={langList} />
+                    <LanguageDropdown
+                        langList={langList}
+                        langName={this.state.langName}
+                        handleChange={this.handleChange}
+                    />
                     <LanguageInput
                         handleChange={this.handleChange}
                         langName={langName}
