@@ -22,29 +22,25 @@ app.get("/api/getList", (req, res) => {
 });
 
 app.post("/api/add", (req, res) => {
-    const origin = fs.readFileSync("./data/programings.json");
-    const langArray = JSON.parse(origin);
+    const data = getResolvedData(
+        JSON.parse(fs.readFileSync("./data/programings.json")),
+        req.body
+    );
 
-    sendData(langArray, req.body);
-
-    function sendData(array, reqObj) {
-        handleDuplicate(array, reqObj);
-
-        fs.writeFile(
-            "./data/programings.json",
-            JSON.stringify(array, null, 4),
-            error => {
-                if (error) {
-                    throw error;
-                }
-
-                console.log("Success");
-                res.json(array);
+    fs.writeFile(
+        "./data/programings.json",
+        JSON.stringify(data, null, 4),
+        error => {
+            if (error) {
+                throw error;
             }
-        );
-    }
 
-    function handleDuplicate(targetArray, reqObj) {
+            console.log("Success!!", data);
+            res.json(data, null, 4);
+        }
+    );
+
+    function getResolvedData(targetArray, reqObj) {
         for (let i = 0; i < targetArray.length; i++) {
             if (
                 targetArray[i].name.toLowerCase() ===
@@ -55,7 +51,7 @@ app.post("/api/add", (req, res) => {
                         targetArray[i].frameworks[j].name.toLowerCase() ===
                         reqObj.frameworkName.toLowerCase()
                     ) {
-                        return false;
+                        return targetArray;
                     }
                 }
                 targetArray[i].frameworks.push(
@@ -64,7 +60,7 @@ app.post("/api/add", (req, res) => {
                         reqObj.frameworkName
                     )
                 );
-                return false;
+                return targetArray;
             }
         }
 
@@ -82,6 +78,7 @@ app.post("/api/add", (req, res) => {
         }
 
         targetArray.push(langObj);
+        return targetArray;
     }
 });
 

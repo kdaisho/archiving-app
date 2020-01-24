@@ -13,11 +13,11 @@
             },
             {
                 "id": 2,
-                "name": "Meteo"
+                "name": "angular2"
             },
             {
                 "id": 3,
-                "name": "meteo2"
+                "name": "Funky"
             }
         ]
     },
@@ -28,10 +28,16 @@
             {
                 "id": 0,
                 "name": "Bulma"
-            },
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "HTML",
+        "frameworks": [
             {
-                "id": 1,
-                "name": "Bootstrap"
+                "id": 0,
+                "name": "Twig"
             }
         ]
     }
