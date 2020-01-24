@@ -58,22 +58,30 @@ app.post("/api/add", (req, res) => {
                         return false;
                     }
                 }
-                const fw = {};
-                fw.id = targetArray[i].frameworks.length;
-                fw.name = reqObj.frameworkName;
-                targetArray[i].frameworks.push(fw);
+                targetArray[i].frameworks.push(
+                    getFwObj(
+                        targetArray[i].frameworks.length,
+                        reqObj.frameworkName
+                    )
+                );
                 return false;
             }
         }
-        const obj = {};
-        obj.id = targetArray.length;
-        obj.name = reqObj.langName;
-        obj.frameworks = [];
-        const frameworkObj = {};
-        frameworkObj.name = reqObj.frameworkName;
-        frameworkObj.id = obj.frameworks.length;
-        obj.frameworks.push(frameworkObj);
-        targetArray.push(obj);
+
+        const langObj = getLangObj(targetArray.length, reqObj.langName);
+        langObj.frameworks.push(
+            getFwObj(langObj.frameworks.length, reqObj.frameworkName)
+        );
+
+        function getLangObj(id, name) {
+            return (obj = { id, name, frameworks: [] });
+        }
+
+        function getFwObj(id, name) {
+            return (obj = { id, name });
+        }
+
+        targetArray.push(langObj);
     }
 });
 

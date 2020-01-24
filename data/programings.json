@@ -1,95 +1,37 @@
 [
     {
         "id": 0,
-        "name": "C",
+        "name": "JS",
         "frameworks": [
             {
-                "name": "Sharp",
-                "id": 0
+                "id": 0,
+                "name": "React"
             },
             {
                 "id": 1,
-                "name": "dribble"
+                "name": "Angular"
             },
             {
                 "id": 2,
-                "name": "Yomi"
+                "name": "Meteo"
             },
             {
                 "id": 3,
-                "name": "Ratta"
+                "name": "meteo2"
             }
         ]
     },
     {
         "id": 1,
-        "name": "Java",
-        "frameworks": [
-            {
-                "name": "Geggo",
-                "id": 0
-            },
-            {
-                "id": 1,
-                "name": "Meaning"
-            },
-            {
-                "id": 2,
-                "name": "meaning2"
-            }
-        ]
-    },
-    {
-        "id": 2,
-        "name": "Rust",
-        "frameworks": [
-            {
-                "name": "Mist",
-                "id": 0
-            },
-            {
-                "id": 1,
-                "name": "misty"
-            },
-            {
-                "id": 2,
-                "name": "Gacha-man"
-            }
-        ]
-    },
-    {
-        "id": 3,
         "name": "CSS",
         "frameworks": [
             {
-                "name": "Bulma",
-                "id": 0
+                "id": 0,
+                "name": "Bulma"
             },
             {
                 "id": 1,
                 "name": "Bootstrap"
-            },
-            {
-                "id": 2,
-                "name": "Foundation"
-            }
-        ]
-    },
-    {
-        "id": 4,
-        "name": "Scala",
-        "frameworks": [
-            {
-                "name": "Doink",
-                "id": 0
-            },
-            {
-                "id": 1,
-                "name": "Doink Advanced Capability"
-            },
-            {
-                "id": 2,
-                "name": "Peter-pang"
             }
         ]
     }
