@@ -3,6 +3,7 @@ import List from "./List";
 import LanguageDropdown from "./LanguageDropdown";
 import FrameworkInput from "./FrameworkInput";
 import LanguageInput from "./LanguageInput";
+import ErrorMessage from "./ErrorMessage";
 
 class App extends Component {
     state = {
@@ -10,7 +11,8 @@ class App extends Component {
         langName: "",
         frameworkList: [],
         frameworkName: "",
-        searchTerm: ""
+        searchTerm: "",
+        errorMessage: ""
     };
 
     componentDidMount() {
@@ -43,64 +45,83 @@ class App extends Component {
             frameworkName: this.state.frameworkName.trim()
         };
 
-        fetch("/api/add", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        })
-            .then(res => res.json())
-            .then(data => {
-                this.setState({ langList: data });
-                this.clearField();
+        if (
+            !this.getErrorMessage(this.state.langName, this.state.frameworkName)
+        ) {
+            console.log(this.state.errorMessage);
+            fetch("/api/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
             })
-            .catch(error => {
-                throw error;
+                .then(res => res.json())
+                .then(data => {
+                    this.setState({ langList: data });
+                    this.clearField();
+                })
+                .catch(error => {
+                    throw error;
+                });
+        }
+    };
+
+    getErrorMessage = (...msgs) => {
+        this.setState({ errorMessage: "" });
+        if (msgs.filter(m => !m.length).length) {
+            console.log("Missing:", msgs);
+            this.setState({
+                errorMessage: "Both language and framework are required."
             });
+            return true;
+        }
     };
 
     render() {
         const { langList, langName, frameworkName, searchTerm } = this.state;
         return (
-            <div className="section">
-                <h1 className="title">Programings</h1>
-
-                <form onSubmit={this.handleSubmit}>
-                    <LanguageDropdown
-                        langList={langList}
-                        langName={this.state.langName}
-                        handleChange={this.handleChange}
-                    />
-                    <LanguageInput
-                        handleChange={this.handleChange}
-                        langName={langName}
-                    />
-                    <FrameworkInput
-                        handleChange={this.handleChange}
-                        frameworkName={frameworkName}
-                    />
-
-                    <button className="button">Save</button>
-                </form>
-
-                <div className="field">
-                    <label className="label">Search Frameworks</label>
-                    <div className="control">
-                        <input
-                            className="input"
-                            type="text"
-                            onChange={this.handleSearch}
-                            placeholder="Search"
+            <div>
+                <div className="section">
+                    <h1 className="title">Programings</h1>
+                    <form onSubmit={this.handleSubmit}>
+                        <LanguageDropdown
+                            langList={langList}
+                            langName={this.state.langName}
+                            handleChange={this.handleChange}
                         />
-                    </div>
+                        <LanguageInput
+                            handleChange={this.handleChange}
+                            langName={langName}
+                        />
+                        <FrameworkInput
+                            handleChange={this.handleChange}
+                            frameworkName={frameworkName}
+                        />
+                        <ErrorMessage errorMessage={this.state.errorMessage} />
+                        <button className="button">Save</button>
+                    </form>
                 </div>
 
-                {langList ? (
-                    <List langList={langList} searchTerm={searchTerm} />
-                ) : (
-                    <h2>Loading...</h2>
-                )}
+                <div className="section">
+                    <div className="field">
+                        <label className="label">Search Frameworks</label>
+                        <div className="control">
+                            <input
+                                className="input"
+                                type="text"
+                                onChange={this.handleSearch}
+                                placeholder="Search"
+                            />
+                        </div>
+                    </div>
+
+                    {langList ? (
+                        <List langList={langList} searchTerm={searchTerm} />
+                    ) : (
+                        <h2>Loading...</h2>
+                    )}
+                </div>
             </div>
         );
     }

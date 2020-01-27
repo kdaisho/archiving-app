@@ -1,6 +1,6 @@
 import React from "react";
 
-const LanguageInput = props => (
+const LanguageInput = ({ handleChange, langName }) => (
     <div className="field">
         <label className="label">Language</label>
         <div className="control">
@@ -9,8 +9,8 @@ const LanguageInput = props => (
                 type="text"
                 name="langName"
                 placeholder="Language Name"
-                onChange={props.handleChange}
-                value={props.langName}
+                onChange={handleChange}
+                value={langName}
             />
         </div>
     </div>

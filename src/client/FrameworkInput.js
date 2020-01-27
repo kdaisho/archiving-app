@@ -1,6 +1,6 @@
 import React from "react";
 
-const FrameworkInput = props => (
+const FrameworkInput = ({ handleChange, frameworkName }) => (
     <div className="field">
         <label className="label">Framework</label>
         <div className="control">
@@ -9,8 +9,8 @@ const FrameworkInput = props => (
                 type="text"
                 name="frameworkName"
                 placeholder="Framework Name"
-                onChange={props.handleChange}
-                value={props.frameworkName}
+                onChange={handleChange}
+                value={frameworkName}
             />
         </div>
     </div>

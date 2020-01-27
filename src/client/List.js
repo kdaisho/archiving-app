@@ -1,7 +1,6 @@
 import React from "react";
 
-const List = props => {
-    const { langList, searchTerm } = props;
+const List = ({ langList, searchTerm }) => {
     return (
         <ul>
             {langList

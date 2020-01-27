@@ -33,11 +33,11 @@
     },
     {
         "id": 2,
-        "name": "HTML",
+        "name": "Haskell",
         "frameworks": [
             {
                 "id": 0,
-                "name": "Twig"
+                "name": "Spot"
             }
         ]
     }
