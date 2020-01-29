@@ -1,6 +1,6 @@
 const express = require("express");
 const fs = require("fs");
-
+const multer = require("multer");
 const app = express();
 
 app.use(express.static("dist"));
@@ -13,11 +13,25 @@ app.use(
     })
 );
 
-app.get("/api/getList", (req, res) => {
-    fs.readFile("./data/programings.json", (error, data) => {
-        if (error) throw error;
-        data = JSON.parse(data);
-        res.send(data);
+const storage = multer.diskStorage({
+    destination: (req, file, callback) => {
+        callback(null, "./public/uploads/");
+    },
+    filename: (req, file, callback) => {
+        callback(null, Date.now() + "-" + file.originalname);
+    }
+});
+
+const upload = multer({ storage }).single("file");
+
+app.post("/api/uploading", (req, res) => {
+    upload(req, res, error => {
+        if (error instanceof multer.MulterError) {
+            return res.status(500).json(error);
+        } else if (error) {
+            return res.status(500).json(error);
+        }
+        return res.status(200).send(req.file);
     });
 });
 

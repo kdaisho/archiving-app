@@ -4,6 +4,7 @@ import LanguageDropdown from "./LanguageDropdown";
 import FrameworkInput from "./FrameworkInput";
 import LanguageInput from "./LanguageInput";
 import ErrorMessage from "./ErrorMessage";
+import axios from "axios";
 
 class App extends Component {
     state = {
@@ -12,18 +13,21 @@ class App extends Component {
         frameworkList: [],
         frameworkName: "",
         searchTerm: "",
-        errorMessage: ""
+        errorMessage: "",
+        selectedImage: "",
+
+        file: {}
     };
 
-    componentDidMount() {
-        fetch("/api/getList")
-            .then(res => res.json())
-            .then(data => {
-                this.setState({
-                    langList: data
-                });
-            });
-    }
+    // componentDidMount() {
+    //     fetch("/api/getList")
+    //         .then(res => res.json())
+    //         .then(data => {
+    //             this.setState({
+    //                 langList: data
+    //             });
+    //         });
+    // }
 
     handleSearch = event => {
         this.setState({ searchTerm: event.target.value.toLowerCase() });
@@ -42,13 +46,15 @@ class App extends Component {
         event.preventDefault();
         const data = {
             langName: this.state.langName.trim(),
-            frameworkName: this.state.frameworkName.trim()
+            frameworkName: this.state.frameworkName.trim(),
+            selectedImage: this.state.selectedImage
         };
+
+        console.log("DATA", data);
 
         if (
             !this.getErrorMessage(this.state.langName, this.state.frameworkName)
         ) {
-            console.log(this.state.errorMessage);
             fetch("/api/add", {
                 method: "POST",
                 headers: {
@@ -78,53 +84,99 @@ class App extends Component {
         }
     };
 
+    onFormSubmit = event => {
+        event.preventDefault();
+        const formData = new FormData();
+        formData.append("file", this.state.file);
+        const config = {
+            headers: {
+                "content-type": "multipart/form-data"
+            }
+        };
+        axios
+            .post("/api/uploading", formData, config)
+            .then(res => {
+                console.log("The file is successfully uploaded");
+            })
+            .catch(error => {
+                console.log(error.message);
+            });
+    };
+
+    onChange = event => {
+        this.setState({ file: event.target.files[0] });
+    };
+
     render() {
-        const { langList, langName, frameworkName, searchTerm } = this.state;
         return (
-            <div>
-                <div className="section">
-                    <h1 className="title">Programings</h1>
-                    <form onSubmit={this.handleSubmit}>
-                        <LanguageDropdown
-                            langList={langList}
-                            langName={this.state.langName}
-                            handleChange={this.handleChange}
-                        />
-                        <LanguageInput
-                            handleChange={this.handleChange}
-                            langName={langName}
-                        />
-                        <FrameworkInput
-                            handleChange={this.handleChange}
-                            frameworkName={frameworkName}
-                        />
-                        <ErrorMessage errorMessage={this.state.errorMessage} />
-                        <button className="button">Save</button>
-                    </form>
-                </div>
-
-                <div className="section">
-                    <div className="field">
-                        <label className="label">Search Frameworks</label>
-                        <div className="control">
-                            <input
-                                className="input"
-                                type="text"
-                                onChange={this.handleSearch}
-                                placeholder="Search"
-                            />
-                        </div>
-                    </div>
-
-                    {langList ? (
-                        <List langList={langList} searchTerm={searchTerm} />
-                    ) : (
-                        <h2>Loading...</h2>
-                    )}
-                </div>
-            </div>
+            <form onSubmit={this.onFormSubmit}>
+                <h1>File Upload</h1>
+                <input
+                    type="file"
+                    name="selectedImage"
+                    onChange={this.onChange}
+                />
+                <button type="submit">Upload</button>
+            </form>
         );
     }
+
+    // render() {
+    //     const { langList, langName, frameworkName, searchTerm } = this.state;
+
+    //     return (
+    //         <div>
+    //             <div className="section">
+    //                 <h1 className="title">Programings</h1>
+    //                 <form
+    //                     onSubmit={this.handleSubmit}
+    //                     encType="multipart/form-data"
+    //                 >
+    //                     <LanguageDropdown
+    //                         langList={langList}
+    //                         langName={this.state.langName}
+    //                         handleChange={this.handleChange}
+    //                     />
+    //                     <LanguageInput
+    //                         handleChange={this.handleChange}
+    //                         langName={langName}
+    //                     />
+    //                     <FrameworkInput
+    //                         handleChange={this.handleChange}
+    //                         frameworkName={frameworkName}
+    //                     />
+    //                     <ErrorMessage errorMessage={this.state.errorMessage} />
+    //                     <input
+    //                         type="file"
+    //                         name="selectedImage"
+    //                         onChange={this.handleChange}
+    //                     />
+    //                     <button className="button">Save</button>
+    //                 </form>
+    //             </div>
+
+    //             <div className="section">
+    //                 <div className="field">
+    //                     <label className="label">Search Frameworks</label>
+    //                     <div className="control">
+    //                         <input
+    //                             className="input"
+    //                             type="text"
+    //                             onChange={this.handleSearch}
+    //                             placeholder="Search"
+    //                         />
+    //                     </div>
+    //                 </div>
+
+    //                 {langList ? (
+    //                     <List langList={langList} searchTerm={searchTerm} />
+    //                 ) : (
+    //                     <h2>Loading...</h2>
+    //                 )}
+    //             </div>
+    //         </div>
+    //     );
+    // }
 }
 
 export default App;
