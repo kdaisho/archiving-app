@@ -28,6 +28,10 @@
             {
                 "id": 0,
                 "name": "Bulma"
+            },
+            {
+                "id": 1,
+                "name": "dsd"
             }
         ]
     },
@@ -37,7 +41,7 @@
         "frameworks": [
             {
                 "id": 0,
-                "name": "Spot"
+                "name": "Launch"
             }
         ]
     }

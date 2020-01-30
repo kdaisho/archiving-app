@@ -13,6 +13,14 @@ app.use(
     })
 );
 
+app.get("/api/getList", (req, res) => {
+    fs.readFile("./data/programings.json", (error, data) => {
+        if (error) throw error;
+        data = JSON.parse(data);
+        res.send(data);
+    });
+});
+
 const storage = multer.diskStorage({
     destination: (req, file, callback) => {
         callback(null, "./public/uploads/");
@@ -24,7 +32,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage }).single("file");
 
-app.post("/api/uploading", (req, res) => {
+app.post("/api/upload", (req, res) => {
     upload(req, res, error => {
         if (error instanceof multer.MulterError) {
             return res.status(500).json(error);
@@ -49,7 +57,7 @@ app.post("/api/add", (req, res) => {
                 throw error;
             }
 
-            console.log("Success!!", data);
+            console.log("New language successfully uploaded!", data);
             res.json(data, null, 4);
         }
     );

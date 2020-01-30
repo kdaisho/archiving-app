@@ -4,7 +4,7 @@ import LanguageDropdown from "./LanguageDropdown";
 import FrameworkInput from "./FrameworkInput";
 import LanguageInput from "./LanguageInput";
 import ErrorMessage from "./ErrorMessage";
-import axios from "axios";
+import FileUpload from "./FileUpload";
 
 class App extends Component {
     state = {
@@ -14,28 +14,27 @@ class App extends Component {
         frameworkName: "",
         searchTerm: "",
         errorMessage: "",
-        selectedImage: "",
-
         file: {}
     };
 
-    // componentDidMount() {
-    //     fetch("/api/getList")
-    //         .then(res => res.json())
-    //         .then(data => {
-    //             this.setState({
-    //                 langList: data
-    //             });
-    //         });
-    // }
+    componentDidMount() {
+        fetch("/api/getList")
+            .then(res => res.json())
+            .then(data => {
+                this.setState({
+                    langList: data
+                });
+            });
+    }
 
     handleSearch = event => {
         this.setState({ searchTerm: event.target.value.toLowerCase() });
     };
 
-    handleChange = event => {
-        const { name, value } = event.target;
-        this.setState({ [name]: value });
+    handleChange = async event => {
+        const { name, value, files } = event.target;
+        this.setState({ [name]: files ? await files[0] : value });
+        console.log(this.state.file);
     };
 
     clearField = () => {
@@ -46,12 +45,9 @@ class App extends Component {
         event.preventDefault();
         const data = {
             langName: this.state.langName.trim(),
-            frameworkName: this.state.frameworkName.trim(),
-            selectedImage: this.state.selectedImage
+            frameworkName: this.state.frameworkName.trim()
         };
-
-        console.log("DATA", data);
-
+        console.log("DATA:", data);
         if (
             !this.getErrorMessage(this.state.langName, this.state.frameworkName)
         ) {
@@ -65,6 +61,7 @@ class App extends Component {
                 .then(res => res.json())
                 .then(data => {
                     this.setState({ langList: data });
+                    this.state.file.name && this.handleSubmitFile();
                     this.clearField();
                 })
                 .catch(error => {
@@ -73,10 +70,22 @@ class App extends Component {
         }
     };
 
+    handleSubmitFile = () => {
+        const formData = new FormData();
+        formData.append("file", this.state.file);
+
+        fetch("/api/upload", {
+            method: "POST",
+            body: formData
+        })
+            .then(res => res.json())
+            .then(data => console.log(data))
+            .catch(error => console.log(error.message));
+    };
+
     getErrorMessage = (...msgs) => {
         this.setState({ errorMessage: "" });
         if (msgs.filter(m => !m.length).length) {
-            console.log("Missing:", msgs);
             this.setState({
                 errorMessage: "Both language and framework are required."
             });
@@ -84,99 +93,61 @@ class App extends Component {
         }
     };
 
-    onFormSubmit = event => {
-        event.preventDefault();
-        const formData = new FormData();
-        formData.append("file", this.state.file);
-        const config = {
-            headers: {
-                "content-type": "multipart/form-data"
-            }
-        };
-        axios
-            .post("/api/uploading", formData, config)
-            .then(res => {
-                console.log("The file is successfully uploaded");
-            })
-            .catch(error => {
-                console.log(error.message);
-            });
-    };
-
-    onChange = event => {
-        this.setState({ file: event.target.files[0] });
-    };
-
     render() {
+        const { langList, langName, frameworkName, searchTerm } = this.state;
+
         return (
-            <form onSubmit={this.onFormSubmit}>
-                <h1>File Upload</h1>
-                <input
-                    type="file"
-                    name="selectedImage"
-                    onChange={this.onChange}
-                />
-                <button type="submit">Upload</button>
-            </form>
+            <div>
+                <div className="section">
+                    <h1 className="title">Programings</h1>
+                    <form onSubmit={this.handleSubmit}>
+                        <LanguageDropdown
+                            langList={langList}
+                            langName={this.state.langName}
+                            handleChange={this.handleChange}
+                        />
+                        <LanguageInput
+                            handleChange={this.handleChange}
+                            langName={langName}
+                        />
+                        <FrameworkInput
+                            handleChange={this.handleChange}
+                            frameworkName={frameworkName}
+                        />
+                        <ErrorMessage errorMessage={this.state.errorMessage} />
+                        <FileUpload
+                            handleChange={this.handleChange}
+                            fileName={this.state.file.name}
+                        />
+
+                        <button className="button is-info is-fullwidth">
+                            Save
+                        </button>
+                    </form>
+                </div>
+
+                <div className="section">
+                    <div className="field">
+                        <label className="label">Search Languages</label>
+                        <div className="control">
+                            <input
+                                className="input"
+                                type="text"
+                                onChange={this.handleSearch}
+                                placeholder="Search"
+                            />
+                        </div>
+                    </div>
+
+                    {langList ? (
+                        <List langList={langList} searchTerm={searchTerm} />
+                    ) : (
+                        <h2>Loading...</h2>
+                    )}
+                </div>
+            </div>
         );
     }
-
-    // render() {
-    //     const { langList, langName, frameworkName, searchTerm } = this.state;
-
-    //     return (
-    //         <div>
-    //             <div className="section">
-    //                 <h1 className="title">Programings</h1>
-    //                 <form
-    //                     onSubmit={this.handleSubmit}
-    //                     encType="multipart/form-data"
-    //                 >
-    //                     <LanguageDropdown
-    //                         langList={langList}
-    //                         langName={this.state.langName}
-    //                         handleChange={this.handleChange}
-    //                     />
-    //                     <LanguageInput
-    //                         handleChange={this.handleChange}
-    //                         langName={langName}
-    //                     />
-    //                     <FrameworkInput
-    //                         handleChange={this.handleChange}
-    //                         frameworkName={frameworkName}
-    //                     />
-    //                     <ErrorMessage errorMessage={this.state.errorMessage} />
-    //                     <input
-    //                         type="file"
-    //                         name="selectedImage"
-    //                         onChange={this.handleChange}
-    //                     />
-    //                     <button className="button">Save</button>
-    //                 </form>
-    //             </div>
-
-    //             <div className="section">
-    //                 <div className="field">
-    //                     <label className="label">Search Frameworks</label>
-    //                     <div className="control">
-    //                         <input
-    //                             className="input"
-    //                             type="text"
-    //                             onChange={this.handleSearch}
-    //                             placeholder="Search"
-    //                         />
-    //                     </div>
-    //                 </div>
-
-    //                 {langList ? (
-    //                     <List langList={langList} searchTerm={searchTerm} />
-    //                 ) : (
-    //                     <h2>Loading...</h2>
-    //                 )}
-    //             </div>
-    //         </div>
-    //     );
-    // }
 }
 
 export default App;
