@@ -1,7 +1,11 @@
 const express = require("express");
 const fs = require("fs");
 const multer = require("multer");
+const jimp = require("jimp");
+
 const app = express();
+const storage = multer.memoryStorage();
+const upload = multer({ storage }).single("file");
 
 app.use(express.static("dist"));
 
@@ -21,24 +25,20 @@ app.get("/api/getList", (req, res) => {
     });
 });
 
-const storage = multer.diskStorage({
-    destination: (req, file, callback) => {
-        callback(null, "./public/uploads/");
-    },
-    filename: (req, file, callback) => {
-        callback(null, Date.now() + "-" + file.originalname);
-    }
-});
-
-const upload = multer({ storage }).single("file");
-
 app.post("/api/upload", (req, res) => {
     upload(req, res, error => {
-        if (error instanceof multer.MulterError) {
-            return res.status(500).json(error);
-        } else if (error) {
+        if (error) {
             return res.status(500).json(error);
         }
+        //Reading image from buffer so that Jimp can resize
+        //Buffer is available when storage instance is created from memoryStorage instead of diskStorage
+        jimp.read(req.file.buffer).then(img => {
+            const width = img.bitmap.width > 960 ? 960 : img.bitmap.width;
+            return img
+                .resize(width, jimp.AUTO)
+                .quality(70)
+                .write(`./public/uploads/${req.file.originalname}`);
+        });
         return res.status(200).send(req.file);
     });
 });
@@ -57,7 +57,7 @@ app.post("/api/add", (req, res) => {
                 throw error;
             }
 
-            console.log("New language successfully uploaded!", data);
+            console.log("New language added!", data);
             res.json(data, null, 4);
         }
     );

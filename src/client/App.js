@@ -34,7 +34,6 @@ class App extends Component {
     handleChange = async event => {
         const { name, value, files } = event.target;
         this.setState({ [name]: files ? await files[0] : value });
-        console.log(this.state.file);
     };
 
     clearField = () => {
@@ -47,7 +46,6 @@ class App extends Component {
             langName: this.state.langName.trim(),
             frameworkName: this.state.frameworkName.trim()
         };
-        console.log("DATA:", data);
         if (
             !this.getErrorMessage(this.state.langName, this.state.frameworkName)
         ) {
