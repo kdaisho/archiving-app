@@ -37,7 +37,9 @@ app.post("/api/upload", (req, res) => {
             return img
                 .resize(width, jimp.AUTO)
                 .quality(70)
-                .write(`./public/uploads/${req.file.originalname}`);
+                .write(
+                    `./public/uploads/${Date.now()}-${req.file.originalname}`
+                );
         });
         return res.status(200).send(req.file);
     });
