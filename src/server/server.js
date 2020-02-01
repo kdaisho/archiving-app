@@ -27,6 +27,7 @@ app.get("/api/getList", (req, res) => {
 
 app.post("/api/upload", (req, res) => {
     upload(req, res, error => {
+        console.log("uploading", req.body.fileName);
         if (error) {
             return res.status(500).json(error);
         }
@@ -38,7 +39,8 @@ app.post("/api/upload", (req, res) => {
                 .resize(width, jimp.AUTO)
                 .quality(70)
                 .write(
-                    `./public/uploads/${Date.now()}-${req.file.originalname}`
+                    // `./public/uploads/${Date.now()}-${req.file.originalname}`
+                    `./public/uploads/${req.body.fileName}`
                 );
         });
         return res.status(200).send(req.file);
@@ -78,6 +80,9 @@ app.post("/api/add", (req, res) => {
                         return targetArray;
                     }
                 }
+                if (reqObj.fileName) {
+                    targetArray[i].fileName = reqObj.fileName;
+                }
                 targetArray[i].frameworks.push(
                     getFwObj(
                         targetArray[i].frameworks.length,
@@ -88,18 +93,24 @@ app.post("/api/add", (req, res) => {
             }
         }
 
-        const langObj = getLangObj(targetArray.length, reqObj.langName);
+        const langObj = getLangObj(
+            targetArray.length,
+            reqObj.langName,
+            reqObj.fileName
+        );
         langObj.frameworks.push(
             getFwObj(langObj.frameworks.length, reqObj.frameworkName)
         );
 
-        function getLangObj(id, name) {
-            return (obj = { id, name, frameworks: [] });
+        function getLangObj(id, name, fileName) {
+            return (obj = { id, name, fileName, frameworks: [] });
         }
 
         function getFwObj(id, name) {
             return (obj = { id, name });
         }
+
+        console.log("Output", langObj);
 
         targetArray.push(langObj);
         return targetArray;

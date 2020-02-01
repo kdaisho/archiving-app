@@ -42,9 +42,13 @@ class App extends Component {
 
     handleSubmit = event => {
         event.preventDefault();
+        const fileName = this.state.file.name
+            ? `${Date.now()}-${this.state.file.name}`
+            : null;
         const data = {
             langName: this.state.langName.trim(),
-            frameworkName: this.state.frameworkName.trim()
+            frameworkName: this.state.frameworkName.trim(),
+            fileName
         };
         if (
             !this.getErrorMessage(this.state.langName, this.state.frameworkName)
@@ -59,7 +63,7 @@ class App extends Component {
                 .then(res => res.json())
                 .then(data => {
                     this.setState({ langList: data });
-                    this.state.file.name && this.handleSubmitFile();
+                    this.state.file.name && this.handleSubmitFile(fileName);
                     this.clearField();
                 })
                 .catch(error => {
@@ -68,9 +72,10 @@ class App extends Component {
         }
     };
 
-    handleSubmitFile = () => {
+    handleSubmitFile = n => {
         const formData = new FormData();
         formData.append("file", this.state.file);
+        formData.append("fileName", n);
 
         fetch("/api/upload", {
             method: "POST",
