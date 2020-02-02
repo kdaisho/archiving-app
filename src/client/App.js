@@ -51,7 +51,11 @@ class App extends Component {
             fileName
         };
         if (
-            !this.getErrorMessage(this.state.langName, this.state.frameworkName)
+            !this.getErrorMessage(
+                this.state.langName,
+                this.state.frameworkName,
+                fileName
+            )
         ) {
             fetch("/api/add", {
                 method: "POST",
@@ -62,8 +66,15 @@ class App extends Component {
             })
                 .then(res => res.json())
                 .then(data => {
-                    this.setState({ langList: data });
-                    this.state.file.name && this.handleSubmitFile(fileName);
+                    if (
+                        !(
+                            JSON.stringify(this.state.langList) ===
+                            JSON.stringify(data)
+                        )
+                    ) {
+                        this.setState({ langList: data });
+                        this.state.file.name && this.handleSubmitFile(fileName);
+                    }
                     this.clearField();
                 })
                 .catch(error => {
@@ -86,11 +97,11 @@ class App extends Component {
             .catch(error => console.log(error.message));
     };
 
-    getErrorMessage = (...msgs) => {
+    getErrorMessage = (...names) => {
         this.setState({ errorMessage: "" });
-        if (msgs.filter(m => !m.length).length) {
+        if (names.filter(name => !name).length) {
             this.setState({
-                errorMessage: "Both language and framework are required."
+                errorMessage: "Language, framework and image are required."
             });
             return true;
         }

@@ -1,23 +1,22 @@
 [
     {
         "id": 0,
-        "name": "JS",
+        "name": "JavaScript",
         "frameworks": [
             {
                 "id": 0,
-                "name": "React"
+                "name": "React",
+                "filename": "1580684525258-react.png"
             },
             {
                 "id": 1,
-                "name": "Angular"
+                "name": "Angular",
+                "filename": "1580684538769-angular.png"
             },
             {
                 "id": 2,
-                "name": "angular2"
-            },
-            {
-                "id": 3,
-                "name": "Funky"
+                "name": "Ember",
+                "filename": "1580684550538-ember.png"
             }
         ]
     },
@@ -27,21 +26,24 @@
         "frameworks": [
             {
                 "id": 0,
-                "name": "Bulma"
+                "name": "Bulma",
+                "filename": "1580684562191-bulma.png"
             },
             {
                 "id": 1,
-                "name": "dsd"
+                "name": "Bootstrap",
+                "filename": "1580684572081-bootstrap.png"
             }
         ]
     },
     {
         "id": 2,
-        "name": "Haskell",
+        "name": "C",
         "frameworks": [
             {
                 "id": 0,
-                "name": "Launch"
+                "name": "Csharp",
+                "filename": "1580684589474-csharp.png"
             }
         ]
     }

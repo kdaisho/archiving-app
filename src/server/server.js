@@ -27,7 +27,6 @@ app.get("/api/getList", (req, res) => {
 
 app.post("/api/upload", (req, res) => {
     upload(req, res, error => {
-        console.log("uploading", req.body.fileName);
         if (error) {
             return res.status(500).json(error);
         }
@@ -38,10 +37,7 @@ app.post("/api/upload", (req, res) => {
             return img
                 .resize(width, jimp.AUTO)
                 .quality(70)
-                .write(
-                    // `./public/uploads/${Date.now()}-${req.file.originalname}`
-                    `./public/uploads/${req.body.fileName}`
-                );
+                .write(`./public/uploads/${req.body.fileName}`);
         });
         return res.status(200).send(req.file);
     });
@@ -67,6 +63,14 @@ app.post("/api/add", (req, res) => {
     );
 
     function getResolvedData(targetArray, reqObj) {
+        const getLangObj = (id, name) => {
+            return (obj = { id, name, frameworks: [] });
+        };
+
+        const getFwObj = (id, name, filename) => {
+            return (obj = { id, name, filename });
+        };
+
         for (let i = 0; i < targetArray.length; i++) {
             if (
                 targetArray[i].name.toLowerCase() ===
@@ -80,37 +84,26 @@ app.post("/api/add", (req, res) => {
                         return targetArray;
                     }
                 }
-                if (reqObj.fileName) {
-                    targetArray[i].fileName = reqObj.fileName;
-                }
                 targetArray[i].frameworks.push(
                     getFwObj(
                         targetArray[i].frameworks.length,
-                        reqObj.frameworkName
+                        reqObj.frameworkName,
+                        reqObj.fileName
                     )
                 );
                 return targetArray;
             }
         }
 
-        const langObj = getLangObj(
-            targetArray.length,
-            reqObj.langName,
-            reqObj.fileName
-        );
+        const langObj = getLangObj(targetArray.length, reqObj.langName);
+
         langObj.frameworks.push(
-            getFwObj(langObj.frameworks.length, reqObj.frameworkName)
+            getFwObj(
+                langObj.frameworks.length,
+                reqObj.frameworkName,
+                reqObj.fileName
+            )
         );
-
-        function getLangObj(id, name, fileName) {
-            return (obj = { id, name, fileName, frameworks: [] });
-        }
-
-        function getFwObj(id, name) {
-            return (obj = { id, name });
-        }
-
-        console.log("Output", langObj);
 
         targetArray.push(langObj);
         return targetArray;
