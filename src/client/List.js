@@ -8,9 +8,18 @@ const List = ({ langList, searchTerm }) => {
                     lang =>
                         `${lang.name}`.toLowerCase().indexOf(searchTerm) >= 0
                 )
-                .map(lang => (
-                    <li key={lang.id}>{lang.name}</li>
-                ))}
+                .map(lang =>
+                    lang.frameworks.map(fw => (
+                        <li key={fw.id}>
+                            {lang.name} - {fw.name} -
+                            <img
+                                className="framework-logo"
+                                src={`./public/uploads/${fw.filename}`}
+                                alt={fw.filename}
+                            />
+                        </li>
+                    ))
+                )}
         </ul>
     );
 };
