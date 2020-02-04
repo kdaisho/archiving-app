@@ -14,7 +14,8 @@ class App extends Component {
         frameworkName: "",
         searchTerm: "",
         errorMessage: "",
-        file: {}
+        file: {},
+        sortAl: false
     };
 
     componentDidMount() {
@@ -41,7 +42,7 @@ class App extends Component {
     };
 
     handleSubmit = event => {
-        event.preventDefault();
+        // event.preventDefault();
         const fileName = this.state.file.name
             ? `${Date.now()}-${this.state.file.name}`
             : null;
@@ -107,8 +108,18 @@ class App extends Component {
         }
     };
 
+    applySort = () => {
+        this.setState(() => ({ sortAl: !this.state.sortAl }));
+    };
+
     render() {
-        const { langList, langName, frameworkName, searchTerm } = this.state;
+        const {
+            langList,
+            langName,
+            frameworkName,
+            searchTerm,
+            sortAl
+        } = this.state;
 
         return (
             <div>
@@ -140,8 +151,18 @@ class App extends Component {
                     </form>
                 </div>
 
-                <div className="section">
-                    <div className="field is-search">
+                <div className="section is-search">
+                    <div className="field">
+                        <label className="checkbox">
+                            <input
+                                type="checkbox"
+                                onChange={this.applySort}
+                                value={this.state.sortAl}
+                            />{" "}
+                            Alphabetical Order
+                        </label>
+                    </div>
+                    <div className="field">
                         <label className="label">Search Framework</label>
                         <div className="control">
                             <input
@@ -154,7 +175,11 @@ class App extends Component {
                     </div>
 
                     {langList ? (
-                        <List langList={langList} searchTerm={searchTerm} />
+                        <List
+                            langList={langList}
+                            searchTerm={searchTerm}
+                            sortAl={sortAl}
+                        />
                     ) : (
                         <h2>Loading...</h2>
                     )}

@@ -17,6 +17,21 @@
                 "id": 2,
                 "name": "Ember",
                 "filename": "1580684550538-ember.png"
+            },
+            {
+                "id": 3,
+                "name": "Dojo.js",
+                "filename": "1580785417704-js.png"
+            },
+            {
+                "id": 4,
+                "name": "new dojo",
+                "filename": "1580785473756-js.png"
+            },
+            {
+                "id": 5,
+                "name": "Mogmog",
+                "filename": "1580786083978-js.png"
             }
         ]
     },
@@ -44,6 +59,22 @@
                 "id": 0,
                 "name": "Csharp",
                 "filename": "1580684589474-csharp.png"
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Golang",
+        "frameworks": [
+            {
+                "id": 0,
+                "name": "Dart",
+                "filename": "1580783277405-csharp.png"
+            },
+            {
+                "id": 1,
+                "name": "Goji",
+                "filename": "1580784240446-c++.jpg"
             }
         ]
     }
