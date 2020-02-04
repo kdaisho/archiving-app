@@ -113,7 +113,7 @@ class App extends Component {
         return (
             <div>
                 <div className="section">
-                    <h1 className="title">Programings</h1>
+                    <h1 className="title">Software Framework Archive</h1>
                     <form onSubmit={this.handleSubmit}>
                         <LanguageDropdown
                             langList={langList}
@@ -141,8 +141,8 @@ class App extends Component {
                 </div>
 
                 <div className="section">
-                    <div className="field">
-                        <label className="label">Search Languages</label>
+                    <div className="field is-search">
+                        <label className="label">Search Framework</label>
                         <div className="control">
                             <input
                                 className="input"

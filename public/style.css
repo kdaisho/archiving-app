@@ -11,5 +11,32 @@
 }
 
 .framework-logo {
-    width: 80px;
+    height: 40px;
+}
+
+.framework-logo:hover {
+    cursor: pointer;
+}
+
+.table {
+    width: 100%;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+thead th {
+    color: #fff;
+}
+
+.field.is-search {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.field.is-search .label {
+    margin: 0 16px 0 0;
 }
