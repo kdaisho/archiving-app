@@ -5,6 +5,7 @@ import FrameworkInput from "./FrameworkInput";
 import LanguageInput from "./LanguageInput";
 import ErrorMessage from "./ErrorMessage";
 import FileUpload from "./FileUpload";
+import "./App.css";
 
 class App extends Component {
     state = {
@@ -42,7 +43,6 @@ class App extends Component {
     };
 
     handleSubmit = event => {
-        // event.preventDefault();
         const fileName = this.state.file.name
             ? `${Date.now()}-${this.state.file.name}`
             : null;
@@ -145,7 +145,16 @@ class App extends Component {
                             fileName={this.state.file.name}
                         />
 
-                        <button className="button is-info is-fullwidth">
+                        <button
+                            className="button is-info is-fullwidth"
+                            onClick={event => {
+                                this.getErrorMessage(
+                                    this.state.langName,
+                                    this.state.frameworkName,
+                                    this.state.file.name
+                                ) && event.preventDefault();
+                            }}
+                        >
                             Save
                         </button>
                     </form>

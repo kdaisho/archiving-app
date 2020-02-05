@@ -10,6 +10,7 @@ const List = ({ langList, searchTerm, sortAl }) => {
                     <th>Language</th>
                     <th>Framework</th>
                     <th>Logo</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,6 +41,16 @@ const List = ({ langList, searchTerm, sortAl }) => {
                                                 src={`./public/uploads/${fw.filename}`}
                                                 alt={fw.name}
                                             />
+                                        </td>
+                                        <td>
+                                            <span className="action-button-container">
+                                                <button className="button is-warning">
+                                                    Edit
+                                                </button>
+                                                <button className="button is-danger">
+                                                    Delete
+                                                </button>
+                                            </span>
                                         </td>
                                     </tr>
                                 );

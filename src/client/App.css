@@ -30,6 +30,10 @@ thead th {
     color: #fff;
 }
 
+thead th:last-child {
+    width: 200px;
+}
+
 .is-search .field {
     display: flex;
     flex-flow: row nowrap;
@@ -39,4 +43,14 @@ thead th {
 
 .is-search .field .label {
     margin: 0 16px 0 0;
+}
+
+.action-button-container {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+}
+
+.action-button-container .button {
+    flex: 0 0 45%;
 }
