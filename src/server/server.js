@@ -27,6 +27,7 @@ app.get("/api/getList", (req, res) => {
 
 app.post("/api/upload", (req, res) => {
     upload(req, res, error => {
+        console.log("UPLoading image", req.body.fileName);
         if (error) {
             return res.status(500).json(error);
         }
@@ -37,7 +38,7 @@ app.post("/api/upload", (req, res) => {
             return img
                 .resize(width, jimp.AUTO)
                 .quality(70)
-                .write(`./public/uploads/${req.body.fileName}`);
+                .write(`./dist/images/uploads/${req.body.fileName}`);
         });
         return res.status(200).send(req.file);
     });

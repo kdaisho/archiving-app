@@ -43,6 +43,7 @@ class App extends Component {
     };
 
     handleSubmit = event => {
+        // event.preventDefault();
         const fileName = this.state.file.name
             ? `${Date.now()}-${this.state.file.name}`
             : null;
@@ -74,6 +75,7 @@ class App extends Component {
                         )
                     ) {
                         this.setState({ langList: data });
+                        console.log("IS HTIS?", this.state.file.name);
                         this.state.file.name && this.handleSubmitFile(fileName);
                     }
                     this.clearField();

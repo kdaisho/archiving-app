@@ -2,6 +2,11 @@ import React from "react";
 
 const List = ({ langList, searchTerm, sortAl }) => {
     let total = 0;
+    const port = window.location.href.replace(
+        /https?:\/\/localhost:(\d+)\//,
+        "$1"
+    );
+    console.log("Extracted", port);
     return (
         <table className="table is-bordered is-striped">
             <thead>
@@ -38,7 +43,11 @@ const List = ({ langList, searchTerm, sortAl }) => {
                                         <td>
                                             <img
                                                 className="framework-logo"
-                                                src={`./public/uploads/${fw.filename}`}
+                                                src={`${
+                                                    port.startsWith("3000")
+                                                        ? "./dist/images/uploads/"
+                                                        : "./images/uploads/"
+                                                }${fw.filename}`}
                                                 alt={fw.name}
                                             />
                                         </td>
