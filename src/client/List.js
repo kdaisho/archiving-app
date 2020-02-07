@@ -1,12 +1,7 @@
 import React from "react";
 
-const List = ({ langList, searchTerm, sortAl }) => {
+const List = ({ langList, searchTerm, sortAl, loading }) => {
     let total = 0;
-    const port = window.location.href.replace(
-        /https?:\/\/localhost:(\d+)\//,
-        "$1"
-    );
-    console.log("Extracted", port);
     return (
         <table className="table is-bordered is-striped">
             <thead>
@@ -41,15 +36,15 @@ const List = ({ langList, searchTerm, sortAl }) => {
                                         <td>{lang.name}</td>
                                         <td>{fw.name}</td>
                                         <td>
-                                            <img
-                                                className="framework-logo"
-                                                src={`${
-                                                    port.startsWith("3000")
-                                                        ? "./dist/images/uploads/"
-                                                        : "./images/uploads/"
-                                                }${fw.filename}`}
-                                                alt={fw.name}
-                                            />
+                                            {loading ? (
+                                                "Loading..."
+                                            ) : (
+                                                <img
+                                                    className="framework-logo"
+                                                    src={`./dist/images/uploads/${fw.filename}`}
+                                                    alt={fw.name}
+                                                />
+                                            )}
                                         </td>
                                         <td>
                                             <span className="action-button-container">

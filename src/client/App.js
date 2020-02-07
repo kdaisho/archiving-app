@@ -16,7 +16,8 @@ class App extends Component {
         searchTerm: "",
         errorMessage: "",
         file: {},
-        sortAl: false
+        sortAl: false,
+        loading: false
     };
 
     componentDidMount() {
@@ -43,7 +44,8 @@ class App extends Component {
     };
 
     handleSubmit = event => {
-        // event.preventDefault();
+        event.preventDefault();
+        this.setState({ loading: true });
         const fileName = this.state.file.name
             ? `${Date.now()}-${this.state.file.name}`
             : null;
@@ -75,7 +77,6 @@ class App extends Component {
                         )
                     ) {
                         this.setState({ langList: data });
-                        console.log("IS HTIS?", this.state.file.name);
                         this.state.file.name && this.handleSubmitFile(fileName);
                     }
                     this.clearField();
@@ -96,7 +97,12 @@ class App extends Component {
             body: formData
         })
             .then(res => res.json())
-            .then(data => console.log(data))
+            .then(data => {
+                console.log(data);
+                setTimeout(() => {
+                    this.setState({ loading: false });
+                }, 1000);
+            })
             .catch(error => console.log(error.message));
     };
 
@@ -120,7 +126,8 @@ class App extends Component {
             langName,
             frameworkName,
             searchTerm,
-            sortAl
+            sortAl,
+            loading
         } = this.state;
 
         return (
@@ -187,6 +194,7 @@ class App extends Component {
 
                     {langList ? (
                         <List
+                            loading={loading}
                             langList={langList}
                             searchTerm={searchTerm}
                             sortAl={sortAl}

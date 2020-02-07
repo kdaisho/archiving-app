@@ -1,103 +1,34 @@
 [
     {
         "id": 0,
-        "name": "Java",
+        "name": "JavaScript",
         "frameworks": [
             {
                 "id": 0,
-                "name": "jasmin",
-                "filename": "1580960659316-csharp.png"
-            },
-            {
-                "id": 1,
-                "name": "d",
-                "filename": "1580960740990-html.jpg"
-            },
-            {
-                "id": 2,
-                "name": "css boot",
-                "filename": "1580961489845-bootstrap.png"
-            },
-            {
-                "id": 3,
-                "name": "c___++",
-                "filename": "1580961568182-c++.jpg"
+                "name": "Angular",
+                "filename": "1581046542774-angular.png"
             }
         ]
     },
     {
         "id": 1,
-        "name": "gyan",
+        "name": "CSS",
         "frameworks": [
             {
                 "id": 0,
-                "name": "css",
-                "filename": "1580960886821-css.png"
+                "name": "Bootstrap",
+                "filename": "1581046615071-bootstrap.png"
             }
         ]
     },
     {
         "id": 2,
-        "name": "CSS",
+        "name": "Haskell",
         "frameworks": [
             {
                 "id": 0,
-                "name": "css again",
-                "filename": "1580960925192-css.png"
-            }
-        ]
-    },
-    {
-        "id": 3,
-        "name": "ham",
-        "frameworks": [
-            {
-                "id": 0,
-                "name": "html",
-                "filename": "1580961208001-html.jpg"
-            },
-            {
-                "id": 1,
-                "name": "react",
-                "filename": "1580961540507-react.png"
-            }
-        ]
-    },
-    {
-        "id": 4,
-        "name": "dd",
-        "frameworks": [
-            {
-                "id": 0,
-                "name": "ssss",
-                "filename": "1580961301311-c++.jpg"
-            },
-            {
-                "id": 1,
-                "name": "haskell",
-                "filename": "1580961523898-haskell.png"
-            }
-        ]
-    },
-    {
-        "id": 5,
-        "name": "dds",
-        "frameworks": [
-            {
-                "id": 0,
-                "name": "fds-ember",
-                "filename": "1580961416150-ember.png"
-            }
-        ]
-    },
-    {
-        "id": 6,
-        "name": "ddd",
-        "frameworks": [
-            {
-                "id": 0,
-                "name": "ember2",
-                "filename": "1580961462554-ember.png"
+                "name": "Spot",
+                "filename": "1581046631632-haskell.png"
             }
         ]
     }

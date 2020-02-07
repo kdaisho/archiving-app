@@ -2,6 +2,7 @@ const express = require("express");
 const fs = require("fs");
 const multer = require("multer");
 const jimp = require("jimp");
+const dir = "./dist/images/uploads";
 
 const app = express();
 const storage = multer.memoryStorage();
@@ -27,19 +28,21 @@ app.get("/api/getList", (req, res) => {
 
 app.post("/api/upload", (req, res) => {
     upload(req, res, error => {
-        console.log("UPLoading image", req.body.fileName);
         if (error) {
             return res.status(500).json(error);
         }
         //Reading image from buffer so that Jimp can resize
         //Buffer is available when storage instance is created from memoryStorage instead of diskStorage
-        jimp.read(req.file.buffer).then(img => {
-            const width = img.bitmap.width > 960 ? 960 : img.bitmap.width;
-            return img
-                .resize(width, jimp.AUTO)
-                .quality(70)
-                .write(`./dist/images/uploads/${req.body.fileName}`);
-        });
+        jimp.read(req.file.buffer)
+            .then(img => {
+                const width = img.bitmap.width > 960 ? 960 : img.bitmap.width;
+                return img
+                    .resize(width, jimp.AUTO)
+                    .quality(70)
+                    .write(`./dist/images/uploads/${req.body.fileName}`);
+            })
+            .catch(error => console.error(error));
+
         return res.status(200).send(req.file);
     });
 });
