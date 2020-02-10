@@ -1,6 +1,6 @@
 import React from "react";
 
-const List = ({ langList, searchTerm, sortAl, loading }) => {
+const List = ({ langList, searchTerm, sortAl, loading, deleteOne }) => {
     let total = 0;
     return (
         <table className="table is-bordered is-striped">
@@ -51,7 +51,15 @@ const List = ({ langList, searchTerm, sortAl, loading }) => {
                                                 <button className="button is-warning">
                                                     Edit
                                                 </button>
-                                                <button className="button is-danger">
+                                                <button
+                                                    className="button is-danger"
+                                                    onClick={() =>
+                                                        deleteOne(
+                                                            lang.name,
+                                                            fw.name
+                                                        )
+                                                    }
+                                                >
                                                     Delete
                                                 </button>
                                             </span>

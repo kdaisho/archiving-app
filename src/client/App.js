@@ -21,14 +21,14 @@ class App extends Component {
     };
 
     componentDidMount() {
+        this.getList();
+    }
+
+    getList = () => {
         fetch("/api/getList")
             .then(res => res.json())
-            .then(data => {
-                this.setState({
-                    langList: data
-                });
-            });
-    }
+            .then(data => this.setState({ langList: data }));
+    };
 
     handleSearch = event => {
         this.setState({ searchTerm: event.target.value.toLowerCase() });
@@ -45,11 +45,13 @@ class App extends Component {
 
     handleSubmit = event => {
         event.preventDefault();
+        const ts = Date.now();
         this.setState({ loading: true });
         const fileName = this.state.file.name
-            ? `${Date.now()}-${this.state.file.name}`
+            ? `${ts}-${this.state.file.name}`
             : null;
         const data = {
+            id: ts,
             langName: this.state.langName.trim(),
             frameworkName: this.state.frameworkName.trim(),
             fileName
@@ -103,7 +105,7 @@ class App extends Component {
                     this.setState({ loading: false });
                 }, 1000);
             })
-            .catch(error => console.log(error.message));
+            .catch(error => console.error(error.message));
     };
 
     getErrorMessage = (...names) => {
@@ -118,6 +120,27 @@ class App extends Component {
 
     applySort = () => {
         this.setState(() => ({ sortAl: !this.state.sortAl }));
+    };
+
+    deleteOne = (langName, fwName) => {
+        const data = {
+            langName,
+            fwName
+        };
+
+        fetch("/api/delete", {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json)
+            .then(data => {
+                console.log("Successfully deleted:", data);
+                this.getList();
+            })
+            .catch(error => console.error(error.message));
     };
 
     render() {
@@ -198,6 +221,7 @@ class App extends Component {
                             langList={langList}
                             searchTerm={searchTerm}
                             sortAl={sortAl}
+                            deleteOne={this.deleteOne}
                         />
                     ) : (
                         <h2>Loading...</h2>

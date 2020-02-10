@@ -1,34 +1,28 @@
 [
     {
-        "id": 0,
-        "name": "JavaScript",
-        "frameworks": [
-            {
-                "id": 0,
-                "name": "Angular",
-                "filename": "1581046542774-angular.png"
-            }
-        ]
-    },
-    {
-        "id": 1,
+        "id": 1581304516992,
         "name": "CSS",
         "frameworks": [
             {
-                "id": 0,
+                "id": 1581304516992,
+                "name": "bulma",
+                "filename": "1581304516992-bulma.png"
+            },
+            {
+                "id": 1581304528554,
                 "name": "Bootstrap",
-                "filename": "1581046615071-bootstrap.png"
+                "filename": "1581304528554-bootstrap.png"
             }
         ]
     },
     {
-        "id": 2,
-        "name": "Haskell",
+        "id": 1581304543348,
+        "name": "JavaScript",
         "frameworks": [
             {
-                "id": 0,
-                "name": "Spot",
-                "filename": "1581046631632-haskell.png"
+                "id": 1581304543348,
+                "name": "React",
+                "filename": "1581304543348-react.png"
             }
         ]
     }

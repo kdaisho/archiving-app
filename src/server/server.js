@@ -2,7 +2,6 @@ const express = require("express");
 const fs = require("fs");
 const multer = require("multer");
 const jimp = require("jimp");
-const dir = "./dist/images/uploads";
 
 const app = express();
 const storage = multer.memoryStorage();
@@ -89,28 +88,57 @@ app.post("/api/add", (req, res) => {
                     }
                 }
                 targetArray[i].frameworks.push(
-                    getFwObj(
-                        targetArray[i].frameworks.length,
-                        reqObj.frameworkName,
-                        reqObj.fileName
-                    )
+                    getFwObj(reqObj.id, reqObj.frameworkName, reqObj.fileName)
                 );
                 return targetArray;
             }
         }
 
-        const langObj = getLangObj(targetArray.length, reqObj.langName);
+        const langObj = getLangObj(reqObj.id, reqObj.langName);
 
         langObj.frameworks.push(
-            getFwObj(
-                langObj.frameworks.length,
-                reqObj.frameworkName,
-                reqObj.fileName
-            )
+            getFwObj(reqObj.id, reqObj.frameworkName, reqObj.fileName)
         );
 
         targetArray.push(langObj);
         return targetArray;
+    }
+});
+
+app.delete("/api/delete", (req, res) => {
+    const { langName, fwName } = req.body;
+
+    fs.readFile("./data/programings.json", (error, data) => {
+        if (error) throw error;
+        data = JSON.parse(data).slice();
+        const lang = data.filter(lang => {
+            return lang.name === langName;
+        });
+        lang[0].frameworks = lang[0].frameworks.filter(
+            fw => fw.name !== fwName
+        );
+
+        fs.writeFile(
+            "./data/programings.json",
+            JSON.stringify(removeLangWithNoFramework(data, lang[0]), null, 4),
+            error => {
+                if (error) {
+                    throw error;
+                }
+                res.json(data, null, 4);
+            }
+        );
+    });
+
+    function removeLangWithNoFramework(data, lang) {
+        if (lang.frameworks.length <= 0) {
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].name === lang.name) {
+                    data.splice(i, 1);
+                }
+            }
+        }
+        return data;
     }
 });
 
