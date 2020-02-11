@@ -106,7 +106,6 @@ class App extends Component {
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data);
                 setTimeout(() => {
                     this.setState({ loading: false });
                 }, 1000);

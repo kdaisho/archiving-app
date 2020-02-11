@@ -1,5 +1,6 @@
 const express = require("express");
 const fs = require("fs");
+const path = require("path");
 const multer = require("multer");
 const jimp = require("jimp");
 
@@ -18,11 +19,14 @@ app.use(
 );
 
 app.get("/api/getList", (req, res) => {
-    fs.readFile("./data/programings.json", (error, data) => {
-        if (error) throw error;
-        data = JSON.parse(data);
-        res.send(data);
-    });
+    fs.readFile(
+        path.join(__dirname, "../../data/programings.json"),
+        (error, data) => {
+            if (error) throw error;
+            data = JSON.parse(data);
+            res.send(data);
+        }
+    );
 });
 
 app.post("/api/upload", (req, res) => {
@@ -38,7 +42,11 @@ app.post("/api/upload", (req, res) => {
                 return img
                     .resize(width, jimp.AUTO)
                     .quality(70)
-                    .write(`./dist/images/uploads/${req.body.fileName}`);
+                    .write(
+                        `${path.join(__dirname, "../../dist/images/uploads/")}${
+                            req.body.fileName
+                        }`
+                    );
             })
             .catch(error => console.error(error));
 
@@ -48,12 +56,14 @@ app.post("/api/upload", (req, res) => {
 
 app.post("/api/add", (req, res) => {
     const data = getResolvedData(
-        JSON.parse(fs.readFileSync("./data/programings.json")),
+        JSON.parse(
+            fs.readFileSync(path.join(__dirname, "../../data/programings.json"))
+        ),
         req.body
     );
 
     fs.writeFile(
-        "./data/programings.json",
+        path.join(__dirname, "../../data/programings.json"),
         JSON.stringify(data, null, 4),
         error => {
             if (error) {
@@ -108,32 +118,42 @@ app.post("/api/add", (req, res) => {
 app.delete("/api/delete", (req, res) => {
     const { langName, fwName, image } = req.body;
 
-    fs.readFile("./data/programings.json", (error, data) => {
-        if (error) throw error;
-        data = JSON.parse(data).slice();
-        const lang = data.filter(lang => {
-            return lang.name === langName;
-        });
-        lang[0].frameworks = lang[0].frameworks.filter(
-            fw => fw.name !== fwName
-        );
-
-        fs.unlink(`./dist/images/uploads/${image}`, error => {
+    fs.readFile(
+        path.join(__dirname, "../../data/programings.json"),
+        (error, data) => {
             if (error) throw error;
-            console.log("File successfully deleted!");
-        });
+            data = JSON.parse(data).slice();
+            const lang = data.filter(lang => {
+                return lang.name === langName;
+            });
+            lang[0].frameworks = lang[0].frameworks.filter(
+                fw => fw.name !== fwName
+            );
 
-        fs.writeFile(
-            "./data/programings.json",
-            JSON.stringify(removeLangWithNoFramework(data, lang[0]), null, 4),
-            error => {
-                if (error) {
-                    throw error;
+            fs.unlink(
+                path.join(__dirname, `../../dist/images/uploads/${image}`),
+                error => {
+                    if (error) throw error;
+                    console.log("File successfully deleted!");
                 }
-                res.json(data, null, 4);
-            }
-        );
-    });
+            );
+
+            fs.writeFile(
+                path.join(__dirname, "../../data/programings.json"),
+                JSON.stringify(
+                    removeLangWithNoFramework(data, lang[0]),
+                    null,
+                    4
+                ),
+                error => {
+                    if (error) {
+                        throw error;
+                    }
+                    res.json(data, null, 4);
+                }
+            );
+        }
+    );
 
     function removeLangWithNoFramework(data, lang) {
         if (lang.frameworks.length <= 0) {
