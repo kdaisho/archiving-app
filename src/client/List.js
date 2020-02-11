@@ -2,6 +2,13 @@ import React from "react";
 
 const List = ({ langList, searchTerm, sortAl, loading, deleteOne }) => {
     let total = 0;
+    const currentPort = window.location.href.replace(
+        /https?:\/\/localhost:(\d{4})\//,
+        "$1"
+    );
+    const filePathDev = "./dist/images/uploads/";
+    const filePathProd = "./images/uploads/";
+
     return (
         <table className="table is-bordered is-striped">
             <thead>
@@ -41,7 +48,11 @@ const List = ({ langList, searchTerm, sortAl, loading, deleteOne }) => {
                                             ) : (
                                                 <img
                                                     className="framework-logo"
-                                                    src={`./dist/images/uploads/${fw.filename}`}
+                                                    src={`${
+                                                        currentPort === "3000"
+                                                            ? filePathDev
+                                                            : filePathProd
+                                                    }${fw.filename}`}
                                                     alt={fw.name}
                                                 />
                                             )}

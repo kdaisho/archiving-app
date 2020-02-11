@@ -1,16 +1,5 @@
 [
     {
-        "id": 1581389328935,
-        "name": "CSS",
-        "frameworks": [
-            {
-                "id": 1581389328935,
-                "name": "Dormez-vous",
-                "filename": "1581389328935-css.png"
-            }
-        ]
-    },
-    {
         "id": 1581389355936,
         "name": "JavaScript",
         "frameworks": [
@@ -34,6 +23,17 @@
                 "id": 1581389445426,
                 "name": "CCCC",
                 "filename": "1581389445426-js.png"
+            }
+        ]
+    },
+    {
+        "id": 1581390241668,
+        "name": "Haskell",
+        "frameworks": [
+            {
+                "id": 1581390241668,
+                "name": "Spot",
+                "filename": "1581390241668-haskell.png"
             }
         ]
     }

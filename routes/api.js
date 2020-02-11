@@ -104,6 +104,7 @@ router.post("/add", (req, res) => {
         return targetArray;
     }
 });
+
 router.delete("/delete", (req, res) => {
     const { langName, fwName, image } = req.body;
 
