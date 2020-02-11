@@ -128,10 +128,11 @@ class App extends Component {
         this.setState(() => ({ sortAl: !this.state.sortAl }));
     };
 
-    deleteOne = (langName, fwName) => {
+    deleteOne = (langName, fwName, image) => {
         const data = {
             langName,
-            fwName
+            fwName,
+            image
         };
 
         fetch("/api/delete", {

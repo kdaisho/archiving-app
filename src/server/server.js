@@ -106,7 +106,7 @@ app.post("/api/add", (req, res) => {
 });
 
 app.delete("/api/delete", (req, res) => {
-    const { langName, fwName } = req.body;
+    const { langName, fwName, image } = req.body;
 
     fs.readFile("./data/programings.json", (error, data) => {
         if (error) throw error;
@@ -117,6 +117,11 @@ app.delete("/api/delete", (req, res) => {
         lang[0].frameworks = lang[0].frameworks.filter(
             fw => fw.name !== fwName
         );
+
+        fs.unlink(`./dist/images/uploads/${image}`, error => {
+            if (error) throw error;
+            console.log("File successfully deleted!");
+        });
 
         fs.writeFile(
             "./data/programings.json",

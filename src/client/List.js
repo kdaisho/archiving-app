@@ -56,7 +56,8 @@ const List = ({ langList, searchTerm, sortAl, loading, deleteOne }) => {
                                                     onClick={() =>
                                                         deleteOne(
                                                             lang.name,
-                                                            fw.name
+                                                            fw.name,
+                                                            fw.filename
                                                         )
                                                     }
                                                 >
