@@ -40,7 +40,13 @@ class App extends Component {
     };
 
     clearField = () => {
-        this.setState({ langName: "", frameworkName: "" });
+        this.setState({
+            langName: "",
+            frameworkName: "",
+            file: {
+                name: ""
+            }
+        });
     };
 
     handleSubmit = event => {
