@@ -4,9 +4,9 @@ const path = require("path");
 const multer = require("multer");
 const jimp = require("jimp");
 
-const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage }).single("file");
+const router = express.Router();
 
 router.get("/getList", (req, res) => {
     fs.readFile(
@@ -104,7 +104,6 @@ router.post("/add", (req, res) => {
         return targetArray;
     }
 });
-
 router.delete("/delete", (req, res) => {
     const { langName, fwName, image } = req.body;
 
@@ -113,12 +112,10 @@ router.delete("/delete", (req, res) => {
         (error, data) => {
             if (error) throw error;
             data = JSON.parse(data).slice();
-            const lang = data.filter(lang => {
+            const [lang] = data.filter(lang => {
                 return lang.name === langName;
             });
-            lang[0].frameworks = lang[0].frameworks.filter(
-                fw => fw.name !== fwName
-            );
+            lang.frameworks = lang.frameworks.filter(fw => fw.name !== fwName);
 
             fs.unlink(
                 path.join(__dirname, `../dist/images/uploads/${image}`),
@@ -130,11 +127,7 @@ router.delete("/delete", (req, res) => {
 
             fs.writeFile(
                 path.join(__dirname, "../data/programings.json"),
-                JSON.stringify(
-                    removeLangWithNoFramework(data, lang[0]),
-                    null,
-                    4
-                ),
+                JSON.stringify(removeLangWithNoFramework(data, lang), null, 4),
                 error => {
                     if (error) {
                         throw error;

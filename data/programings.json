@@ -1,16 +1,5 @@
 [
     {
-        "id": 1581389355936,
-        "name": "JavaScript",
-        "frameworks": [
-            {
-                "id": 1581389355936,
-                "name": "React",
-                "filename": "1581389355936-react.png"
-            }
-        ]
-    },
-    {
         "id": 1581389406082,
         "name": "C",
         "frameworks": [
@@ -18,22 +7,6 @@
                 "id": 1581389419194,
                 "name": "C++",
                 "filename": "1581389419194-c++.jpg"
-            },
-            {
-                "id": 1581389445426,
-                "name": "CCCC",
-                "filename": "1581389445426-js.png"
-            }
-        ]
-    },
-    {
-        "id": 1581390241668,
-        "name": "Haskell",
-        "frameworks": [
-            {
-                "id": 1581390241668,
-                "name": "Spot",
-                "filename": "1581390241668-haskell.png"
             }
         ]
     }
