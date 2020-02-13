@@ -104,6 +104,7 @@ router.post("/add", (req, res) => {
         return targetArray;
     }
 });
+
 router.delete("/delete", (req, res) => {
     const { langName, fwName, image } = req.body;
 
@@ -148,6 +149,26 @@ router.delete("/delete", (req, res) => {
         }
         return data;
     }
+});
+
+router.get("/edit/:id", (req, res) => {
+    console.log("EDIT:", req.params.id);
+    fs.readFile(
+        path.join(__dirname, "../data/programings.json"),
+        (error, data) => {
+            if (error) throw error;
+            data = JSON.parse(data).slice();
+            console.log("d", data);
+            const [lang] = data.map(lang => {
+                lang.frameworks = lang.frameworks.filter(fw => {
+                    return fw.id.toString() === req.params.id;
+                });
+                return lang;
+            });
+            console.log("returned lang", lang);
+            res.json(lang);
+        }
+    );
 });
 
 module.exports = router;

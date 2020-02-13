@@ -1,6 +1,13 @@
 import React from "react";
 
-const List = ({ langList, searchTerm, sortAl, loading, deleteOne }) => {
+const List = ({
+    langList,
+    searchTerm,
+    sortAl,
+    loading,
+    deleteOne,
+    editOne
+}) => {
     let total = 0;
     const currentPort = window.location.href.replace(
         /https?:\/\/localhost:(\d{4})\//,
@@ -59,7 +66,12 @@ const List = ({ langList, searchTerm, sortAl, loading, deleteOne }) => {
                                         </td>
                                         <td>
                                             <span className="action-button-container">
-                                                <button className="button is-warning">
+                                                <button
+                                                    className="button is-warning"
+                                                    onClick={() =>
+                                                        editOne(fw.id)
+                                                    }
+                                                >
                                                     Edit
                                                 </button>
                                                 <button

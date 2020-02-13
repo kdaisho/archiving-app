@@ -79,14 +79,13 @@ class App extends Component {
                 .then(res => res.json())
                 .then(data => {
                     if (
-                        !(
-                            JSON.stringify(this.state.langList) ===
-                            JSON.stringify(data)
-                        )
+                        JSON.stringify(this.state.langList) !==
+                        JSON.stringify(data)
                     ) {
-                        this.setState({ langList: data });
                         this.state.file.name && this.handleSubmitFile(fileName);
                     }
+                    this.setState({ langList: data });
+                    setTimeout(() => this.setState({ loading: false }), 750);
                     this.clearField();
                 })
                 .catch(error => {
@@ -108,7 +107,7 @@ class App extends Component {
             .then(data => {
                 setTimeout(() => {
                     this.setState({ loading: false });
-                }, 1000);
+                }, 750);
             })
             .catch(error => console.error(error.message));
     };
@@ -147,6 +146,20 @@ class App extends Component {
                 this.getList();
             })
             .catch(error => console.error(error.message));
+    };
+
+    editOne = id => {
+        console.log("ID:", id);
+        fetch(`/api/edit/${id}`)
+            .then(res => res.json())
+            .then(data => {
+                console.log("Edit this:", data);
+                this.setState({
+                    langName: data.name,
+                    frameworkName: data.frameworks[0].name,
+                    edit: true
+                });
+            });
     };
 
     render() {
@@ -228,6 +241,7 @@ class App extends Component {
                             searchTerm={searchTerm}
                             sortAl={sortAl}
                             deleteOne={this.deleteOne}
+                            editOne={this.editOne}
                         />
                     ) : (
                         <h2>Loading...</h2>
