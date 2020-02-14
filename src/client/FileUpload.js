@@ -1,14 +1,16 @@
 import React from "react";
 
-const FileUpload = ({ handleChange, fileName }) => (
+const FileUpload = ({ handleChange, fileName, resetting }) => (
     <div className="file has-name m-b-30 is-dark">
         <label className="file-label">
-            <input
-                className="file-input"
-                type="file"
-                name="file"
-                onChange={handleChange}
-            />
+            {!resetting && (
+                <input
+                    className="file-input"
+                    type="file"
+                    name="file"
+                    onChange={handleChange}
+                />
+            )}
             <span className="file-cta">
                 <span className="file-icon">
                     <i className="fas fa-upload"></i>

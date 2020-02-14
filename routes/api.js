@@ -82,8 +82,25 @@ router.post("/add", (req, res) => {
                 for (let j = 0; j < targetArray[i].frameworks.length; j++) {
                     if (
                         targetArray[i].frameworks[j].name.toLowerCase() ===
-                        reqObj.frameworkName.toLowerCase()
+                            reqObj.frameworkName.toLowerCase() &&
+                        !reqObj.editing
                     ) {
+                        return targetArray;
+                    } else if (
+                        targetArray[i].frameworks[j].name.toLowerCase() ===
+                            reqObj.frameworkName.toLowerCase() &&
+                        reqObj.editing &&
+                        reqObj.fileName
+                    ) {
+                        const returnedObj = Object.assign(
+                            targetArray[i].frameworks[j],
+                            getFwObj(
+                                targetArray[i].frameworks[j].id,
+                                targetArray[i].frameworks[j].name,
+                                reqObj.fileName
+                            )
+                        );
+                        targetArray[i].frameworks[j] = returnedObj;
                         return targetArray;
                     }
                 }
@@ -152,20 +169,17 @@ router.delete("/delete", (req, res) => {
 });
 
 router.get("/edit/:id", (req, res) => {
-    console.log("EDIT:", req.params.id);
     fs.readFile(
         path.join(__dirname, "../data/programings.json"),
         (error, data) => {
             if (error) throw error;
             data = JSON.parse(data).slice();
-            console.log("d", data);
             const [lang] = data.map(lang => {
                 lang.frameworks = lang.frameworks.filter(fw => {
                     return fw.id.toString() === req.params.id;
                 });
                 return lang;
             });
-            console.log("returned lang", lang);
             res.json(lang);
         }
     );

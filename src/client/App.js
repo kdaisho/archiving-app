@@ -17,7 +17,9 @@ class App extends Component {
         errorMessage: "",
         file: {},
         sortAl: false,
-        loading: false
+        loading: false,
+        editing: false,
+        resetting: false
     };
 
     componentDidMount() {
@@ -52,7 +54,6 @@ class App extends Component {
     handleSubmit = event => {
         event.preventDefault();
         const ts = Date.now();
-        this.setState({ loading: true });
         const fileName = this.state.file.name
             ? `${ts}-${this.state.file.name}`
             : null;
@@ -60,7 +61,8 @@ class App extends Component {
             id: ts,
             langName: this.state.langName.trim(),
             frameworkName: this.state.frameworkName.trim(),
-            fileName
+            fileName,
+            editing: true
         };
         if (
             !this.getErrorMessage(
@@ -80,12 +82,14 @@ class App extends Component {
                 .then(data => {
                     if (
                         JSON.stringify(this.state.langList) !==
-                        JSON.stringify(data)
+                            JSON.stringify(data) &&
+                        this.state.file.name
                     ) {
-                        this.state.file.name && this.handleSubmitFile(fileName);
+                        this.handleSubmitFile(fileName);
+                        this.setState({ editing: false });
                     }
                     this.setState({ langList: data });
-                    setTimeout(() => this.setState({ loading: false }), 750);
+                    setTimeout(() => this.setState({ loading: false }), 1750);
                     this.clearField();
                 })
                 .catch(error => {
@@ -98,21 +102,25 @@ class App extends Component {
         const formData = new FormData();
         formData.append("file", this.state.file);
         formData.append("fileName", n);
-
+        this.setState({ loading: true });
         fetch("/api/upload", {
             method: "POST",
             body: formData
         })
             .then(res => res.json())
             .then(data => {
+                this.setState({ resetting: true }, () => {
+                    this.setState({ resetting: false });
+                });
                 setTimeout(() => {
                     this.setState({ loading: false });
-                }, 750);
+                }, 1750);
             })
             .catch(error => console.error(error.message));
     };
 
     getErrorMessage = (...names) => {
+        names = this.state.editing && names[2] ? names.slice(0, 2) : names;
         this.setState({ errorMessage: "" });
         if (names.filter(name => !name).length) {
             this.setState({
@@ -149,15 +157,13 @@ class App extends Component {
     };
 
     editOne = id => {
-        console.log("ID:", id);
         fetch(`/api/edit/${id}`)
             .then(res => res.json())
             .then(data => {
-                console.log("Edit this:", data);
                 this.setState({
                     langName: data.name,
                     frameworkName: data.frameworks[0].name,
-                    edit: true
+                    editing: true
                 });
             });
     };
@@ -194,17 +200,18 @@ class App extends Component {
                         <FileUpload
                             handleChange={this.handleChange}
                             fileName={this.state.file.name}
+                            resetting={this.state.resetting}
                         />
 
                         <button
                             className="button is-info is-fullwidth"
-                            onClick={event => {
+                            onClick={() =>
                                 this.getErrorMessage(
                                     this.state.langName,
                                     this.state.frameworkName,
                                     this.state.file.name
-                                ) && event.preventDefault();
-                            }}
+                                )
+                            }
                         >
                             Save
                         </button>
