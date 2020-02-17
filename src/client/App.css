@@ -54,3 +54,12 @@ thead th:last-child {
 .action-button-container .button {
     flex: 0 0 45%;
 }
+
+.modal.active {
+    display: block;
+}
+
+.modal-content {
+    top: 50%;
+    transform: translateY(-50%);
+}
