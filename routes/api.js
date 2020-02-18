@@ -70,8 +70,8 @@ router.post("/add", (req, res) => {
             return (obj = { id, name, frameworks: [] });
         };
 
-        const getFwObj = (id, name, filename) => {
-            return (obj = { id, name, filename });
+        const getFwObj = (id, name, filename, done) => {
+            return (obj = { id, name, filename, done });
         };
 
         for (let i = 0; i < targetArray.length; i++) {
@@ -97,7 +97,8 @@ router.post("/add", (req, res) => {
                             getFwObj(
                                 targetArray[i].frameworks[j].id,
                                 targetArray[i].frameworks[j].name,
-                                reqObj.fileName
+                                reqObj.fileName,
+                                reqObj.done
                             )
                         );
                         targetArray[i].frameworks[j] = returnedObj;
@@ -105,7 +106,12 @@ router.post("/add", (req, res) => {
                     }
                 }
                 targetArray[i].frameworks.push(
-                    getFwObj(reqObj.id, reqObj.frameworkName, reqObj.fileName)
+                    getFwObj(
+                        reqObj.id,
+                        reqObj.frameworkName,
+                        reqObj.fileName,
+                        reqObj.done
+                    )
                 );
                 return targetArray;
             }
@@ -114,7 +120,12 @@ router.post("/add", (req, res) => {
         const langObj = getLangObj(reqObj.id, reqObj.langName);
 
         langObj.frameworks.push(
-            getFwObj(reqObj.id, reqObj.frameworkName, reqObj.fileName)
+            getFwObj(
+                reqObj.id,
+                reqObj.frameworkName,
+                reqObj.fileName,
+                reqObj.done
+            )
         );
 
         targetArray.push(langObj);
@@ -169,18 +180,54 @@ router.delete("/delete", (req, res) => {
 });
 
 router.get("/edit/:id", (req, res) => {
+    let lang = {};
+    const returnFw = [];
     fs.readFile(
         path.join(__dirname, "../data/programings.json"),
         (error, data) => {
             if (error) throw error;
             data = JSON.parse(data).slice();
-            const [lang] = data.map(lang => {
-                lang.frameworks = lang.frameworks.filter(fw => {
-                    return fw.id.toString() === req.params.id;
+            data.forEach((l, i) => {
+                l.frameworks.forEach(fw => {
+                    if (fw.id.toString() === req.params.id) {
+                        lang = data[i];
+                        returnFw.push(fw);
+                        lang.frameworks = returnFw;
+                    }
                 });
-                return lang;
             });
             res.json(lang);
+        }
+    );
+});
+
+router.post("/edit/:id", (req, res) => {
+    fs.readFile(
+        path.join(__dirname, "../data/programings.json"),
+        (error, data) => {
+            if (error) throw error;
+            data = JSON.parse(data).slice();
+            data.forEach((l, i) => {
+                l.frameworks.forEach((fw, index) => {
+                    if (fw.id.toString() === req.params.id) {
+                        fw.name = req.body.frameworkName;
+                        fw.done = req.body.done;
+                        l.frameworks[index] = fw;
+                        data[i] = l;
+                    }
+                });
+            });
+
+            fs.writeFile(
+                path.join(__dirname, "../data/programings.json"),
+                JSON.stringify(data, null, 4),
+                error => {
+                    if (error) {
+                        throw error;
+                    }
+                    res.json(data);
+                }
+            );
         }
     );
 });

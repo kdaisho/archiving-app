@@ -57,12 +57,13 @@ class List extends Component {
                 </div>
                 <table className="table is-bordered is-striped">
                     <thead>
-                        <tr className="has-background-warning">
-                            <th>Index</th>
-                            <th>Language</th>
-                            <th>Framework</th>
-                            <th>Logo</th>
-                            <th>Action</th>
+                        <tr className="has-background-link">
+                            <th className="has-text-white">Index</th>
+                            <th className="has-text-white">Language</th>
+                            <th className="has-text-white">Framework</th>
+                            <th className="has-text-white">Logo</th>
+                            <th className="has-text-white">Done</th>
+                            <th className="has-text-white">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -107,6 +108,13 @@ class List extends Component {
                                                             alt={fw.name}
                                                         />
                                                     )}
+                                                </td>
+                                                <td>
+                                                    {fw.done ? (
+                                                        <span className="icon has-text-link">
+                                                            <i className="fas fa-check"></i>
+                                                        </span>
+                                                    ) : null}
                                                 </td>
                                                 <td>
                                                     <span className="action-button-container">

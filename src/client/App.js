@@ -5,6 +5,7 @@ import FrameworkInput from "./FrameworkInput";
 import LanguageInput from "./LanguageInput";
 import ErrorMessage from "./ErrorMessage";
 import FileUpload from "./FileUpload";
+import Done from "./Done";
 import "./App.css";
 
 class App extends Component {
@@ -19,7 +20,15 @@ class App extends Component {
         sortAl: false,
         loading: false,
         editing: false,
-        resetting: false
+        resetting: false,
+        done: false
+    };
+
+    temp = {
+        langName: "",
+        frameworkName: "",
+        done: false,
+        fwId: ""
     };
 
     componentDidMount() {
@@ -41,13 +50,20 @@ class App extends Component {
         this.setState({ [name]: files ? await files[0] : value });
     };
 
+    handleCheckbox = event => {
+        this.setState({ done: event.target.checked }, () =>
+            console.log("CHECKED", this.state.done)
+        );
+    };
+
     clearField = () => {
         this.setState({
             langName: "",
             frameworkName: "",
             file: {
                 name: ""
-            }
+            },
+            done: false
         });
     };
 
@@ -62,7 +78,8 @@ class App extends Component {
             langName: this.state.langName.trim(),
             frameworkName: this.state.frameworkName.trim(),
             fileName,
-            editing: true
+            editing: true,
+            done: this.state.done
         };
         if (
             !this.getErrorMessage(
@@ -157,15 +174,45 @@ class App extends Component {
     };
 
     editOne = id => {
+        this.temp.fwId = id;
         fetch(`/api/edit/${id}`)
             .then(res => res.json())
             .then(data => {
+                console.log("Editing:", data);
                 this.setState({
                     langName: data.name,
                     frameworkName: data.frameworks[0].name,
+                    done: data.frameworks[0].done,
                     editing: true
                 });
             });
+    };
+
+    saveEdit = event => {
+        event.preventDefault();
+        const id = this.temp.fwId;
+        const fn = this.state.fileName ? this.state.fileName : null;
+
+        const data = {
+            langName: this.state.langName.trim(),
+            frameworkName: this.state.frameworkName.trim(),
+            fileName: fn ? fileName : "",
+            done: this.state.done
+        };
+
+        fetch(`/api/edit/${id}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log("Saving:", data);
+                this.getList();
+            })
+            .catch(error => console.error(error.message));
     };
 
     render() {
@@ -175,14 +222,14 @@ class App extends Component {
             frameworkName,
             searchTerm,
             sortAl,
-            loading
+            loading,
+            done
         } = this.state;
-
         return (
             <div>
                 <div className="section">
                     <h1 className="title">Software Framework Archive</h1>
-                    <form onSubmit={this.handleSubmit}>
+                    <form>
                         <LanguageDropdown
                             langList={langList}
                             langName={this.state.langName}
@@ -196,6 +243,10 @@ class App extends Component {
                             handleChange={this.handleChange}
                             frameworkName={frameworkName}
                         />
+                        <Done
+                            done={done}
+                            handleCheckbox={this.handleCheckbox}
+                        />
                         <ErrorMessage errorMessage={this.state.errorMessage} />
                         <FileUpload
                             handleChange={this.handleChange}
@@ -203,18 +254,26 @@ class App extends Component {
                             resetting={this.state.resetting}
                         />
 
-                        <button
-                            className="button is-info is-fullwidth"
-                            onClick={() =>
-                                this.getErrorMessage(
-                                    this.state.langName,
-                                    this.state.frameworkName,
-                                    this.state.file.name
-                                )
-                            }
-                        >
-                            Save
-                        </button>
+                        {this.state.editing ? (
+                            <button
+                                className="button is-warning is-fullwidth"
+                                onClick={() =>
+                                    this.saveEdit(
+                                        event,
+                                        this.state.frameworkName
+                                    )
+                                }
+                            >
+                                Save Edit
+                            </button>
+                        ) : (
+                            <button
+                                className="button is-link is-fullwidth"
+                                onClick={() => this.handleSubmit(event)}
+                            >
+                                Save
+                            </button>
+                        )}
                     </form>
                 </div>
 

@@ -63,3 +63,7 @@ thead th:last-child {
     top: 50%;
     transform: translateY(-50%);
 }
+
+.field.is-checkbox {
+    display: inline-block;
+}
