@@ -150,7 +150,7 @@ router.delete("/delete", (req, res) => {
                 path.join(__dirname, `../dist/images/uploads/${image}`),
                 error => {
                     if (error) throw error;
-                    console.log("File successfully deleted!");
+                    console.log("File deleted!");
                 }
             );
 
@@ -212,6 +212,9 @@ router.post("/edit/:id", (req, res) => {
                     if (fw.id.toString() === req.params.id) {
                         fw.name = req.body.frameworkName;
                         fw.done = req.body.done;
+                        if (req.body.fileName) {
+                            fw.filename = req.body.fileName;
+                        }
                         l.frameworks[index] = fw;
                         data[i] = l;
                     }

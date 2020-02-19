@@ -1,6 +1,6 @@
 import React from "react";
 
-const LanguageInput = ({ handleChange, langName }) => (
+const LanguageInput = ({ handleChange, langName, inputDisabled }) => (
     <div className="field">
         <label className="label">Language</label>
         <div className="control">
@@ -11,6 +11,7 @@ const LanguageInput = ({ handleChange, langName }) => (
                 placeholder="Language Name"
                 onChange={handleChange}
                 value={langName}
+                disabled={inputDisabled}
             />
         </div>
     </div>

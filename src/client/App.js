@@ -21,7 +21,8 @@ class App extends Component {
         loading: false,
         editing: false,
         resetting: false,
-        done: false
+        done: false,
+        inputDisabled: false
     };
 
     temp = {
@@ -47,7 +48,9 @@ class App extends Component {
 
     handleChange = async event => {
         const { name, value, files } = event.target;
-        this.setState({ [name]: files ? await files[0] : value });
+        this.setState({ [name]: files ? await files[0] : value }, () =>
+            console.log("handleChange", this.state)
+        );
     };
 
     handleCheckbox = event => {
@@ -69,9 +72,8 @@ class App extends Component {
 
     handleSubmit = event => {
         event.preventDefault();
-        const ts = Date.now();
         const fileName = this.state.file.name
-            ? `${ts}-${this.state.file.name}`
+            ? `${Date.now()}-${this.state.file.name}`
             : null;
         const data = {
             id: ts,
@@ -183,7 +185,8 @@ class App extends Component {
                     langName: data.name,
                     frameworkName: data.frameworks[0].name,
                     done: data.frameworks[0].done,
-                    editing: true
+                    editing: true,
+                    inputDisabled: true
                 });
             });
     };
@@ -191,14 +194,20 @@ class App extends Component {
     saveEdit = event => {
         event.preventDefault();
         const id = this.temp.fwId;
-        const fn = this.state.fileName ? this.state.fileName : null;
+        const tsName = this.state.file.name
+            ? `${Date.now()}-${this.state.file.name}`
+            : null;
 
         const data = {
             langName: this.state.langName.trim(),
             frameworkName: this.state.frameworkName.trim(),
-            fileName: fn ? fileName : "",
             done: this.state.done
         };
+
+        if (tsName) {
+            data.fileName = tsName;
+            this.handleSubmitFile(tsName);
+        }
 
         fetch(`/api/edit/${id}`, {
             method: "POST",
@@ -210,48 +219,40 @@ class App extends Component {
             .then(res => res.json())
             .then(data => {
                 console.log("Saving:", data);
+                this.setState({ inputDisabled: false });
+                this.clearField();
                 this.getList();
             })
             .catch(error => console.error(error.message));
     };
 
     render() {
-        const {
-            langList,
-            langName,
-            frameworkName,
-            searchTerm,
-            sortAl,
-            loading,
-            done
-        } = this.state;
+        const { langList, searchTerm, sortAl, loading } = this.state;
         return (
             <div>
                 <div className="section">
                     <h1 className="title">Software Framework Archive</h1>
                     <form>
                         <LanguageDropdown
-                            langList={langList}
-                            langName={this.state.langName}
                             handleChange={this.handleChange}
+                            {...this.state}
                         />
                         <LanguageInput
                             handleChange={this.handleChange}
-                            langName={langName}
+                            {...this.state}
                         />
                         <FrameworkInput
                             handleChange={this.handleChange}
-                            frameworkName={frameworkName}
+                            frameworkName={this.state.frameworkName}
                         />
                         <Done
-                            done={done}
+                            done={this.state.done}
                             handleCheckbox={this.handleCheckbox}
                         />
                         <ErrorMessage errorMessage={this.state.errorMessage} />
                         <FileUpload
                             handleChange={this.handleChange}
-                            fileName={this.state.file.name}
-                            resetting={this.state.resetting}
+                            {...this.state}
                         />
 
                         {this.state.editing ? (
