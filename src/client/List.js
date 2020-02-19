@@ -61,9 +61,9 @@ class List extends Component {
                             <th className="has-text-white">Index</th>
                             <th className="has-text-white">Language</th>
                             <th className="has-text-white">Framework</th>
-                            <th className="has-text-white">Logo</th>
-                            <th className="has-text-white">Done</th>
-                            <th className="has-text-white">Action</th>
+                            <th className="has-text-white logo">Logo</th>
+                            <th className="has-text-white done">Done</th>
+                            <th className="has-text-white action">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -88,7 +88,7 @@ class List extends Component {
                                                 <td>{total}</td>
                                                 <td>{lang.name}</td>
                                                 <td>{fw.name}</td>
-                                                <td>
+                                                <td className="logo">
                                                     {loading ? (
                                                         "Loading..."
                                                     ) : (
@@ -109,14 +109,14 @@ class List extends Component {
                                                         />
                                                     )}
                                                 </td>
-                                                <td>
+                                                <td className="done">
                                                     {fw.done ? (
                                                         <span className="icon has-text-link">
                                                             <i className="fas fa-check"></i>
                                                         </span>
                                                     ) : null}
                                                 </td>
-                                                <td>
+                                                <td className="action">
                                                     <span className="action-button-container">
                                                         <button
                                                             className="button is-warning"

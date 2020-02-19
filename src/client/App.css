@@ -22,16 +22,35 @@
     width: 100%;
 }
 
-.table td {
-    vertical-align: middle;
-}
-
 thead th {
     color: #fff;
+    text-align: center;
 }
 
 thead th:last-child {
     width: 200px;
+}
+
+thead th.logo:not([align]),
+thead th.action:not([align]) {
+    text-align: center;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.table th:first-child,
+.table td:first-child,
+.table th.done,
+.table td.done {
+    text-align: center;
+    width: 5%;
+}
+
+.table td.logo,
+.table td.action {
+    text-align: center;
 }
 
 .is-search .field {
@@ -59,9 +78,20 @@ thead th:last-child {
     display: block;
 }
 
-.modal-content {
+.modal .modal-content {
     top: 50%;
     transform: translateY(-50%);
+    width: 100%;
+}
+
+.modal .modal-content img {
+    width: 100%;
+}
+
+@media (min-width: 769px) {
+    .modal .modal-content {
+        max-width: 1100px;
+    }
 }
 
 .field.is-checkbox {
