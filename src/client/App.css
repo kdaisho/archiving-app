@@ -126,7 +126,7 @@ nav.section {
     right: -600px;
     top: 0;
     width: 100%;
-    z-index: 200;
+    z-index: 30;
 }
 
 nav.section.active {
@@ -155,7 +155,7 @@ nav.section .knob:hover {
     left: 0;
     height: 100%;
     width: 100%;
-    z-index: 50;
+    z-index: 20;
 }
 
 .backdrop.active {
