@@ -7,8 +7,8 @@ const LanguageDropdown = ({
     inputDisabled
 }) => {
     return (
-        <div className="m-b-15">
-            <label className="label m-t-15">Language</label>
+        <div className="field">
+            <label className="label">Lang List</label>
             <div className="select">
                 <select
                     value={langName}
@@ -16,7 +16,7 @@ const LanguageDropdown = ({
                     onChange={handleChange}
                     disabled={inputDisabled}
                 >
-                    <option value="">-- Select Language --</option>
+                    <option value="">-- Select --</option>
                     {langList.map(lang => (
                         <option key={lang.id} value={lang.name}>
                             {lang.name}

@@ -22,7 +22,8 @@ class App extends Component {
         editing: false,
         resetting: false,
         done: false,
-        inputDisabled: false
+        inputDisabled: false,
+        navOpen: false
     };
 
     temp = {
@@ -59,7 +60,8 @@ class App extends Component {
         );
     };
 
-    clearField = () => {
+    clearField = event => {
+        event.preventDefault();
         this.setState({
             langName: "",
             frameworkName: "",
@@ -72,8 +74,9 @@ class App extends Component {
 
     handleSubmit = event => {
         event.preventDefault();
+        const ts = Date.now();
         const fileName = this.state.file.name
-            ? `${Date.now()}-${this.state.file.name}`
+            ? `${ts}-${this.state.file.name}`
             : null;
         const data = {
             id: ts,
@@ -107,9 +110,9 @@ class App extends Component {
                         this.handleSubmitFile(fileName);
                         this.setState({ editing: false });
                     }
-                    this.setState({ langList: data });
+                    this.setState({ langList: data, navOpen: false });
                     setTimeout(() => this.setState({ loading: false }), 1750);
-                    this.clearField();
+                    this.clearField(event);
                 })
                 .catch(error => {
                     throw error;
@@ -186,7 +189,8 @@ class App extends Component {
                     frameworkName: data.frameworks[0].name,
                     done: data.frameworks[0].done,
                     editing: true,
-                    inputDisabled: true
+                    inputDisabled: true,
+                    navOpen: true
                 });
             });
     };
@@ -220,18 +224,25 @@ class App extends Component {
             .then(data => {
                 console.log("Saving:", data);
                 this.setState({ inputDisabled: false });
-                this.clearField();
+                this.clearField(event);
                 this.getList();
             })
             .catch(error => console.error(error.message));
     };
 
+    toggleNav = () => {
+        this.setState({ navOpen: !this.state.navOpen });
+    };
+
     render() {
         const { langList, searchTerm, sortAl, loading } = this.state;
         return (
-            <div>
-                <div className="section">
-                    <h1 className="title">Software Framework Archive</h1>
+            <div className="section">
+                <h1 className="title">Software Framework Archive</h1>
+                <nav
+                    className={`section ${this.state.navOpen ? "active" : ""}`}
+                >
+                    <span className="knob" onClick={this.toggleNav}></span>
                     <form>
                         <LanguageDropdown
                             handleChange={this.handleChange}
@@ -249,11 +260,11 @@ class App extends Component {
                             done={this.state.done}
                             handleCheckbox={this.handleCheckbox}
                         />
-                        <ErrorMessage errorMessage={this.state.errorMessage} />
                         <FileUpload
                             handleChange={this.handleChange}
                             {...this.state}
                         />
+                        <ErrorMessage errorMessage={this.state.errorMessage} />
 
                         {this.state.editing ? (
                             <button
@@ -275,10 +286,16 @@ class App extends Component {
                                 Save
                             </button>
                         )}
+                        <button
+                            className="button m-t-15 is-danger is-fullwidth"
+                            onClick={() => this.clearField(event)}
+                        >
+                            Clear
+                        </button>
                     </form>
-                </div>
+                </nav>
 
-                <div className="section is-search">
+                <main className="section__ is-search">
                     <div className="field">
                         <label className="checkbox">
                             <input
@@ -313,7 +330,11 @@ class App extends Component {
                     ) : (
                         <h2>Loading...</h2>
                     )}
-                </div>
+                </main>
+                <div
+                    className={`backdrop ${this.state.navOpen ? "active" : ""}`}
+                    onClick={() => this.setState({ navOpen: false })}
+                ></div>
             </div>
         );
     }

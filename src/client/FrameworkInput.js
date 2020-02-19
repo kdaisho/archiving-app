@@ -1,7 +1,7 @@
 import React from "react";
 
 const FrameworkInput = ({ handleChange, frameworkName }) => (
-    <div className="field">
+    <div className="field is-framework">
         <label className="label">Framework</label>
         <div className="control">
             <input

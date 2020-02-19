@@ -1,12 +1,10 @@
 import React from "react";
 
 const ErrorMessage = ({ errorMessage }) => (
-    <div className="m-b-15">
+    <div className="error-msg m-b-15">
         {errorMessage ? (
             <p className="has-text-danger">{errorMessage}</p>
-        ) : (
-            <p>&nbsp;</p>
-        )}
+        ) : null}
     </div>
 );
 

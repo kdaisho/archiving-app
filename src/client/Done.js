@@ -1,7 +1,6 @@
 import React from "react";
 
 const Done = ({ handleCheckbox, done }) => {
-    console.log("done in DONE component:", done);
     return (
         <div className="field is-checkbox">
             <label className="label">

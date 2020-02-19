@@ -1,7 +1,7 @@
 import React from "react";
 
-const FileUpload = ({ handleChange, fileName, resetting }) => (
-    <div className="file has-name m-b-30 is-dark">
+const FileUpload = ({ handleChange, resetting, file }) => (
+    <div className="field file has-name m-b-30 is-dark">
         <label className="file-label">
             {!resetting && (
                 <input
@@ -17,7 +17,7 @@ const FileUpload = ({ handleChange, fileName, resetting }) => (
                 </span>
                 <span className="file-label">Upload Image</span>
             </span>
-            <span className="file-name">{fileName}</span>
+            <span className="file-name">{file.name}</span>
         </label>
     </div>
 );
