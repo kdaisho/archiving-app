@@ -68,7 +68,9 @@ class App extends Component {
             file: {
                 name: ""
             },
-            done: false
+            done: false,
+            editing: false,
+            inputDisabled: false
         });
     };
 
@@ -223,7 +225,7 @@ class App extends Component {
             .then(res => res.json())
             .then(data => {
                 console.log("Saving:", data);
-                this.setState({ inputDisabled: false });
+                this.setState({ inputDisabled: false, navOpen: false });
                 this.clearField(event);
                 this.getList();
             })
