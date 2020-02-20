@@ -7,6 +7,7 @@ const jimp = require("jimp");
 const storage = multer.memoryStorage();
 const upload = multer({ storage }).single("file");
 const router = express.Router();
+const { deleteFile } = require("../helpers");
 
 router.get("/getList", (req, res) => {
     fs.readFile(
@@ -146,13 +147,7 @@ router.delete("/delete", (req, res) => {
             });
             lang.frameworks = lang.frameworks.filter(fw => fw.name !== fwName);
 
-            fs.unlink(
-                path.join(__dirname, `../dist/images/uploads/${image}`),
-                error => {
-                    if (error) throw error;
-                    console.log("File deleted!");
-                }
-            );
+            deleteFile(image);
 
             fs.writeFile(
                 path.join(__dirname, "../data/programings.json"),
@@ -213,6 +208,7 @@ router.post("/edit/:id", (req, res) => {
                         fw.name = req.body.frameworkName;
                         fw.done = req.body.done;
                         if (req.body.fileName) {
+                            deleteFile(fw.filename);
                             fw.filename = req.body.fileName;
                         }
                         l.frameworks[index] = fw;
