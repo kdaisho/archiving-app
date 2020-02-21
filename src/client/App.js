@@ -23,18 +23,23 @@ class App extends Component {
         resetting: false,
         done: false,
         inputDisabled: false,
-        navOpen: false
+        navOpen: false,
+        keyPressed: {}
     };
 
     temp = {
-        langName: "",
-        frameworkName: "",
-        done: false,
         fwId: ""
     };
 
     componentDidMount() {
         this.getList();
+        window.addEventListener("keydown", this.handleKeyDown);
+        window.addEventListener("keyup", this.handleKeyUp);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("keydown", this.handleKeyDown);
+        window.removeEventListener("keyup", this.handleKeyUp);
     }
 
     getList = () => {
@@ -72,6 +77,14 @@ class App extends Component {
             editing: false,
             inputDisabled: false
         });
+    };
+
+    applySort = () => {
+        this.setState(() => ({ sortAl: !this.state.sortAl }));
+    };
+
+    toggleNav = () => {
+        this.setState({ navOpen: !this.state.navOpen });
     };
 
     handleSubmit = event => {
@@ -113,7 +126,6 @@ class App extends Component {
                         this.setState({ editing: false });
                     }
                     this.setState({ langList: data, navOpen: false });
-                    setTimeout(() => this.setState({ loading: false }), 1750);
                     this.clearField(event);
                 })
                 .catch(error => {
@@ -136,9 +148,9 @@ class App extends Component {
                 this.setState({ resetting: true }, () => {
                     this.setState({ resetting: false });
                 });
-                setTimeout(() => {
+                if (data) {
                     this.setState({ loading: false });
-                }, 1750);
+                }
             })
             .catch(error => console.error(error.message));
     };
@@ -152,10 +164,6 @@ class App extends Component {
             });
             return true;
         }
-    };
-
-    applySort = () => {
-        this.setState(() => ({ sortAl: !this.state.sortAl }));
     };
 
     deleteOne = (langName, fwName, image) => {
@@ -215,6 +223,9 @@ class App extends Component {
             this.handleSubmitFile(tsName);
         }
 
+        this.setState({ inputDisabled: false, navOpen: false });
+        this.clearField(event);
+
         fetch(`/api/edit/${id}`, {
             method: "POST",
             headers: {
@@ -224,16 +235,25 @@ class App extends Component {
         })
             .then(res => res.json())
             .then(data => {
-                console.log("Saving:", data);
-                this.setState({ inputDisabled: false, navOpen: false });
-                this.clearField(event);
                 this.getList();
             })
             .catch(error => console.error(error.message));
     };
 
-    toggleNav = () => {
-        this.setState({ navOpen: !this.state.navOpen });
+    handleKeyDown = event => {
+        if (event.key === "Alt") {
+            const alt = { [event.key]: event.key };
+            alt[event.key] = event.key;
+            this.setState({ keyPressed: alt });
+        }
+        if (this.state.keyPressed["Alt"] && event.key === "Shift") {
+            this.setState({ navOpen: !this.state.navOpen });
+            document.getElementById("langInput").focus();
+        }
+    };
+
+    handleKeyUp = () => {
+        this.setState({ keyPressed: {} });
     };
 
     render() {
@@ -267,7 +287,6 @@ class App extends Component {
                             {...this.state}
                         />
                         <ErrorMessage errorMessage={this.state.errorMessage} />
-
                         {this.state.editing ? (
                             <button
                                 className="button is-warning is-fullwidth"
@@ -297,7 +316,7 @@ class App extends Component {
                     </form>
                 </nav>
 
-                <main className="section__ is-search">
+                <main className="is-search">
                     <div className="field">
                         <label className="checkbox">
                             <input

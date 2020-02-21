@@ -5,6 +5,7 @@ const LanguageInput = ({ handleChange, langName, inputDisabled }) => (
         <label className="label">Language</label>
         <div className="control">
             <input
+                id="langInput"
                 className="input"
                 type="text"
                 name="langName"

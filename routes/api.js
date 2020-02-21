@@ -36,12 +36,14 @@ router.post("/upload", (req, res) => {
                     .write(
                         `${path.join(__dirname, "../dist/images/uploads/")}${
                             req.body.fileName
-                        }`
+                        }`,
+                        (error, response) => {
+                            if (error) throw error;
+                            res.status(200).send(req.file);
+                        }
                     );
             })
             .catch(error => console.error(error));
-
-        return res.status(200).send(req.file);
     });
 });
 
