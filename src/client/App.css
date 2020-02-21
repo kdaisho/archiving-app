@@ -125,12 +125,14 @@ nav.section {
     position: fixed;
     right: -600px;
     top: 0;
+    transition: right 0.2s ease-out;
     width: 100%;
     z-index: 30;
 }
 
 nav.section.active {
     right: 0;
+    transition: right 0.2s ease-out;
 }
 
 nav.section .knob {
@@ -148,16 +150,20 @@ nav.section .knob:hover {
 }
 
 .backdrop {
-    display: none;
     background: rgba(0, 0, 0, 0.5);
-    position: fixed;
-    top: 0;
     left: 0;
     height: 100%;
+    opacity: 0;
+    pointer-events: none;
+    position: fixed;
+    top: 0;
     width: 100%;
     z-index: 20;
+    transition: opacity 0.5s;
 }
 
 .backdrop.active {
-    display: block;
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.5s;
 }

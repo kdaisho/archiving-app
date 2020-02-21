@@ -24,11 +24,8 @@ class App extends Component {
         done: false,
         inputDisabled: false,
         navOpen: false,
-        keyPressed: {}
-    };
-
-    temp = {
-        fwId: ""
+        keyPressed: {},
+        editTargetId: ""
     };
 
     componentDidMount() {
@@ -54,9 +51,7 @@ class App extends Component {
 
     handleChange = async event => {
         const { name, value, files } = event.target;
-        this.setState({ [name]: files ? await files[0] : value }, () =>
-            console.log("handleChange", this.state)
-        );
+        this.setState({ [name]: files ? await files[0] : value });
     };
 
     handleCheckbox = event => {
@@ -75,7 +70,8 @@ class App extends Component {
             },
             done: false,
             editing: false,
-            inputDisabled: false
+            inputDisabled: false,
+            editTargetId: ""
         });
     };
 
@@ -189,7 +185,6 @@ class App extends Component {
     };
 
     editOne = id => {
-        this.temp.fwId = id;
         fetch(`/api/edit/${id}`)
             .then(res => res.json())
             .then(data => {
@@ -200,14 +195,14 @@ class App extends Component {
                     done: data.frameworks[0].done,
                     editing: true,
                     inputDisabled: true,
-                    navOpen: true
+                    navOpen: true,
+                    editTargetId: id
                 });
             });
     };
 
     saveEdit = event => {
         event.preventDefault();
-        const id = this.temp.fwId;
         const tsName = this.state.file.name
             ? `${Date.now()}-${this.state.file.name}`
             : null;
@@ -226,7 +221,7 @@ class App extends Component {
         this.setState({ inputDisabled: false, navOpen: false });
         this.clearField(event);
 
-        fetch(`/api/edit/${id}`, {
+        fetch(`/api/edit/${this.state.editTargetId}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -235,6 +230,7 @@ class App extends Component {
         })
             .then(res => res.json())
             .then(data => {
+                this.setState({ editTargetId: "" });
                 this.getList();
             })
             .catch(error => console.error(error.message));
