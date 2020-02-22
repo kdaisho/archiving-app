@@ -1,16 +1,16 @@
 import React from "react";
 
-const SubcategoryInput = ({ handleChange, frameworkName }) => (
-    <div className="field is-framework">
-        <label className="label">Framework</label>
+const SubcategoryInput = ({ handleChange, subcategory }) => (
+    <div className="field">
+        <label className="label">Subcategory</label>
         <div className="control">
             <input
                 className="input"
                 type="text"
-                name="frameworkName"
-                placeholder="Framework Name"
+                name="subcategory"
+                placeholder="Subcategory name"
                 onChange={handleChange}
-                value={frameworkName}
+                value={subcategory}
             />
         </div>
     </div>

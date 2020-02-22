@@ -56,9 +56,7 @@ class App extends Component {
     };
 
     handleCheckbox = event => {
-        this.setState({ status: event.target.checked }, () =>
-            console.log("CHECKED", this.state.status)
-        );
+        this.setState({ status: event.target.checked });
     };
 
     clearField = event => {

@@ -78,18 +78,18 @@ class List extends Component {
                             .map(category =>
                                 category.subcategories
                                     .filter(
-                                        fw =>
-                                            `${fw.name}`
+                                        subcat =>
+                                            `${subcat.name}`
                                                 .toLowerCase()
                                                 .indexOf(searchTerm) >= 0
                                     )
-                                    .map(fw => {
+                                    .map(subcat => {
                                         total += 1;
                                         return (
-                                            <tr key={fw.id}>
+                                            <tr key={subcat.id}>
                                                 <td>{total}</td>
                                                 <td>{category.name}</td>
-                                                <td>{fw.name}</td>
+                                                <td>{subcat.name}</td>
                                                 <td className="thumbnail">
                                                     {loading ? (
                                                         "Loading..."
@@ -98,7 +98,7 @@ class List extends Component {
                                                             className="subcategory-img"
                                                             onClick={() =>
                                                                 this.handleDisplayImage(
-                                                                    fw.filename
+                                                                    subcat.filename
                                                                 )
                                                             }
                                                             src={`${
@@ -106,13 +106,15 @@ class List extends Component {
                                                                 "3000"
                                                                     ? filePathDev
                                                                     : filePathProd
-                                                            }${fw.filename}`}
-                                                            alt={fw.name}
+                                                            }${
+                                                                subcat.filename
+                                                            }`}
+                                                            alt={subcat.name}
                                                         />
                                                     )}
                                                 </td>
                                                 <td className="status">
-                                                    {fw.status ? (
+                                                    {subcat.status ? (
                                                         <span className="icon has-text-link">
                                                             <i className="fas fa-check"></i>
                                                         </span>
@@ -123,7 +125,9 @@ class List extends Component {
                                                         <button
                                                             className="button is-warning"
                                                             onClick={() =>
-                                                                editOne(fw.id)
+                                                                editOne(
+                                                                    subcat.id
+                                                                )
                                                             }
                                                         >
                                                             Edit
@@ -133,8 +137,8 @@ class List extends Component {
                                                             onClick={() =>
                                                                 deleteOne(
                                                                     category.name,
-                                                                    fw.name,
-                                                                    fw.filename
+                                                                    subcat.name,
+                                                                    subcat.filename
                                                                 )
                                                             }
                                                         >

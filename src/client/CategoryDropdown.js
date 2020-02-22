@@ -8,7 +8,7 @@ const CategoryDropdown = ({
 }) => {
     return (
         <div className="field">
-            <label className="label">Lang List</label>
+            <label className="label">Category List</label>
             <div className="select">
                 <select
                     value={category}
@@ -17,9 +17,9 @@ const CategoryDropdown = ({
                     disabled={inputDisabled}
                 >
                     <option value="">-- Select --</option>
-                    {categoryList.map(lang => (
-                        <option key={lang.id} value={lang.name}>
-                            {lang.name}
+                    {categoryList.map(cat => (
+                        <option key={cat.id} value={cat.name}>
+                            {cat.name}
                         </option>
                     ))}
                 </select>
