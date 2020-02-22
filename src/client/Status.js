@@ -1,16 +1,16 @@
 import React from "react";
 
-const Done = ({ handleCheckbox, done }) => {
+const Status = ({ handleCheckbox, status }) => {
     return (
         <div className="field is-checkbox">
             <label className="label">
-                Done
+                Status
                 <div className="control">
                     <input
                         className="checkbox"
                         type="checkbox"
-                        name="done"
-                        checked={done}
+                        name="status"
+                        checked={status}
                         onChange={handleCheckbox}
                     />
                 </div>
@@ -19,4 +19,4 @@ const Done = ({ handleCheckbox, done }) => {
     );
 };
 
-export default Done;
+export default Status;

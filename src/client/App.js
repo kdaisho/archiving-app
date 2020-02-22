@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import List from "./List";
-import LanguageDropdown from "./LanguageDropdown";
-import FrameworkInput from "./FrameworkInput";
-import LanguageInput from "./LanguageInput";
+import CategoryDropdown from "./CategoryDropdown";
+import CategoryInput from "./CategoryInput";
+import SubcategoryInput from "./SubcategoryInput";
 import ErrorMessage from "./ErrorMessage";
 import FileUpload from "./FileUpload";
-import Done from "./Done";
+import Status from "./Status";
 import "./App.css";
 
 class App extends Component {
@@ -20,7 +20,7 @@ class App extends Component {
         loading: false,
         editing: false,
         resetting: false,
-        done: false,
+        status: false,
         inputDisabled: false,
         navOpen: false,
         keyPressed: {},
@@ -41,7 +41,9 @@ class App extends Component {
     getList = () => {
         fetch("/api/getList")
             .then(res => res.json())
-            .then(data => this.setState({ categoryList: data }));
+            .then(data => {
+                this.setState({ categoryList: data });
+            });
     };
 
     handleSearch = event => {
@@ -54,8 +56,8 @@ class App extends Component {
     };
 
     handleCheckbox = event => {
-        this.setState({ done: event.target.checked }, () =>
-            console.log("CHECKED", this.state.done)
+        this.setState({ status: event.target.checked }, () =>
+            console.log("CHECKED", this.state.status)
         );
     };
 
@@ -67,7 +69,7 @@ class App extends Component {
             file: {
                 name: ""
             },
-            done: false,
+            status: false,
             editing: false,
             inputDisabled: false,
             editTargetId: ""
@@ -94,7 +96,7 @@ class App extends Component {
             subcategory: this.state.subcategory.trim(),
             fileName,
             editing: true,
-            done: this.state.done
+            status: this.state.status
         };
         if (
             !this.getErrorMessage(
@@ -155,16 +157,17 @@ class App extends Component {
         this.setState({ errorMessage: "" });
         if (names.filter(name => !name).length) {
             this.setState({
-                errorMessage: "Language, framework and image are required."
+                errorMessage:
+                    "Category name, subcategory name and image are required."
             });
             return true;
         }
     };
 
-    deleteOne = (category, fwName, image) => {
+    deleteOne = (category, subcatName, image) => {
         const data = {
             category,
-            fwName,
+            subcatName,
             image
         };
 
@@ -190,8 +193,8 @@ class App extends Component {
                 console.log("Editing:", data);
                 this.setState({
                     category: data.name,
-                    subcategory: data.frameworks[0].name,
-                    done: data.frameworks[0].done,
+                    subcategory: data.subcategories[0].name,
+                    status: data.subcategories[0].status,
                     editing: true,
                     inputDisabled: true,
                     navOpen: true,
@@ -209,7 +212,7 @@ class App extends Component {
         const data = {
             category: this.state.category.trim(),
             subcategory: this.state.subcategory.trim(),
-            done: this.state.done
+            status: this.state.status
         };
 
         if (tsName) {
@@ -243,7 +246,7 @@ class App extends Component {
         }
         if (this.state.keyPressed["Alt"] && event.key === "Shift") {
             this.setState({ navOpen: !this.state.navOpen });
-            document.getElementById("langInput").focus();
+            document.getElementById("categoryInput").focus();
         }
     };
 
@@ -255,26 +258,26 @@ class App extends Component {
         const { categoryList, searchTerm, sortAl, loading } = this.state;
         return (
             <div className="section">
-                <h1 className="title">Software Framework Archive</h1>
+                <h1 className="title">(Application name)</h1>
                 <nav
                     className={`section ${this.state.navOpen ? "active" : ""}`}
                 >
                     <span className="knob" onClick={this.toggleNav}></span>
                     <form>
-                        <LanguageDropdown
+                        <CategoryDropdown
                             handleChange={this.handleChange}
                             {...this.state}
                         />
-                        <LanguageInput
+                        <CategoryInput
                             handleChange={this.handleChange}
                             {...this.state}
                         />
-                        <FrameworkInput
+                        <SubcategoryInput
                             handleChange={this.handleChange}
                             subcategory={this.state.subcategory}
                         />
-                        <Done
-                            done={this.state.done}
+                        <Status
+                            status={this.state.status}
                             handleCheckbox={this.handleCheckbox}
                         />
                         <FileUpload
@@ -320,7 +323,7 @@ class App extends Component {
                         </label>
                     </div>
                     <div className="field">
-                        <label className="label">Search Framework</label>
+                        <label className="label">Search Subcategories</label>
                         <div className="control">
                             <input
                                 className="input"

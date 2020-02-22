@@ -1,6 +1,6 @@
 import React from "react";
 
-const FrameworkInput = ({ handleChange, frameworkName }) => (
+const SubcategoryInput = ({ handleChange, frameworkName }) => (
     <div className="field is-framework">
         <label className="label">Framework</label>
         <div className="control">
@@ -16,4 +16,4 @@ const FrameworkInput = ({ handleChange, frameworkName }) => (
     </div>
 );
 
-export default FrameworkInput;
+export default SubcategoryInput;

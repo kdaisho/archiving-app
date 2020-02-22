@@ -2,30 +2,30 @@
     {
         "id": 1582077477581,
         "name": "Document screenshot fullsize background white",
-        "frameworks": [
+        "subcategories": [
             {
                 "id": 1582077477581,
-                "name": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio.",
+                "name": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. statusc odio.",
                 "filename": "1582164323026-pixel_office.png",
-                "done": true
+                "status": true
             }
         ]
     },
     {
         "id": 1582165182388,
         "name": "JavaScript",
-        "frameworks": [
+        "subcategories": [
             {
                 "id": 1582165182388,
                 "name": "Angular",
                 "filename": "1582165182388-angular.png",
-                "done": true
+                "status": true
             },
             {
                 "id": 1582165534190,
                 "name": "Vue",
                 "filename": "1582165534190-vue.png",
-                "done": true
+                "status": true
             }
         ]
     }

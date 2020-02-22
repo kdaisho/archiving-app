@@ -1,6 +1,6 @@
 import React from "react";
 
-const LanguageDropdown = ({
+const CategoryDropdown = ({
     category,
     handleChange,
     categoryList,
@@ -28,4 +28,4 @@ const LanguageDropdown = ({
     );
 };
 
-export default LanguageDropdown;
+export default CategoryDropdown;

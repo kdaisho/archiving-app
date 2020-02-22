@@ -59,10 +59,12 @@ class List extends Component {
                     <thead>
                         <tr className="has-background-link">
                             <th className="has-text-white">Index</th>
-                            <th className="has-text-white">Language</th>
-                            <th className="has-text-white">Framework</th>
-                            <th className="has-text-white logo">Logo</th>
-                            <th className="has-text-white done">Done</th>
+                            <th className="has-text-white">Category</th>
+                            <th className="has-text-white">Subcategory</th>
+                            <th className="has-text-white thumbnail">
+                                Thumbnail
+                            </th>
+                            <th className="has-text-white status">Status</th>
                             <th className="has-text-white action">Action</th>
                         </tr>
                     </thead>
@@ -73,8 +75,8 @@ class List extends Component {
                                     ? a.name.localeCompare(b.name)
                                     : a.id - b.id;
                             })
-                            .map(lang =>
-                                lang.frameworks
+                            .map(category =>
+                                category.subcategories
                                     .filter(
                                         fw =>
                                             `${fw.name}`
@@ -86,14 +88,14 @@ class List extends Component {
                                         return (
                                             <tr key={fw.id}>
                                                 <td>{total}</td>
-                                                <td>{lang.name}</td>
+                                                <td>{category.name}</td>
                                                 <td>{fw.name}</td>
-                                                <td className="logo">
+                                                <td className="thumbnail">
                                                     {loading ? (
                                                         "Loading..."
                                                     ) : (
                                                         <img
-                                                            className="framework-logo"
+                                                            className="subcategory-img"
                                                             onClick={() =>
                                                                 this.handleDisplayImage(
                                                                     fw.filename
@@ -109,8 +111,8 @@ class List extends Component {
                                                         />
                                                     )}
                                                 </td>
-                                                <td className="done">
-                                                    {fw.done ? (
+                                                <td className="status">
+                                                    {fw.status ? (
                                                         <span className="icon has-text-link">
                                                             <i className="fas fa-check"></i>
                                                         </span>
@@ -130,7 +132,7 @@ class List extends Component {
                                                             className="button is-danger"
                                                             onClick={() =>
                                                                 deleteOne(
-                                                                    lang.name,
+                                                                    category.name,
                                                                     fw.name,
                                                                     fw.filename
                                                                 )

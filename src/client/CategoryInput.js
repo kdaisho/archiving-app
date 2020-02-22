@@ -1,11 +1,11 @@
 import React from "react";
 
-const LanguageInput = ({ handleChange, category, inputDisabled }) => (
+const CategoryInput = ({ handleChange, category, inputDisabled }) => (
     <div className="field">
         <label className="label">Language</label>
         <div className="control">
             <input
-                id="langInput"
+                id="categoryInput"
                 className="input"
                 type="text"
                 name="category"
@@ -18,4 +18,4 @@ const LanguageInput = ({ handleChange, category, inputDisabled }) => (
     </div>
 );
 
-export default LanguageInput;
+export default CategoryInput;

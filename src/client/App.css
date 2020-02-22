@@ -10,11 +10,11 @@
     margin-bottom: 30px;
 }
 
-.framework-logo {
+.subcategory-img {
     height: 40px;
 }
 
-.framework-logo:hover {
+.subcategory-img:hover {
     cursor: pointer;
 }
 
@@ -31,7 +31,7 @@ thead th:last-child {
     width: 200px;
 }
 
-thead th.logo:not([align]),
+thead th.thumbnail:not([align]),
 thead th.action:not([align]) {
     text-align: center;
 }
@@ -42,13 +42,13 @@ thead th.action:not([align]) {
 
 .table th:first-child,
 .table td:first-child,
-.table th.done,
-.table td.done {
+.table th.status,
+.table td.status {
     text-align: center;
     width: 5%;
 }
 
-.table td.logo,
+.table td.thumbnail,
 .table td.action {
     text-align: center;
 }
