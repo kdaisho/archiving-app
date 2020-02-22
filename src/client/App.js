@@ -10,10 +10,9 @@ import "./App.css";
 
 class App extends Component {
     state = {
-        langList: [],
-        langName: "",
-        frameworkList: [],
-        frameworkName: "",
+        categoryList: [],
+        category: "",
+        subcategory: "",
         searchTerm: "",
         errorMessage: "",
         file: {},
@@ -42,7 +41,7 @@ class App extends Component {
     getList = () => {
         fetch("/api/getList")
             .then(res => res.json())
-            .then(data => this.setState({ langList: data }));
+            .then(data => this.setState({ categoryList: data }));
     };
 
     handleSearch = event => {
@@ -63,8 +62,8 @@ class App extends Component {
     clearField = event => {
         event.preventDefault();
         this.setState({
-            langName: "",
-            frameworkName: "",
+            category: "",
+            subcategory: "",
             file: {
                 name: ""
             },
@@ -91,16 +90,16 @@ class App extends Component {
             : null;
         const data = {
             id: ts,
-            langName: this.state.langName.trim(),
-            frameworkName: this.state.frameworkName.trim(),
+            category: this.state.category.trim(),
+            subcategory: this.state.subcategory.trim(),
             fileName,
             editing: true,
             done: this.state.done
         };
         if (
             !this.getErrorMessage(
-                this.state.langName,
-                this.state.frameworkName,
+                this.state.category,
+                this.state.subcategory,
                 fileName
             )
         ) {
@@ -114,14 +113,14 @@ class App extends Component {
                 .then(res => res.json())
                 .then(data => {
                     if (
-                        JSON.stringify(this.state.langList) !==
+                        JSON.stringify(this.state.categoryList) !==
                             JSON.stringify(data) &&
                         this.state.file.name
                     ) {
                         this.handleSubmitFile(fileName);
                         this.setState({ editing: false });
                     }
-                    this.setState({ langList: data, navOpen: false });
+                    this.setState({ categoryList: data, navOpen: false });
                     this.clearField(event);
                 })
                 .catch(error => {
@@ -162,9 +161,9 @@ class App extends Component {
         }
     };
 
-    deleteOne = (langName, fwName, image) => {
+    deleteOne = (category, fwName, image) => {
         const data = {
-            langName,
+            category,
             fwName,
             image
         };
@@ -190,8 +189,8 @@ class App extends Component {
             .then(data => {
                 console.log("Editing:", data);
                 this.setState({
-                    langName: data.name,
-                    frameworkName: data.frameworks[0].name,
+                    category: data.name,
+                    subcategory: data.frameworks[0].name,
                     done: data.frameworks[0].done,
                     editing: true,
                     inputDisabled: true,
@@ -208,8 +207,8 @@ class App extends Component {
             : null;
 
         const data = {
-            langName: this.state.langName.trim(),
-            frameworkName: this.state.frameworkName.trim(),
+            category: this.state.category.trim(),
+            subcategory: this.state.subcategory.trim(),
             done: this.state.done
         };
 
@@ -253,7 +252,7 @@ class App extends Component {
     };
 
     render() {
-        const { langList, searchTerm, sortAl, loading } = this.state;
+        const { categoryList, searchTerm, sortAl, loading } = this.state;
         return (
             <div className="section">
                 <h1 className="title">Software Framework Archive</h1>
@@ -272,7 +271,7 @@ class App extends Component {
                         />
                         <FrameworkInput
                             handleChange={this.handleChange}
-                            frameworkName={this.state.frameworkName}
+                            subcategory={this.state.subcategory}
                         />
                         <Done
                             done={this.state.done}
@@ -287,10 +286,7 @@ class App extends Component {
                             <button
                                 className="button is-warning is-fullwidth"
                                 onClick={() =>
-                                    this.saveEdit(
-                                        event,
-                                        this.state.frameworkName
-                                    )
+                                    this.saveEdit(event, this.state.subcategory)
                                 }
                             >
                                 Save Edit
@@ -335,10 +331,10 @@ class App extends Component {
                         </div>
                     </div>
 
-                    {langList ? (
+                    {categoryList ? (
                         <List
                             loading={loading}
-                            langList={langList}
+                            categoryList={categoryList}
                             searchTerm={searchTerm}
                             sortAl={sortAl}
                             deleteOne={this.deleteOne}

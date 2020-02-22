@@ -15,7 +15,7 @@ class List extends Component {
 
     render() {
         const {
-            langList,
+            categoryList,
             searchTerm,
             sortAl,
             loading,
@@ -67,7 +67,7 @@ class List extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {langList
+                        {categoryList
                             .sort((a, b) => {
                                 return sortAl
                                     ? a.name.localeCompare(b.name)

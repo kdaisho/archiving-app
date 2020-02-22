@@ -1,9 +1,9 @@
 import React from "react";
 
 const LanguageDropdown = ({
-    langName,
+    category,
     handleChange,
-    langList,
+    categoryList,
     inputDisabled
 }) => {
     return (
@@ -11,13 +11,13 @@ const LanguageDropdown = ({
             <label className="label">Lang List</label>
             <div className="select">
                 <select
-                    value={langName}
-                    name="langName"
+                    value={category}
+                    name="category"
                     onChange={handleChange}
                     disabled={inputDisabled}
                 >
                     <option value="">-- Select --</option>
-                    {langList.map(lang => (
+                    {categoryList.map(lang => (
                         <option key={lang.id} value={lang.name}>
                             {lang.name}
                         </option>
