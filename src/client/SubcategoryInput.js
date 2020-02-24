@@ -1,14 +1,14 @@
 import React from "react";
 
-const SubcategoryInput = ({ handleChange, subcategory }) => (
+const SubcategoryInput = ({ currentApp, handleChange, subcategory }) => (
     <div className="field">
-        <label className="label">Subcategory</label>
+        <label className="label">{currentApp.subcategory}</label>
         <div className="control">
             <input
                 className="input"
                 type="text"
                 name="subcategory"
-                placeholder="Subcategory name"
+                placeholder={currentApp.subcategory}
                 onChange={handleChange}
                 value={subcategory}
             />

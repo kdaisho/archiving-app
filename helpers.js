@@ -1,11 +1,11 @@
 const fs = require("fs");
 const path = require("path");
 
-const deleteFile = file => {
-    const filePath = path.join(__dirname, "./dist/images/uploads/");
+const deleteFile = (appId, file) => {
+    const filePath = path.join(__dirname, `./dist/images/uploads/${appId}/`);
     if (fs.existsSync(filePath + file)) {
         fs.unlink(
-            path.join(__dirname, `./dist/images/uploads/${file}`),
+            path.join(__dirname, `./dist/images/uploads/${appId}/${file}`),
             error => {
                 if (error) throw error;
                 console.log(`${file} deleted!`);

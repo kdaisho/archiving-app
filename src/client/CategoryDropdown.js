@@ -1,6 +1,7 @@
 import React from "react";
 
 const CategoryDropdown = ({
+    currentApp,
     category,
     handleChange,
     categoryList,
@@ -8,7 +9,7 @@ const CategoryDropdown = ({
 }) => {
     return (
         <div className="field">
-            <label className="label">Category List</label>
+            <label className="label">{currentApp.category} List</label>
             <div className="select">
                 <select
                     value={category}

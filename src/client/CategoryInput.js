@@ -1,15 +1,20 @@
 import React from "react";
 
-const CategoryInput = ({ handleChange, category, inputDisabled }) => (
+const CategoryInput = ({
+    currentApp,
+    handleChange,
+    category,
+    inputDisabled
+}) => (
     <div className="field">
-        <label className="label">Category</label>
+        <label className="label">{currentApp.category}</label>
         <div className="control">
             <input
                 id="categoryInput"
                 className="input"
                 type="text"
                 name="category"
-                placeholder="Category name"
+                placeholder={currentApp.category}
                 onChange={handleChange}
                 value={category}
                 disabled={inputDisabled}

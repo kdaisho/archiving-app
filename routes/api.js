@@ -9,15 +9,24 @@ const upload = multer({ storage }).single("file");
 const router = express.Router();
 const { deleteFile } = require("../helpers");
 
-router.get("/getList", (req, res) => {
+router.get(`/getList/:appId`, (req, res) => {
     fs.readFile(
-        path.join(__dirname, "../data/programings.json"),
-        (error, data) => {
+        // path.join(__dirname, `../data/${req.body.appId}.json`),
+        path.join(__dirname, `../data/${req.params.appId}.json`),
+        (error, buffer) => {
             if (error) throw error;
-            data = JSON.parse(data);
+            const data = buffer.length ? JSON.parse(buffer) : initDataFile();
             res.send(data);
         }
     );
+
+    function initDataFile() {
+        fs.writeFileSync(
+            path.join(__dirname, `../data/${req.body.appId}.json`),
+            "[]"
+        );
+        return [];
+    }
 });
 
 router.post("/upload", (req, res) => {
@@ -34,9 +43,10 @@ router.post("/upload", (req, res) => {
                     .resize(width, jimp.AUTO)
                     .quality(70)
                     .write(
-                        `${path.join(__dirname, "../dist/images/uploads/")}${
-                            req.body.fileName
-                        }`,
+                        `${path.join(
+                            __dirname,
+                            `../dist/images/uploads/${req.body.appId}/`
+                        )}${req.body.fileName}`,
                         (error, response) => {
                             if (error) throw error;
                             res.status(200).send(req.file);
@@ -50,20 +60,20 @@ router.post("/upload", (req, res) => {
 router.post("/add", (req, res) => {
     const data = getResolvedData(
         JSON.parse(
-            fs.readFileSync(path.join(__dirname, "../data/programings.json"))
+            fs.readFileSync(
+                path.join(__dirname, `../data/${req.body.appId}.json`)
+            )
         ),
         req.body
     );
 
     fs.writeFile(
-        path.join(__dirname, "../data/programings.json"),
+        path.join(__dirname, `../data/${req.body.appId}.json`),
         JSON.stringify(data, null, 4),
         error => {
             if (error) {
                 throw error;
             }
-
-            console.log("New category added!", data);
             res.json(data, null, 4);
         }
     );
@@ -137,24 +147,23 @@ router.post("/add", (req, res) => {
 });
 
 router.delete("/delete", (req, res) => {
-    const { category, subcategory, image } = req.body;
-
+    const { appId, category, subcategory, image } = req.body;
     fs.readFile(
-        path.join(__dirname, "../data/programings.json"),
+        path.join(__dirname, `../data/${appId}.json`),
         (error, data) => {
             if (error) throw error;
             data = JSON.parse(data).slice();
             const [cat] = data.filter(cat => {
                 return cat.name === category;
             });
-            cat.subcategories = cat.subcategories.filter(
-                subcat => subcat.name !== subcategory
-            );
+            cat.subcategories = cat.subcategories.filter(subcat => {
+                subcat.name !== subcategory;
+            });
 
-            deleteFile(image);
+            deleteFile(appId, image);
 
             fs.writeFile(
-                path.join(__dirname, "../data/programings.json"),
+                path.join(__dirname, `../data/${appId}.json`),
                 JSON.stringify(
                     removeCategoryWithNoSubcategory(data, cat),
                     null,
@@ -182,11 +191,11 @@ router.delete("/delete", (req, res) => {
     }
 });
 
-router.get("/edit/:id", (req, res) => {
+router.get("/edit/:appId/:id", (req, res) => {
     let category = {};
     const returnSubcat = [];
     fs.readFile(
-        path.join(__dirname, "../data/programings.json"),
+        path.join(__dirname, `../data/${req.params.appId}.json`),
         (error, data) => {
             if (error) throw error;
             data = JSON.parse(data).slice();
@@ -206,7 +215,7 @@ router.get("/edit/:id", (req, res) => {
 
 router.post("/edit/:id", (req, res) => {
     fs.readFile(
-        path.join(__dirname, "../data/programings.json"),
+        path.join(__dirname, `../data/${req.body.appId}.json`),
         (error, data) => {
             if (error) throw error;
             data = JSON.parse(data).slice();
@@ -216,7 +225,7 @@ router.post("/edit/:id", (req, res) => {
                         subcat.name = req.body.subcategory;
                         subcat.status = req.body.status;
                         if (req.body.fileName) {
-                            deleteFile(subcat.filename);
+                            deleteFile(req.body.appId, subcat.filename);
                             subcat.filename = req.body.fileName;
                         }
                         cat.subcategories[index] = subcat;
@@ -226,7 +235,7 @@ router.post("/edit/:id", (req, res) => {
             });
 
             fs.writeFile(
-                path.join(__dirname, "../data/programings.json"),
+                path.join(__dirname, `../data/${req.body.appId}.json`),
                 JSON.stringify(data, null, 4),
                 error => {
                     if (error) {

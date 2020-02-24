@@ -6,10 +6,12 @@ import SubcategoryInput from "./SubcategoryInput";
 import ErrorMessage from "./ErrorMessage";
 import FileUpload from "./FileUpload";
 import Status from "./Status";
+import app from "../../data/applications";
 import "./App.css";
 
 class App extends Component {
     state = {
+        currentApp: {},
         categoryList: [],
         category: "",
         subcategory: "",
@@ -28,7 +30,9 @@ class App extends Component {
     };
 
     componentDidMount() {
-        this.getList();
+        this.setState({ currentApp: app.sampleApp }, () =>
+            this.getList(this.state.currentApp.appId)
+        );
         window.addEventListener("keydown", this.handleKeyDown);
         window.addEventListener("keyup", this.handleKeyUp);
     }
@@ -38,8 +42,8 @@ class App extends Component {
         window.removeEventListener("keyup", this.handleKeyUp);
     }
 
-    getList = () => {
-        fetch("/api/getList")
+    getList = appId => {
+        fetch(`/api/getList/${appId}`)
             .then(res => res.json())
             .then(data => {
                 this.setState({ categoryList: data });
@@ -82,13 +86,14 @@ class App extends Component {
         this.setState({ navOpen: !this.state.navOpen });
     };
 
-    handleSubmit = event => {
+    handleSubmit = (appId, event) => {
         event.preventDefault();
         const ts = Date.now();
         const fileName = this.state.file.name
             ? `${ts}-${this.state.file.name}`
             : null;
         const data = {
+            appId,
             id: ts,
             category: this.state.category.trim(),
             subcategory: this.state.subcategory.trim(),
@@ -117,7 +122,10 @@ class App extends Component {
                             JSON.stringify(data) &&
                         this.state.file.name
                     ) {
-                        this.handleSubmitFile(fileName);
+                        this.handleSubmitFile(
+                            this.state.currentApp.appId,
+                            fileName
+                        );
                         this.setState({ editing: false });
                     }
                     this.setState({ categoryList: data, navOpen: false });
@@ -129,10 +137,11 @@ class App extends Component {
         }
     };
 
-    handleSubmitFile = n => {
+    handleSubmitFile = (appId, n) => {
         const formData = new FormData();
         formData.append("file", this.state.file);
         formData.append("fileName", n);
+        formData.append("appId", appId);
         this.setState({ loading: true });
         fetch("/api/upload", {
             method: "POST",
@@ -162,10 +171,11 @@ class App extends Component {
         }
     };
 
-    deleteOne = (category, subcatName, image) => {
+    deleteOne = (appId, category, subcategory, image) => {
         const data = {
+            appId,
             category,
-            subcatName,
+            subcategory,
             image
         };
 
@@ -178,17 +188,15 @@ class App extends Component {
         })
             .then(res => res.json)
             .then(data => {
-                console.log("Successfully deleted:", data);
-                this.getList();
+                this.getList(appId);
             })
             .catch(error => console.error(error.message));
     };
 
-    editOne = id => {
-        fetch(`/api/edit/${id}`)
+    editOne = (appId, id) => {
+        fetch(`/api/edit/${appId}/${id}`)
             .then(res => res.json())
             .then(data => {
-                console.log("Editing:", data);
                 this.setState({
                     category: data.name,
                     subcategory: data.subcategories[0].name,
@@ -201,13 +209,14 @@ class App extends Component {
             });
     };
 
-    saveEdit = event => {
+    saveEdit = (appId, event) => {
         event.preventDefault();
         const tsName = this.state.file.name
             ? `${Date.now()}-${this.state.file.name}`
             : null;
 
         const data = {
+            appId,
             category: this.state.category.trim(),
             subcategory: this.state.subcategory.trim(),
             status: this.state.status
@@ -215,7 +224,7 @@ class App extends Component {
 
         if (tsName) {
             data.fileName = tsName;
-            this.handleSubmitFile(tsName);
+            this.handleSubmitFile(appId, tsName);
         }
 
         this.setState({ inputDisabled: false, navOpen: false });
@@ -231,7 +240,7 @@ class App extends Component {
             .then(res => res.json())
             .then(data => {
                 this.setState({ editTargetId: "" });
-                this.getList();
+                this.getList(appId);
             })
             .catch(error => console.error(error.message));
     };
@@ -253,10 +262,16 @@ class App extends Component {
     };
 
     render() {
-        const { categoryList, searchTerm, sortAl, loading } = this.state;
+        const {
+            currentApp,
+            categoryList,
+            searchTerm,
+            sortAl,
+            loading
+        } = this.state;
         return (
             <div className="section">
-                <h1 className="title">(Application name)</h1>
+                <h1 className="title">{currentApp.name}</h1>
                 <nav
                     className={`section ${this.state.navOpen ? "active" : ""}`}
                 >
@@ -272,7 +287,7 @@ class App extends Component {
                         />
                         <SubcategoryInput
                             handleChange={this.handleChange}
-                            subcategory={this.state.subcategory}
+                            {...this.state}
                         />
                         <Status
                             status={this.state.status}
@@ -287,7 +302,7 @@ class App extends Component {
                             <button
                                 className="button is-warning is-fullwidth"
                                 onClick={() =>
-                                    this.saveEdit(event, this.state.subcategory)
+                                    this.saveEdit(currentApp.appId, event)
                                 }
                             >
                                 Save Edit
@@ -295,7 +310,9 @@ class App extends Component {
                         ) : (
                             <button
                                 className="button is-link is-fullwidth"
-                                onClick={() => this.handleSubmit(event)}
+                                onClick={() =>
+                                    this.handleSubmit(currentApp.appId, event)
+                                }
                             >
                                 Save
                             </button>
@@ -321,7 +338,9 @@ class App extends Component {
                         </label>
                     </div>
                     <div className="field">
-                        <label className="label">Search Subcategories</label>
+                        <label className="label">
+                            Search {currentApp.subcategory}
+                        </label>
                         <div className="control">
                             <input
                                 className="input"
@@ -334,6 +353,7 @@ class App extends Component {
 
                     {categoryList ? (
                         <List
+                            currentApp={currentApp}
                             loading={loading}
                             categoryList={categoryList}
                             searchTerm={searchTerm}

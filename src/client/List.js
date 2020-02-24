@@ -15,6 +15,7 @@ class List extends Component {
 
     render() {
         const {
+            currentApp,
             categoryList,
             searchTerm,
             sortAl,
@@ -28,8 +29,8 @@ class List extends Component {
             /https?:\/\/localhost:(\d{4})\//,
             "$1"
         );
-        const filePathDev = "./dist/images/uploads/";
-        const filePathProd = "./images/uploads/";
+        const filePathDev = `./dist/images/uploads/${currentApp.appId}/`;
+        const filePathProd = `./images/uploads/${currentApp.appId}/`;
 
         return (
             <div>
@@ -59,11 +60,13 @@ class List extends Component {
                     <thead>
                         <tr className="has-background-link">
                             <th className="has-text-white">Index</th>
-                            <th className="has-text-white">Category</th>
-                            <th className="has-text-white">Subcategory</th>
-                            <th className="has-text-white thumbnail">
-                                Thumbnail
+                            <th className="has-text-white">
+                                {currentApp.category}
                             </th>
+                            <th className="has-text-white">
+                                {currentApp.subcategory}
+                            </th>
+                            <th className="has-text-white thumbnail">Image</th>
                             <th className="has-text-white status">Status</th>
                             <th className="has-text-white action">Action</th>
                         </tr>
@@ -126,6 +129,7 @@ class List extends Component {
                                                             className="button is-warning"
                                                             onClick={() =>
                                                                 editOne(
+                                                                    currentApp.appId,
                                                                     subcat.id
                                                                 )
                                                             }
@@ -136,6 +140,7 @@ class List extends Component {
                                                             className="button is-danger"
                                                             onClick={() =>
                                                                 deleteOne(
+                                                                    currentApp.appId,
                                                                     category.name,
                                                                     subcat.name,
                                                                     subcat.filename
