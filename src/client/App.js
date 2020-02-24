@@ -30,7 +30,12 @@ class App extends Component {
     };
 
     componentDidMount() {
-        this.setState({ currentApp: app.sampleApp }, () =>
+        let defaultApp = {};
+        for (let key in app) {
+            defaultApp = app[key];
+            break;
+        }
+        this.setState({ currentApp: defaultApp }, () =>
             this.getList(this.state.currentApp.appId)
         );
         window.addEventListener("keydown", this.handleKeyDown);
@@ -261,6 +266,10 @@ class App extends Component {
         this.setState({ keyPressed: {} });
     };
 
+    handleChangeApp = () => {
+        this.setState({ currentApp: app[event.target.value] }, () => this.getList(this.state.currentApp["appId"]));
+    };
+
     render() {
         const {
             currentApp,
@@ -272,6 +281,20 @@ class App extends Component {
         return (
             <div className="section">
                 <h1 className="title">{currentApp.name}</h1>
+                <div className="field">
+                    <div className="select">
+                        <select
+                            value=""
+                            name="currentApp"
+                            onChange={this.handleChangeApp}
+                        >
+                            <option value="">-- Select Application --</option>
+                            {
+                                Object.keys(app).map(key => <option key={key} value={key}>{app[key].name}</option>)
+                            }
+                        </select>
+                    </div>
+                </div>
                 <nav
                     className={`section ${this.state.navOpen ? "active" : ""}`}
                 >
