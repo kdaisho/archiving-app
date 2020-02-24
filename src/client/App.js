@@ -51,7 +51,7 @@ class App extends Component {
         fetch(`/api/getList/${appId}`)
             .then(res => res.json())
             .then(data => {
-                this.setState({ categoryList: data });
+                this.setState({ categoryList: data }, () => this.setState({ loading: false }));
             });
     };
 
@@ -267,7 +267,7 @@ class App extends Component {
     };
 
     handleChangeApp = () => {
-        this.setState({ currentApp: app[event.target.value] }, () => this.getList(this.state.currentApp["appId"]));
+        this.setState({ currentApp: app[event.target.value], loading: true }, () => this.getList(this.state.currentApp["appId"]));
     };
 
     render() {
