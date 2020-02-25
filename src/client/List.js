@@ -21,7 +21,8 @@ class List extends Component {
             sortAl,
             loading,
             deleteOne,
-            editOne
+            editOne,
+            newFileName
         } = this.props;
 
         let total = 0;
@@ -94,7 +95,7 @@ class List extends Component {
                                                 <td>{category.name}</td>
                                                 <td>{subcat.name}</td>
                                                 <td className="thumbnail">
-                                                    {loading ? (
+                                                    {loading && (subcat.filename === newFileName) ? (
                                                         "Loading..."
                                                     ) : (
                                                         <img
