@@ -74,7 +74,7 @@ thead th.action:not([align]) {
     flex: 0 0 45%;
 }
 
-.modal.active {
+.modal {
     display: block;
 }
 

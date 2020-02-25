@@ -34,28 +34,28 @@ class List extends Component {
 
         return (
             <div>
-                <div
-                    className={`modal ${this.state.showModal ? "active" : ""}`}
-                >
-                    <div
-                        className="modal-background"
-                        onClick={this.handleDisplayImage}
-                    ></div>
-                    <div className="modal-content">
-                        <img
-                            src={`${
-                                currentPort === "3000"
-                                    ? filePathDev
-                                    : filePathProd
-                            }${this.state.imageName}`}
-                            alt={this.state.imageName}
-                        />
+                {this.state.showModal && (
+                    <div className={`modal`}>
+                        <div
+                            className="modal-background"
+                            onClick={this.handleDisplayImage}
+                        ></div>
+                        <div className="modal-content">
+                            <img
+                                src={`${
+                                    currentPort === "3000"
+                                        ? filePathDev
+                                        : filePathProd
+                                }${this.state.imageName}`}
+                                alt={this.state.imageName}
+                            />
+                        </div>
+                        <button
+                            className="modal-close is-large"
+                            onClick={this.handleDisplayImage}
+                        ></button>
                     </div>
-                    <button
-                        className="modal-close is-large"
-                        onClick={this.handleDisplayImage}
-                    ></button>
-                </div>
+                )}
                 <table className="table is-bordered is-striped">
                     <thead>
                         <tr className="has-background-link">
