@@ -1,9 +1,10 @@
 const express = require("express");
 const apiRoutes = require("../../routes/api");
+const path = require("path");
 
 const app = express();
 
-app.use(express.static("dist"));
+app.use(express.static(path.join(__dirname, "../../dist")));
 
 //Enabling built-in body parser
 app.use(express.json());

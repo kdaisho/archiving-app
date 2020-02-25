@@ -11,8 +11,7 @@ const { deleteFile } = require("../helpers");
 
 router.get(`/getList/:appId`, (req, res) => {
     fs.readFile(
-        // path.join(__dirname, `../data/${req.body.appId}.json`),
-        path.join(__dirname, `../data/${req.params.appId}.json`),
+        path.join(__dirname, `../data/applications/${req.params.appId}.json`),
         (error, buffer) => {
             if (error) throw error;
             const data = buffer.length ? JSON.parse(buffer) : initDataFile();
@@ -22,7 +21,7 @@ router.get(`/getList/:appId`, (req, res) => {
 
     function initDataFile() {
         fs.writeFileSync(
-            path.join(__dirname, `../data/${req.body.appId}.json`),
+            path.join(__dirname, `../data/applications/${req.body.appId}.json`),
             "[]"
         );
         return [];
@@ -61,14 +60,17 @@ router.post("/add", (req, res) => {
     const data = getResolvedData(
         JSON.parse(
             fs.readFileSync(
-                path.join(__dirname, `../data/${req.body.appId}.json`)
+                path.join(
+                    __dirname,
+                    `../data/applications/${req.body.appId}.json`
+                )
             )
         ),
         req.body
     );
 
     fs.writeFile(
-        path.join(__dirname, `../data/${req.body.appId}.json`),
+        path.join(__dirname, `../data/applications/${req.body.appId}.json`),
         JSON.stringify(data, null, 4),
         error => {
             if (error) {
@@ -149,7 +151,7 @@ router.post("/add", (req, res) => {
 router.delete("/delete", (req, res) => {
     const { appId, category, subcategory, image } = req.body;
     fs.readFile(
-        path.join(__dirname, `../data/${appId}.json`),
+        path.join(__dirname, `../data/applications/${appId}.json`),
         (error, data) => {
             if (error) throw error;
             data = JSON.parse(data).slice();
@@ -163,7 +165,7 @@ router.delete("/delete", (req, res) => {
             deleteFile(appId, image);
 
             fs.writeFile(
-                path.join(__dirname, `../data/${appId}.json`),
+                path.join(__dirname, `../data/applications/${appId}.json`),
                 JSON.stringify(
                     removeCategoryWithNoSubcategory(data, cat),
                     null,
@@ -195,7 +197,7 @@ router.get("/edit/:appId/:id", (req, res) => {
     let category = {};
     const returnSubcat = [];
     fs.readFile(
-        path.join(__dirname, `../data/${req.params.appId}.json`),
+        path.join(__dirname, `../data/applications/${req.params.appId}.json`),
         (error, data) => {
             if (error) throw error;
             data = JSON.parse(data).slice();
@@ -215,7 +217,7 @@ router.get("/edit/:appId/:id", (req, res) => {
 
 router.post("/edit/:id", (req, res) => {
     fs.readFile(
-        path.join(__dirname, `../data/${req.body.appId}.json`),
+        path.join(__dirname, `../data/applications/${req.body.appId}.json`),
         (error, data) => {
             if (error) throw error;
             data = JSON.parse(data).slice();
@@ -235,7 +237,10 @@ router.post("/edit/:id", (req, res) => {
             });
 
             fs.writeFile(
-                path.join(__dirname, `../data/${req.body.appId}.json`),
+                path.join(
+                    __dirname,
+                    `../data/applications/${req.body.appId}.json`
+                ),
                 JSON.stringify(data, null, 4),
                 error => {
                     if (error) {

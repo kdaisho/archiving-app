@@ -6,7 +6,7 @@ import SubcategoryInput from "./SubcategoryInput";
 import ErrorMessage from "./ErrorMessage";
 import FileUpload from "./FileUpload";
 import Status from "./Status";
-import app from "../../data/applications";
+import app from "../../data/applications.json";
 import "./App.css";
 
 class App extends Component {
@@ -51,7 +51,9 @@ class App extends Component {
         fetch(`/api/getList/${appId}`)
             .then(res => res.json())
             .then(data => {
-                this.setState({ categoryList: data }, () => this.setState({ loading: false }));
+                this.setState({ categoryList: data }, () =>
+                    this.setState({ loading: false })
+                );
             });
     };
 
@@ -267,7 +269,10 @@ class App extends Component {
     };
 
     handleChangeApp = () => {
-        this.setState({ currentApp: app[event.target.value], loading: true }, () => this.getList(this.state.currentApp["appId"]));
+        this.setState(
+            { currentApp: app[event.target.value], loading: true },
+            () => this.getList(this.state.currentApp["appId"])
+        );
     };
 
     render() {
@@ -289,9 +294,11 @@ class App extends Component {
                             onChange={this.handleChangeApp}
                         >
                             <option value="">-- Select Application --</option>
-                            {
-                                Object.keys(app).map(key => <option key={key} value={key}>{app[key].name}</option>)
-                            }
+                            {Object.keys(app).map(key => (
+                                <option key={key} value={key}>
+                                    {app[key].name}
+                                </option>
+                            ))}
                         </select>
                     </div>
                 </div>
