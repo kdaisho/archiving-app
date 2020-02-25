@@ -26,7 +26,8 @@ class App extends Component {
         inputDisabled: false,
         navOpen: false,
         keyPressed: {},
-        editTargetId: ""
+        editTargetId: "",
+        newFileName: ""
     };
 
     componentDidMount() {
@@ -149,7 +150,7 @@ class App extends Component {
         formData.append("file", this.state.file);
         formData.append("fileName", n);
         formData.append("appId", appId);
-        this.setState({ loading: true });
+        this.setState({ loading: true, newFileName: n });
         fetch("/api/upload", {
             method: "POST",
             body: formData
@@ -160,7 +161,7 @@ class App extends Component {
                     this.setState({ resetting: false });
                 });
                 if (data) {
-                    this.setState({ loading: false });
+                    this.setState({ loading: false, newFileName: "" });
                 }
             })
             .catch(error => console.error(error.message));
@@ -281,11 +282,12 @@ class App extends Component {
             categoryList,
             searchTerm,
             sortAl,
-            loading
+            loading,
+            newFileName
         } = this.state;
         return (
             <div className="section">
-                <h1 className="title">{currentApp.name}</h1>
+                <h1 className="title is-size-4">{currentApp.name}</h1>
                 <div className="field">
                     <div className="select">
                         <select
@@ -390,6 +392,7 @@ class App extends Component {
                             sortAl={sortAl}
                             deleteOne={this.deleteOne}
                             editOne={this.editOne}
+                            newFileName={newFileName}
                         />
                     ) : (
                         <h2>Loading...</h2>
