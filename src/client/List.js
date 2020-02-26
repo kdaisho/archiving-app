@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Spinner from "./Spinner";
 
 class List extends Component {
     state = {
@@ -95,8 +96,10 @@ class List extends Component {
                                                 <td>{category.name}</td>
                                                 <td>{subcat.name}</td>
                                                 <td className="thumbnail">
-                                                    {loading && (subcat.filename === newFileName) ? (
-                                                        "Loading..."
+                                                    {loading &&
+                                                    subcat.filename ===
+                                                        newFileName ? (
+                                                        <Spinner />
                                                     ) : (
                                                         <img
                                                             className="subcategory-img"

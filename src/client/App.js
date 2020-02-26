@@ -7,6 +7,7 @@ import ErrorMessage from "./ErrorMessage";
 import FileUpload from "./FileUpload";
 import Status from "./Status";
 import SortAndSearch from "./SortAndSearch";
+import Spinner from "./Spinner";
 import app from "../../data/applications.json";
 import "./App.css";
 
@@ -302,7 +303,12 @@ class App extends Component {
                 <nav
                     className={`section ${this.state.navOpen ? "active" : ""}`}
                 >
-                    <span className="knob" onClick={this.toggleNav}></span>
+                    <span
+                        className="knob has-text-link"
+                        onClick={this.toggleNav}
+                    >
+                        <i className="fas fa-paper-plane"></i>
+                    </span>
                     <form>
                         <CategoryDropdown
                             handleChange={this.handleChange}
@@ -366,7 +372,7 @@ class App extends Component {
                             deleteOne={this.deleteOne}
                         />
                     ) : (
-                        <h2>Loading...</h2>
+                        <Spinner />
                     )}
                 </main>
                 <div

@@ -50,6 +50,7 @@ thead th.action:not([align]) {
 
 .table td.thumbnail,
 .table td.action {
+    position: relative;
     text-align: center;
 }
 
@@ -136,13 +137,22 @@ nav.section.active {
 }
 
 nav.section .knob {
-    background: hsl(48, 100%, 67%);
-    display: block;
+    align-items: center;
+    background: #fff;
+    bottom: 0;
+    box-shadow: -6px 0 12px rgba(0, 0, 0, 0.2);
+    color: #fff;
+    display: flex;
+    font-size: 1.5rem;
     left: -50px;
-    height: 100%;
-    top: 0;
+    height: 50px;
+    justify-content: center;
     position: absolute;
     width: 50px;
+}
+
+nav.section.active .knob {
+    box-shadow: none;
 }
 
 nav.section .knob:hover {
@@ -166,4 +176,28 @@ nav.section .knob:hover {
     opacity: 1;
     pointer-events: auto;
     transition: opacity 0.5s;
+}
+
+.spinner {
+    animation: spin 1.5s linear infinite;
+    color: #fff;
+    font-size: 3rem;
+    left: calc(50% - 0.625rem);
+    position: fixed;
+    top: calc(50% - 0.8rem);
+    z-index: 100;
+}
+
+table .spinner {
+    font-size: 1.25rem;
+    position: absolute;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(359deg);
+    }
 }
