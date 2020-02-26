@@ -6,6 +6,7 @@ import SubcategoryInput from "./SubcategoryInput";
 import ErrorMessage from "./ErrorMessage";
 import FileUpload from "./FileUpload";
 import Status from "./Status";
+import SortAndSearch from "./SortAndSearch";
 import app from "../../data/applications.json";
 import "./App.css";
 
@@ -353,30 +354,11 @@ class App extends Component {
                 </nav>
 
                 <main className="is-search">
-                    <div className="field">
-                        <label className="checkbox">
-                            <input
-                                type="checkbox"
-                                onChange={this.applySort}
-                                value={this.state.sortAl}
-                            />{" "}
-                            Alphabetical Order
-                        </label>
-                    </div>
-                    <div className="field">
-                        <label className="label">
-                            Search {currentApp.subcategory}
-                        </label>
-                        <div className="control">
-                            <input
-                                className="input"
-                                type="text"
-                                onChange={this.handleSearch}
-                                placeholder="Search"
-                            />
-                        </div>
-                    </div>
-
+                    <SortAndSearch
+                        {...this.state}
+                        applySort={this.applySort}
+                        handleSearch={this.handleSearch}
+                    />
                     {categoryList && !switching ? (
                         <List
                             {...this.state}
