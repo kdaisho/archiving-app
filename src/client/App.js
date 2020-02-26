@@ -20,6 +20,7 @@ class App extends Component {
         file: {},
         sortAl: false,
         loading: false,
+        switching: false,
         editing: false,
         resetting: false,
         status: false,
@@ -53,7 +54,7 @@ class App extends Component {
             .then(res => res.json())
             .then(data => {
                 this.setState({ categoryList: data }, () =>
-                    this.setState({ loading: false })
+                    this.setState({ switching: false })
                 );
             });
     };
@@ -271,20 +272,13 @@ class App extends Component {
 
     handleChangeApp = () => {
         this.setState(
-            { currentApp: app[event.target.value], loading: true },
+            { currentApp: app[event.target.value], switching: true },
             () => this.getList(this.state.currentApp["appId"])
         );
     };
 
     render() {
-        const {
-            currentApp,
-            categoryList,
-            searchTerm,
-            sortAl,
-            loading,
-            newFileName
-        } = this.state;
+        const { currentApp, categoryList, switching } = this.state;
         return (
             <div className="section">
                 <h1 className="title is-size-4">{currentApp.name}</h1>
@@ -383,16 +377,11 @@ class App extends Component {
                         </div>
                     </div>
 
-                    {categoryList ? (
+                    {categoryList && !switching ? (
                         <List
-                            currentApp={currentApp}
-                            loading={loading}
-                            categoryList={categoryList}
-                            searchTerm={searchTerm}
-                            sortAl={sortAl}
-                            deleteOne={this.deleteOne}
+                            {...this.state}
                             editOne={this.editOne}
-                            newFileName={newFileName}
+                            deleteOne={this.deleteOne}
                         />
                     ) : (
                         <h2>Loading...</h2>
