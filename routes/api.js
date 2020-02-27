@@ -85,8 +85,8 @@ router.post("/add", (req, res) => {
             return (obj = { id, name, subcategories: [] });
         };
 
-        const getSubcatObj = (id, name, filename, status) => {
-            return (obj = { id, name, filename, status });
+        const getSubcatObj = (id, name, filename, status, ts) => {
+            return (obj = { id, name, filename, status, lastUpdated: ts });
         };
 
         for (let i = 0; i < targetArray.length; i++) {
@@ -113,7 +113,8 @@ router.post("/add", (req, res) => {
                                 targetArray[i].subcategories[j].id,
                                 targetArray[i].subcategories[j].name,
                                 reqObj.fileName,
-                                reqObj.status
+                                reqObj.status,
+                                reqObj.id
                             )
                         );
                         targetArray[i].subcategories[j] = returnedObj;
@@ -125,7 +126,8 @@ router.post("/add", (req, res) => {
                         reqObj.id,
                         reqObj.subcategory,
                         reqObj.fileName,
-                        reqObj.status
+                        reqObj.status,
+                        reqObj.id
                     )
                 );
                 return targetArray;
@@ -139,7 +141,8 @@ router.post("/add", (req, res) => {
                 reqObj.id,
                 reqObj.subcategory,
                 reqObj.fileName,
-                reqObj.status
+                reqObj.status,
+                reqObj.id
             )
         );
 
@@ -226,9 +229,11 @@ router.post("/edit/:id", (req, res) => {
                     if (subcat.id.toString() === req.params.id) {
                         subcat.name = req.body.subcategory;
                         subcat.status = req.body.status;
+                        subcat.lastUpdated = req.body.ts;
                         if (req.body.fileName) {
                             deleteFile(req.body.appId, subcat.filename);
                             subcat.filename = req.body.fileName;
+                            subcat.lastUpdated = req.body.ts;
                         }
                         cat.subcategories[index] = subcat;
                         data[i] = cat;

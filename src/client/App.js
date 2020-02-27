@@ -34,6 +34,7 @@ class App extends Component {
     };
 
     componentDidMount() {
+        console.log("Mounted");
         let defaultApp = {};
         for (let key in app) {
             defaultApp = app[key];
@@ -222,15 +223,17 @@ class App extends Component {
 
     saveEdit = (appId, event) => {
         event.preventDefault();
+        const ts = Date.now();
         const tsName = this.state.file.name
-            ? `${Date.now()}-${this.state.file.name}`
+            ? `${ts}-${this.state.file.name}`
             : null;
 
         const data = {
             appId,
             category: this.state.category.trim(),
             subcategory: this.state.subcategory.trim(),
-            status: this.state.status
+            status: this.state.status,
+            ts
         };
 
         if (tsName) {
