@@ -45,7 +45,9 @@ const createApplicationDirectory = enteredName => {
     }
     jsonData[appName] = {
         appId: appName,
-        name: enteredName
+        name: enteredName,
+        category: "Category",
+        subcategory: "Subcategory"
     };
     fs.writeFileSync(dataFilePath, JSON.stringify(jsonData, null, 4));
 
@@ -58,9 +60,9 @@ const createCategoryName = (enteredName, isCategory) => {
     let name = enteredName;
     if (name === "") {
         console.log(
-            `Setting default ${isCategory ? "category" : "subcategory"}name`
+            `Setting default ${isCategory ? "category" : "subcategory"} name.`
         );
-        name = isCategory ? "Category" : "Subcategory";
+        process.exit(0);
     }
 
     const data = fs.readFileSync(dataFilePath);
