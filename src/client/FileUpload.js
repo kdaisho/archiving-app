@@ -17,7 +17,7 @@ const FileUpload = ({ handleChange, resetting, file }) => (
                 </span>
                 <span className="file-label">Upload Image</span>
             </span>
-            <span className="file-name">{file.name}</span>
+            <span className="file-name">{file && file.name}</span>
         </label>
     </div>
 );

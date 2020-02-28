@@ -111,9 +111,10 @@ class App extends Component {
     handleSubmit = (appId, event) => {
         event.preventDefault();
         const ts = Date.now();
-        const fileName = this.state.file.name
-            ? `${ts}-${this.state.file.name}`
-            : null;
+        const fileName =
+            this.state.file && this.state.file.name
+                ? `${ts}-${this.state.file.name}`
+                : null;
         const data = {
             appId,
             id: ts,
@@ -142,6 +143,7 @@ class App extends Component {
                     if (
                         JSON.stringify(this.state.categoryList) !==
                             JSON.stringify(data) &&
+                        this.state.file &&
                         this.state.file.name
                     ) {
                         this.handleSubmitFile(
@@ -235,9 +237,10 @@ class App extends Component {
     saveEdit = (appId, event) => {
         event.preventDefault();
         const ts = Date.now();
-        const tsName = this.state.file.name
-            ? `${ts}-${this.state.file.name}`
-            : null;
+        const tsName =
+            this.state.file && this.state.file.name
+                ? `${ts}-${this.state.file.name}`
+                : null;
 
         const data = {
             appId,
