@@ -53,11 +53,21 @@ class App extends Component {
     }
 
     getList = appId => {
+        console.log("GET LIST CALLED");
         fetch(`/api/getList/${appId}`)
             .then(res => res.json())
             .then(data => {
-                this.setState({ categoryList: data }, () =>
-                    this.setState({ switching: false })
+                const time = this.getMaxTimestamp(data)
+                    ? new Date(this.getMaxTimestamp(data))
+                          .toString()
+                          .slice(3, 24)
+                    : "";
+                this.setState(
+                    {
+                        categoryList: data,
+                        lastUpdated: time
+                    },
+                    () => this.setState({ switching: false })
                 );
             });
     };
@@ -140,6 +150,7 @@ class App extends Component {
                         );
                         this.setState({ editing: false });
                     }
+                    this.getList(appId);
                     this.setState({ categoryList: data, navOpen: false });
                     this.clearField(event);
                 })
@@ -278,15 +289,49 @@ class App extends Component {
     handleChangeApp = () => {
         this.setState(
             { currentApp: app[event.target.value], switching: true },
-            () => this.getList(this.state.currentApp["appId"])
+            () => {
+                console.log("Changed to ", this.state.currentApp);
+                this.getList(this.state.currentApp["appId"]);
+            }
         );
     };
 
+    getMaxTimestamp = list => {
+        let max = "";
+        let time = "";
+        let arr = [];
+        list.forEach(cat => {
+            cat.subcategories.forEach(subcat => {
+                if (typeof max !== "number" || subcat.id >= max) {
+                    max = subcat.id;
+                }
+            });
+            arr.push(max);
+        });
+        time = arr.length ? arr.reduce((a, b) => Math.max(a, b)) : false;
+        return time;
+    };
+
     render() {
-        const { currentApp, categoryList, switching } = this.state;
+        const {
+            currentApp,
+            categoryList,
+            navOpen,
+            status,
+            errorMessage,
+            editing,
+            switching,
+            lastUpdated
+        } = this.state;
+
         return (
             <div className="section">
-                <h1 className="title is-size-4">{currentApp.name}</h1>
+                <div className="title-group">
+                    <h1 className="title is-size-4">{currentApp.name}</h1>
+                    <p>
+                        Last Updated: <time>{lastUpdated}</time>
+                    </p>
+                </div>
                 <div className="field">
                     <div className="select">
                         <select
@@ -303,9 +348,7 @@ class App extends Component {
                         </select>
                     </div>
                 </div>
-                <nav
-                    className={`section ${this.state.navOpen ? "active" : ""}`}
-                >
+                <nav className={`section ${navOpen ? "active" : ""}`}>
                     <span
                         className="knob has-text-link"
                         onClick={this.toggleNav}
@@ -326,15 +369,15 @@ class App extends Component {
                             {...this.state}
                         />
                         <Status
-                            status={this.state.status}
+                            status={status}
                             handleCheckbox={this.handleCheckbox}
                         />
                         <FileUpload
                             handleChange={this.handleChange}
                             {...this.state}
                         />
-                        <ErrorMessage errorMessage={this.state.errorMessage} />
-                        {this.state.editing ? (
+                        <ErrorMessage errorMessage={errorMessage} />
+                        {editing ? (
                             <button
                                 className="button is-warning is-fullwidth"
                                 onClick={() =>
@@ -379,7 +422,7 @@ class App extends Component {
                     )}
                 </main>
                 <div
-                    className={`backdrop ${this.state.navOpen ? "active" : ""}`}
+                    className={`backdrop ${navOpen ? "active" : ""}`}
                     onClick={() => this.setState({ navOpen: false })}
                 ></div>
             </div>

@@ -18,6 +18,11 @@
     cursor: pointer;
 }
 
+.title-group {
+    display: flex;
+    justify-content: space-between;
+}
+
 .table {
     width: 100%;
 }
