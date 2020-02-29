@@ -9,6 +9,13 @@ const upload = multer({ storage }).single("file");
 const router = express.Router();
 const { deleteFile } = require("../helpers");
 
+router.get(`/init`, (req, res) => {
+    const data = JSON.parse(
+        fs.readFileSync(path.join(__dirname, "../data/applications.json"))
+    );
+    res.json(data);
+});
+
 router.get(`/getList/:appId`, (req, res) => {
     fs.readFile(
         path.join(__dirname, `../data/applications/${req.params.appId}.json`),

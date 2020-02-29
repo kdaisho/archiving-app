@@ -8,11 +8,11 @@ import FileUpload from "./FileUpload";
 import Status from "./Status";
 import SortAndSearch from "./SortAndSearch";
 import Spinner from "./Spinner";
-import app from "../../data/applications.json";
 import "./App.css";
 
 class App extends Component {
     state = {
+        applications: {},
         currentApp: {},
         categoryList: [],
         category: "",
@@ -34,15 +34,7 @@ class App extends Component {
     };
 
     componentDidMount() {
-        console.log("Mounted");
-        let defaultApp = {};
-        for (let key in app) {
-            defaultApp = app[key];
-            break;
-        }
-        this.setState({ currentApp: defaultApp }, () =>
-            this.getList(this.state.currentApp.appId)
-        );
+        this.getInitialApp();
         window.addEventListener("keydown", this.handleKeyDown);
         window.addEventListener("keyup", this.handleKeyUp);
     }
@@ -52,8 +44,25 @@ class App extends Component {
         window.removeEventListener("keyup", this.handleKeyUp);
     }
 
+    getInitialApp = () => {
+        fetch(`/api/init`)
+            .then(res => res.json())
+            .then(applications => {
+                let defaultApp = {};
+                for (let key in applications) {
+                    defaultApp = applications[key];
+                    break;
+                }
+                this.setState({ currentApp: defaultApp, applications }, () =>
+                    this.getList(this.state.currentApp.appId)
+                );
+            })
+            .catch(error => {
+                throw error;
+            });
+    };
+
     getList = appId => {
-        console.log("GET LIST CALLED");
         fetch(`/api/getList/${appId}`)
             .then(res => res.json())
             .then(data => {
@@ -291,9 +300,11 @@ class App extends Component {
 
     handleChangeApp = () => {
         this.setState(
-            { currentApp: app[event.target.value], switching: true },
+            {
+                currentApp: this.state.applications[event.target.value],
+                switching: true
+            },
             () => {
-                console.log("Changed to ", this.state.currentApp);
                 this.getList(this.state.currentApp["appId"]);
             }
         );
@@ -317,6 +328,7 @@ class App extends Component {
 
     render() {
         const {
+            applications,
             currentApp,
             categoryList,
             navOpen,
@@ -343,9 +355,9 @@ class App extends Component {
                             onChange={this.handleChangeApp}
                         >
                             <option value="">-- Select Application --</option>
-                            {Object.keys(app).map(key => (
+                            {Object.keys(applications).map(key => (
                                 <option key={key} value={key}>
-                                    {app[key].name}
+                                    {applications[key].name}
                                 </option>
                             ))}
                         </select>
