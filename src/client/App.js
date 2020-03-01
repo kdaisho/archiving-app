@@ -66,15 +66,10 @@ class App extends Component {
         fetch(`/api/getList/${appId}`)
             .then(res => res.json())
             .then(data => {
-                const time = this.getMaxTimestamp(data)
-                    ? new Date(this.getMaxTimestamp(data))
-                          .toString()
-                          .slice(3, 24)
-                    : "";
                 this.setState(
                     {
-                        categoryList: data,
-                        lastUpdated: time
+                        categoryList: data.list,
+                        lastUpdated: data.ts
                     },
                     () => this.setState({ switching: false })
                 );
@@ -309,22 +304,6 @@ class App extends Component {
                 this.getList(this.state.currentApp["appId"]);
             }
         );
-    };
-
-    getMaxTimestamp = list => {
-        let max = "";
-        let time = "";
-        let arr = [];
-        list.forEach(cat => {
-            cat.subcategories.forEach(subcat => {
-                if (typeof max !== "number" || subcat.id >= max) {
-                    max = subcat.id;
-                }
-            });
-            arr.push(max);
-        });
-        time = arr.length ? arr.reduce((a, b) => Math.max(a, b)) : false;
-        return time;
     };
 
     render() {

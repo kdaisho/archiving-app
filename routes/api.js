@@ -21,8 +21,15 @@ router.get(`/getList/:appId`, (req, res) => {
         path.join(__dirname, `../data/applications/${req.params.appId}.json`),
         (error, buffer) => {
             if (error) throw error;
-            const data = buffer.length ? JSON.parse(buffer) : initDataFile();
-            res.send(data);
+            const dataObj = {
+                list: buffer.length ? JSON.parse(buffer) : initDataFile(),
+                ts: JSON.parse(
+                    fs.readFileSync(
+                        path.join(__dirname, `../data/applications.json`)
+                    )
+                )[req.params.appId]["lastUpdated"]
+            };
+            res.send(dataObj);
         }
     );
 
