@@ -14,8 +14,31 @@ const deleteFile = (appId, file) => {
     }
 };
 
+const setLastUpdated = (appId, ts) => {
+    return new Promise((resolve, reject) => {
+        fs.readFile(
+            path.join(__dirname, `./data/applications.json`),
+            (error, data) => {
+                if (error) {
+                    throw error;
+                } else {
+                    data = JSON.parse(data);
+                    data[appId].lastUpdated = ts;
+                    resolve(
+                        fs.writeFileSync(
+                            path.join(__dirname, `./data/applications.json`),
+                            JSON.stringify(data, null, 4)
+                        )
+                    );
+                }
+            }
+        );
+    });
+};
+
 const helpers = {
-    deleteFile
+    deleteFile,
+    setLastUpdated
 };
 
 module.exports = helpers;

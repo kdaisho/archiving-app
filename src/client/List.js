@@ -146,6 +146,7 @@ class List extends Component {
                                                                 deleteOne(
                                                                     currentApp.appId,
                                                                     category.name,
+                                                                    subcat.id,
                                                                     subcat.name,
                                                                     subcat.filename
                                                                 )

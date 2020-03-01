@@ -7,7 +7,7 @@ const jimp = require("jimp");
 const storage = multer.memoryStorage();
 const upload = multer({ storage }).single("file");
 const router = express.Router();
-const { deleteFile } = require("../helpers");
+const { deleteFile, setLastUpdated } = require("../helpers");
 
 router.get(`/init`, (req, res) => {
     const data = JSON.parse(
@@ -83,7 +83,9 @@ router.post("/add", (req, res) => {
             if (error) {
                 throw error;
             }
-            res.json(data, null, 4);
+            setLastUpdated(req.body.appId, req.body.id).then(() => {
+                res.json(data, null, 4);
+            });
         }
     );
 
@@ -155,7 +157,7 @@ router.post("/add", (req, res) => {
 });
 
 router.delete("/delete", (req, res) => {
-    const { appId, category, subcategory, image } = req.body;
+    const { appId, category, id, subcategory, image } = req.body;
     fs.readFile(
         path.join(__dirname, `../data/applications/${appId}.json`),
         (error, data) => {
@@ -181,7 +183,9 @@ router.delete("/delete", (req, res) => {
                     if (error) {
                         throw error;
                     }
-                    res.json(data, null, 4);
+                    setLastUpdated(appId, id).then(() =>
+                        res.json(data, null, 4)
+                    );
                 }
             );
         }
@@ -254,7 +258,9 @@ router.post("/edit/:id", (req, res) => {
                     if (error) {
                         throw error;
                     }
-                    res.json(data);
+                    setLastUpdated(req.body.appId, req.body.ts).then(() =>
+                        res.json(data)
+                    );
                 }
             );
         }

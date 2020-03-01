@@ -205,10 +205,11 @@ class App extends Component {
         }
     };
 
-    deleteOne = (appId, category, subcategory, image) => {
+    deleteOne = (appId, category, id, subcategory, image) => {
         const data = {
             appId,
             category,
+            id,
             subcategory,
             image
         };
