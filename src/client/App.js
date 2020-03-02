@@ -69,7 +69,7 @@ class App extends Component {
                 this.setState(
                     {
                         categoryList: data.list,
-                        lastUpdated: data.ts
+                        lastUpdated: new Date(data.ts).toString().slice(3, 21)
                     },
                     () => this.setState({ switching: false })
                 );
