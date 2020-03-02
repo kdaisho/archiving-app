@@ -1,22 +1,19 @@
-const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
 const jimp = require("jimp");
-
 const storage = multer.memoryStorage();
 const upload = multer({ storage }).single("file");
-const router = express.Router();
 const { deleteFile, setLastUpdated } = require("../helpers");
 
-router.get(`/init`, (req, res) => {
+exports.init = (req, res) => {
     const data = JSON.parse(
         fs.readFileSync(path.join(__dirname, "../data/applications.json"))
     );
     res.json(data);
-});
+};
 
-router.get(`/getList/:appId`, (req, res) => {
+exports.getList = (req, res) => {
     fs.readFile(
         path.join(__dirname, `../data/applications/${req.params.appId}.json`),
         (error, buffer) => {
@@ -40,9 +37,9 @@ router.get(`/getList/:appId`, (req, res) => {
         );
         return [];
     }
-});
+};
 
-router.post("/upload", (req, res) => {
+exports.uploadFile = (req, res) => {
     upload(req, res, error => {
         if (error) {
             return res.status(500).json(error);
@@ -68,9 +65,9 @@ router.post("/upload", (req, res) => {
             })
             .catch(error => console.error(error));
     });
-});
+};
 
-router.post("/add", (req, res) => {
+exports.addItem = (req, res) => {
     const data = getResolvedData(
         JSON.parse(
             fs.readFileSync(
@@ -146,9 +143,7 @@ router.post("/add", (req, res) => {
                 return targetArray;
             }
         }
-
         const categoryObj = getCategoryObj(reqObj.id, reqObj.category);
-
         categoryObj.subcategories.push(
             getSubcatObj(
                 reqObj.id,
@@ -161,9 +156,9 @@ router.post("/add", (req, res) => {
         targetArray.push(categoryObj);
         return targetArray;
     }
-});
+};
 
-router.delete("/delete", (req, res) => {
+exports.deleteItem = (req, res) => {
     const { appId, category, id, subcategory, image } = req.body;
     fs.readFile(
         path.join(__dirname, `../data/applications/${appId}.json`),
@@ -208,9 +203,9 @@ router.delete("/delete", (req, res) => {
         }
         return data;
     }
-});
+};
 
-router.get("/edit/:appId/:id", (req, res) => {
+exports.getItem = (req, res) => {
     let category = {};
     const returnSubcat = [];
     fs.readFile(
@@ -230,9 +225,9 @@ router.get("/edit/:appId/:id", (req, res) => {
             res.json(category);
         }
     );
-});
+};
 
-router.post("/edit/:id", (req, res) => {
+exports.saveEditItem = (req, res) => {
     fs.readFile(
         path.join(__dirname, `../data/applications/${req.body.appId}.json`),
         (error, data) => {
@@ -272,6 +267,4 @@ router.post("/edit/:id", (req, res) => {
             );
         }
     );
-});
-
-module.exports = router;
+};
