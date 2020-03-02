@@ -159,7 +159,7 @@ exports.addItem = (req, res) => {
 };
 
 exports.deleteItem = (req, res) => {
-    const { appId, category, id, subcategory, image } = req.body;
+    const { appId, category, subcategory, image, ts } = req.body;
     fs.readFile(
         path.join(__dirname, `../data/applications/${appId}.json`),
         (error, data) => {
@@ -185,7 +185,7 @@ exports.deleteItem = (req, res) => {
                     if (error) {
                         throw error;
                     }
-                    setLastUpdated(appId, id).then(() =>
+                    setLastUpdated(appId, ts).then(() =>
                         res.json(data, null, 4)
                     );
                 }

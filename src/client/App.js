@@ -201,12 +201,13 @@ class App extends Component {
     };
 
     deleteOne = (appId, category, id, subcategory, image) => {
+        const ts = Date.now();
         const data = {
             appId,
             category,
-            id,
             subcategory,
-            image
+            image,
+            ts
         };
 
         fetch("/api/delete", {
