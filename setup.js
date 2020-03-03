@@ -25,35 +25,43 @@ const createApplicationDirectory = enteredName => {
         `data/applications/${appName}.json`
     );
     const imagePath = path.join(__dirname, `dist/images/uploads/${appName}/`);
-
     if (fs.existsSync(applicationPath) || fs.existsSync(imagePath)) {
         console.log(`${enteredName} already exists`);
         process.exit(0);
     }
-
     console.log(`Creating a new application file: ${appName}`);
-    fs.writeFileSync(applicationPath, "[]");
-    fs.mkdirSync(imagePath);
 
-    const data = fs.readFileSync(dataFilePath, "utf8");
-    const jsonData = JSON.parse(data);
-    for (let key in jsonData) {
-        if (key === appName) {
-            console.log(`${appName} already exists`);
-            process.exit(0);
-        }
+    if (!fs.existsSync(`./data/applications/`)) {
+        fs.mkdirSync(`./data/applications/`, { recursive: true });
     }
-    jsonData[appName] = {
-        appId: appName,
-        name: enteredName,
-        category: "Category",
-        subcategory: "Subcategory"
-    };
-    fs.writeFileSync(dataFilePath, JSON.stringify(jsonData, null, 4));
+    fs.writeFileSync(applicationPath, "[]");
+    fs.mkdir(imagePath, { recursive: true }, error => {
+        if (error) throw error;
+    });
+    if (!fs.existsSync(dataFilePath)) {
+        fs.writeFileSync(dataFilePath, "{}");
+    }
+    fs.readFile(dataFilePath, "utf8", (error, data) => {
+        if (error) throw error;
+        const jsonData = JSON.parse(data);
+        for (let key in jsonData) {
+            if (key === appName) {
+                console.log(`${appName} already exists`);
+                process.exit(0);
+            }
+        }
+        jsonData[appName] = {
+            appId: appName,
+            name: enteredName,
+            category: "Category",
+            subcategory: "Subcategory"
+        };
+        fs.writeFileSync(dataFilePath, JSON.stringify(jsonData, null, 4));
 
-    console.log(`Created a data object: ${appName}`);
+        console.log(`Created a data object: ${appName}`);
 
-    interfaceInstance.question("What is category name? ", onCategoryNameInput);
+        interfaceInstance.question("What is category name? ", onCategoryNameInput);
+    });
 };
 
 const createCategoryName = (enteredName, isCategory) => {
@@ -78,9 +86,9 @@ const createCategoryName = (enteredName, isCategory) => {
     fs.writeFileSync(dataFilePath, JSON.stringify(jsonData, null, 4));
     isCategory
         ? interfaceInstance.question(
-              "What is subcategory name? ",
-              onSubcategoryNameInput
-          )
+            "What is subcategory name? ",
+            onSubcategoryNameInput
+        )
         : console.log(`New application has been set`);
 };
 
