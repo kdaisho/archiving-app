@@ -4,7 +4,7 @@ const multer = require("multer");
 const jimp = require("jimp");
 const storage = multer.memoryStorage();
 const upload = multer({ storage }).single("file");
-const { deleteFile, setLastUpdated } = require("../helpers");
+const { deleteFile, writeItem, setLastUpdated } = require("../helpers");
 
 exports.init = (req, res) => {
     const data = JSON.parse(
@@ -79,19 +79,12 @@ exports.addItem = (req, res) => {
         ),
         req.body
     );
-
-    fs.writeFile(
-        path.join(__dirname, `../data/applications/${req.body.appId}.json`),
+    writeItem(
         JSON.stringify(data, null, 4),
-        error => {
-            if (error) {
-                throw error;
-            }
-            setLastUpdated(req.body.appId, req.body.id).then(() => {
-                res.json(data, null, 4);
-            });
-        }
-    );
+        req.body.appId,
+        req.body.id,
+        setLastUpdated
+    ).then(res.json(data));
 
     function getResolvedData(targetArray, reqObj) {
         const getCategoryObj = (id, name) => {
@@ -171,25 +164,17 @@ exports.deleteItem = (req, res) => {
             cat.subcategories = cat.subcategories.filter(subcat => {
                 subcat.name !== subcategory;
             });
-
             deleteFile(appId, image);
-
-            fs.writeFile(
-                path.join(__dirname, `../data/applications/${appId}.json`),
+            writeItem(
                 JSON.stringify(
                     removeCategoryWithNoSubcategory(data, cat),
                     null,
                     4
                 ),
-                error => {
-                    if (error) {
-                        throw error;
-                    }
-                    setLastUpdated(appId, ts).then(() =>
-                        res.json(data, null, 4)
-                    );
-                }
-            );
+                appId,
+                ts,
+                setLastUpdated
+            ).then(res.json(data));
         }
     );
 
@@ -250,21 +235,12 @@ exports.saveEditItem = (req, res) => {
                 });
             });
 
-            fs.writeFile(
-                path.join(
-                    __dirname,
-                    `../data/applications/${req.body.appId}.json`
-                ),
+            writeItem(
                 JSON.stringify(data, null, 4),
-                error => {
-                    if (error) {
-                        throw error;
-                    }
-                    setLastUpdated(req.body.appId, req.body.ts).then(() =>
-                        res.json(data)
-                    );
-                }
-            );
+                req.body.appId,
+                req.body.ts,
+                setLastUpdated
+            ).then(res.json(data));
         }
     );
 };

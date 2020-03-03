@@ -14,6 +14,14 @@ const deleteFile = (appId, file) => {
     }
 };
 
+const writeItem = (dataString, appId, ts, fn) => {
+    fs.writeFileSync(
+        path.join(__dirname, `./data/applications/${appId}.json`),
+        dataString
+    );
+    return fn(appId, ts);
+};
+
 const setLastUpdated = (appId, ts) => {
     return new Promise((resolve, reject) => {
         fs.readFile(
@@ -38,6 +46,7 @@ const setLastUpdated = (appId, ts) => {
 
 const helpers = {
     deleteFile,
+    writeItem,
     setLastUpdated
 };
 
