@@ -72,7 +72,7 @@ const createCategoryName = (enteredName, isCategory) => {
     let name = enteredName;
     if (name === "") {
         console.log(
-            `Setup done with default ${isCategory ? "category" : "subcategory"} name!`.bgBrightGreen.black
+            `Setup done with default ${isCategory ? "category and subcategory" : "subcategory"} name!`.bgBrightGreen.black
         );
         process.exit();
     }
