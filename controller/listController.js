@@ -6,35 +6,31 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage }).single("file");
 const { deleteFile, writeItem, setLastUpdated } = require("../helpers");
 
+const appListPath = path.join(__dirname, "../data/applications.json");
+const getAppPath = appId =>
+    path.join(__dirname, `../data/applications/${appId}.json`);
+
 exports.init = (req, res) => {
-    const data = JSON.parse(
-        fs.readFileSync(path.join(__dirname, "../data/applications.json"))
-    );
+    const data = fs.existsSync(appListPath)
+        ? JSON.parse(fs.readFileSync(appListPath))
+        : {};
     res.json(data);
 };
 
 exports.getList = (req, res) => {
-    fs.readFile(
-        path.join(__dirname, `../data/applications/${req.params.appId}.json`),
-        (error, buffer) => {
-            if (error) throw error;
-            const dataObj = {
-                list: buffer.length ? JSON.parse(buffer) : initDataFile(),
-                ts: JSON.parse(
-                    fs.readFileSync(
-                        path.join(__dirname, `../data/applications.json`)
-                    )
-                )[req.params.appId]["lastUpdated"]
-            };
-            res.send(dataObj);
-        }
-    );
+    fs.readFile(getAppPath(req.params.appId), (error, buffer) => {
+        if (error) throw error;
+        const dataObj = {
+            list: buffer.length ? JSON.parse(buffer) : initDataFile(),
+            ts: JSON.parse(fs.readFileSync(appListPath))[req.params.appId][
+                "lastUpdated"
+            ]
+        };
+        res.send(dataObj);
+    });
 
     function initDataFile() {
-        fs.writeFileSync(
-            path.join(__dirname, `../data/applications/${req.body.appId}.json`),
-            "[]"
-        );
+        fs.writeFileSync(getAppPath(req.body.appId), "[]");
         return [];
     }
 };
@@ -69,14 +65,7 @@ exports.uploadFile = (req, res) => {
 
 exports.addItem = (req, res) => {
     const data = getResolvedData(
-        JSON.parse(
-            fs.readFileSync(
-                path.join(
-                    __dirname,
-                    `../data/applications/${req.body.appId}.json`
-                )
-            )
-        ),
+        JSON.parse(fs.readFileSync(getAppPath(req.body.appId))),
         req.body
     );
     writeItem(
@@ -153,30 +142,23 @@ exports.addItem = (req, res) => {
 
 exports.deleteItem = (req, res) => {
     const { appId, category, subcategory, image, ts } = req.body;
-    fs.readFile(
-        path.join(__dirname, `../data/applications/${appId}.json`),
-        (error, data) => {
-            if (error) throw error;
-            data = JSON.parse(data).slice();
-            const [cat] = data.filter(cat => {
-                return cat.name === category;
-            });
-            cat.subcategories = cat.subcategories.filter(subcat => {
-                subcat.name !== subcategory;
-            });
-            deleteFile(appId, image);
-            writeItem(
-                JSON.stringify(
-                    removeCategoryWithNoSubcategory(data, cat),
-                    null,
-                    4
-                ),
-                appId,
-                ts,
-                setLastUpdated
-            ).then(res.json(data));
-        }
-    );
+    fs.readFile(getAppPath(appId), (error, data) => {
+        if (error) throw error;
+        data = JSON.parse(data).slice();
+        const [cat] = data.filter(cat => {
+            return cat.name === category;
+        });
+        cat.subcategories = cat.subcategories.filter(subcat => {
+            subcat.name !== subcategory;
+        });
+        deleteFile(appId, image);
+        writeItem(
+            JSON.stringify(removeCategoryWithNoSubcategory(data, cat), null, 4),
+            appId,
+            ts,
+            setLastUpdated
+        ).then(res.json(data));
+    });
 
     function removeCategoryWithNoSubcategory(data, cat) {
         if (cat.subcategories.length <= 0) {
@@ -193,54 +175,48 @@ exports.deleteItem = (req, res) => {
 exports.getItem = (req, res) => {
     let category = {};
     const returnSubcat = [];
-    fs.readFile(
-        path.join(__dirname, `../data/applications/${req.params.appId}.json`),
-        (error, data) => {
-            if (error) throw error;
-            data = JSON.parse(data).slice();
-            data.forEach((cat, i) => {
-                cat.subcategories.forEach(subcat => {
-                    if (subcat.id.toString() === req.params.id) {
-                        category = data[i];
-                        returnSubcat.push(subcat);
-                        category.subcategories = returnSubcat;
-                    }
-                });
+    fs.readFile(getAppPath(req.params.appId), (error, data) => {
+        if (error) throw error;
+        data = JSON.parse(data).slice();
+        data.forEach((cat, i) => {
+            cat.subcategories.forEach(subcat => {
+                if (subcat.id.toString() === req.params.id) {
+                    category = data[i];
+                    returnSubcat.push(subcat);
+                    category.subcategories = returnSubcat;
+                }
             });
-            res.json(category);
-        }
-    );
+        });
+        res.json(category);
+    });
 };
 
 exports.saveEditItem = (req, res) => {
-    fs.readFile(
-        path.join(__dirname, `../data/applications/${req.body.appId}.json`),
-        (error, data) => {
-            if (error) throw error;
-            data = JSON.parse(data).slice();
-            data.forEach((cat, i) => {
-                cat.subcategories.forEach((subcat, index) => {
-                    if (subcat.id.toString() === req.params.id) {
+    fs.readFile(getAppPath(req.body.appId), (error, data) => {
+        if (error) throw error;
+        data = JSON.parse(data).slice();
+        data.forEach((cat, i) => {
+            cat.subcategories.forEach((subcat, index) => {
+                if (subcat.id.toString() === req.params.id) {
+                    subcat.id = req.body.ts;
+                    subcat.name = req.body.subcategory;
+                    subcat.status = req.body.status;
+                    if (req.body.fileName) {
+                        deleteFile(req.body.appId, subcat.filename);
                         subcat.id = req.body.ts;
-                        subcat.name = req.body.subcategory;
-                        subcat.status = req.body.status;
-                        if (req.body.fileName) {
-                            deleteFile(req.body.appId, subcat.filename);
-                            subcat.id = req.body.ts;
-                            subcat.filename = req.body.fileName;
-                        }
-                        cat.subcategories[index] = subcat;
-                        data[i] = cat;
+                        subcat.filename = req.body.fileName;
                     }
-                });
+                    cat.subcategories[index] = subcat;
+                    data[i] = cat;
+                }
             });
+        });
 
-            writeItem(
-                JSON.stringify(data, null, 4),
-                req.body.appId,
-                req.body.ts,
-                setLastUpdated
-            ).then(res.json(data));
-        }
-    );
+        writeItem(
+            JSON.stringify(data, null, 4),
+            req.body.appId,
+            req.body.ts,
+            setLastUpdated
+        ).then(res.json(data));
+    });
 };

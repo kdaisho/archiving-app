@@ -30,7 +30,8 @@ class App extends Component {
         navOpen: false,
         keyPressed: {},
         editTargetId: "",
-        newFileName: ""
+        newFileName: "",
+        showNoAppMsg: false
     };
 
     componentDidMount() {
@@ -53,9 +54,11 @@ class App extends Component {
                     defaultApp = applications[key];
                     break;
                 }
-                this.setState({ currentApp: defaultApp, applications }, () =>
-                    this.getList(this.state.currentApp.appId)
-                );
+                this.setState({ currentApp: defaultApp, applications }, () => {
+                    !Object.keys(this.state.applications).length
+                        ? this.setState({ showNoAppMsg: true })
+                        : this.getList(this.state.currentApp.appId);
+                });
             })
             .catch(error => {
                 throw error;
@@ -69,7 +72,9 @@ class App extends Component {
                 this.setState(
                     {
                         categoryList: data.list,
-                        lastUpdated: new Date(data.ts).toString().slice(3, 21)
+                        lastUpdated: data.ts
+                            ? new Date(data.ts).toString().slice(3, 24)
+                            : null
                     },
                     () => this.setState({ switching: false })
                 );
@@ -317,7 +322,8 @@ class App extends Component {
             errorMessage,
             editing,
             switching,
-            lastUpdated
+            lastUpdated,
+            showNoAppMsg
         } = this.state;
 
         return (
@@ -325,7 +331,11 @@ class App extends Component {
                 <div className="title-group">
                     <h1 className="title is-size-4">{currentApp.name}</h1>
                     <p>
-                        Last Updated: <time>{lastUpdated}</time>
+                        {lastUpdated && (
+                            <span>
+                                Last Updated: <time>{lastUpdated}</time>
+                            </span>
+                        )}
                     </p>
                 </div>
                 <div className="field">
@@ -344,7 +354,11 @@ class App extends Component {
                         </select>
                     </div>
                 </div>
-                <nav className={`section ${navOpen ? "active" : ""}`}>
+                <nav
+                    className={`section ${
+                        navOpen && !showNoAppMsg ? "active" : ""
+                    }`}
+                >
                     <span
                         className="knob has-text-link"
                         onClick={this.toggleNav}
@@ -418,9 +432,27 @@ class App extends Component {
                     )}
                 </main>
                 <div
-                    className={`backdrop ${navOpen ? "active" : ""}`}
+                    className={`backdrop ${
+                        navOpen || showNoAppMsg ? "active" : ""
+                    }`}
                     onClick={() => this.setState({ navOpen: false })}
                 ></div>
+                {showNoAppMsg && (
+                    <div className="no-application-msg">
+                        <p>Hummm...</p>
+                        <p>
+                            It looks like you haven't set up the application
+                            yet.
+                        </p>
+                        <p>
+                            Go to application root directory, enter{" "}
+                            <code>node&nbsp;setup</code>
+                        </p>
+                        <p>
+                            Then follow the instructions to create initial file.
+                        </p>
+                    </div>
+                )}
             </div>
         );
     }
