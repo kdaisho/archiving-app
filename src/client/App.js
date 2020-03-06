@@ -73,7 +73,14 @@ class App extends Component {
                     {
                         categoryList: data.list,
                         lastUpdated: data.ts
-                            ? new Date(data.ts).toString().slice(3, 24)
+                            ? new Date(data.ts).toLocaleDateString("default", {
+                                  month: "short",
+                                  weekday: "short",
+                                  year: "numeric",
+                                  day: "numeric",
+                                  hour: "numeric",
+                                  minute: "numeric"
+                              })
                             : null
                     },
                     () => this.setState({ switching: false })
@@ -287,7 +294,6 @@ class App extends Component {
     handleKeyDown = event => {
         if (event.key === "Alt") {
             const alt = { [event.key]: event.key };
-            alt[event.key] = event.key;
             this.setState({ keyPressed: alt });
         }
         if (this.state.keyPressed["Alt"] && event.key === "Shift") {

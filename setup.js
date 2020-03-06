@@ -11,7 +11,7 @@ let appName = "";
 const trimName = name => {
     return name
         .trim()
-        .replace(/\s+/, "")
+        .replace(/\s+/g, "")
         .toLowerCase();
 };
 
@@ -19,7 +19,9 @@ const createApplicationDirectory = enteredName => {
     appName = trimName(enteredName);
 
     if (appName === "") {
-        console.log("Cannot create an application without a name".bgBrightRed.black);
+        console.log(
+            "Cannot create an application without a name".bgBrightRed.black
+        );
         process.exit();
     }
 
@@ -72,7 +74,9 @@ const createCategoryName = (enteredName, isCategory) => {
     let name = enteredName;
     if (name === "") {
         console.log(
-            `Setup done with default ${isCategory ? "category and subcategory" : "subcategory"} name!`.bgBrightGreen.black
+            `Setup done with default ${
+                isCategory ? "category and subcategory" : "subcategory"
+            } name!`.bgBrightGreen.black
         );
         process.exit();
     }
@@ -92,28 +96,37 @@ const createCategoryName = (enteredName, isCategory) => {
 
 const q1 = () => {
     return new Promise((resolve, reject) => {
-        interfaceInstance.question("What is application name? ".brightYellow, answer => {
-            createApplicationDirectory(answer);
-            resolve();
-        })
+        interfaceInstance.question(
+            "What is application name? ".brightYellow,
+            answer => {
+                createApplicationDirectory(answer);
+                resolve();
+            }
+        );
     });
 };
 
 const q2 = () => {
     return new Promise((resolve, reject) => {
-        interfaceInstance.question("What is category name? ".brightYellow, answer => {
-            createCategoryName(answer, true);
-            resolve();
-        })
+        interfaceInstance.question(
+            "What is category name? ".brightYellow,
+            answer => {
+                createCategoryName(answer, true);
+                resolve();
+            }
+        );
     });
 };
 
 const q3 = () => {
     return new Promise((resolve, reject) => {
-        interfaceInstance.question("What is subcategory name? ".brightYellow, answer => {
-            createCategoryName(answer, false);
-            resolve();
-        })
+        interfaceInstance.question(
+            "What is subcategory name? ".brightYellow,
+            answer => {
+                createCategoryName(answer, false);
+                resolve();
+            }
+        );
     });
 };
 
@@ -121,7 +134,7 @@ const main = async () => {
     await q1();
     await q2();
     await q3();
-    console.log("Setup completed!".bgBrightGreen.black)
+    console.log("Setup completed!".bgBrightGreen.black);
     interfaceInstance.close();
     stdin.destroy();
 };
