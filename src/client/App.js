@@ -302,6 +302,9 @@ class App extends Component {
             this.setState({ navOpen: !this.state.navOpen });
             document.getElementById("categoryInput").focus();
         }
+        if (event.key === "Escape" && this.state.navOpen) {
+            this.setState({ navOpen: false });
+        }
         if (event.key === "Escape" && this.state.showModal) {
             this.setState(prevState => ({
                 showModal: !prevState.showModal
