@@ -8,6 +8,7 @@ import FileUpload from "./FileUpload";
 import Status from "./Status";
 import SortAndSearch from "./SortAndSearch";
 import Spinner from "./Spinner";
+import Modal from "./Modal.js";
 import "./App.css";
 
 class App extends Component {
@@ -31,6 +32,7 @@ class App extends Component {
         keyPressed: {},
         editTargetId: "",
         newFileName: "",
+        showModal: false,
         showNoAppMsg: false
     };
 
@@ -300,6 +302,11 @@ class App extends Component {
             this.setState({ navOpen: !this.state.navOpen });
             document.getElementById("categoryInput").focus();
         }
+        if (event.key === "Escape" && this.state.showModal) {
+            this.setState(prevState => ({
+                showModal: !prevState.showModal
+            }));
+        }
     };
 
     handleKeyUp = () => {
@@ -318,6 +325,14 @@ class App extends Component {
         );
     };
 
+    toggleModal = (src, filename) => {
+        this.setState({
+            path: src,
+            filename,
+            showModal: !this.state.showModal
+        });
+    };
+
     render() {
         const {
             applications,
@@ -329,6 +344,7 @@ class App extends Component {
             editing,
             switching,
             lastUpdated,
+            showModal,
             showNoAppMsg
         } = this.state;
 
@@ -430,6 +446,7 @@ class App extends Component {
                     {categoryList && !switching ? (
                         <List
                             {...this.state}
+                            toggleModal={this.toggleModal}
                             editOne={this.editOne}
                             deleteOne={this.deleteOne}
                         />
@@ -443,6 +460,26 @@ class App extends Component {
                     }`}
                     onClick={() => this.setState({ navOpen: false })}
                 ></div>
+                {showModal && (
+                    <Modal>
+                        <div className={`modal`}>
+                            <div
+                                className="modal-background"
+                                onClick={this.toggleModal}
+                            ></div>
+                            <div className="modal-content">
+                                <img
+                                    src={this.state.path}
+                                    alt={this.state.filename}
+                                />
+                            </div>
+                            <button
+                                className="modal-close is-large"
+                                onClick={this.toggleModal}
+                            ></button>
+                        </div>
+                    </Modal>
+                )}
                 {showNoAppMsg && (
                     <div className="no-application-msg">
                         <p>Hummm...</p>

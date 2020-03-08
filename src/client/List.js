@@ -2,18 +2,6 @@ import React, { Component } from "react";
 import Spinner from "./Spinner";
 
 class List extends Component {
-    state = {
-        imageName: "",
-        showModal: false
-    };
-
-    handleDisplayImage = filename => {
-        this.setState({
-            imageName: filename,
-            showModal: !this.state.showModal
-        });
-    };
-
     render() {
         const {
             currentApp,
@@ -23,6 +11,7 @@ class List extends Component {
             loading,
             deleteOne,
             editOne,
+            toggleModal,
             newFileName
         } = this.props;
 
@@ -33,31 +22,10 @@ class List extends Component {
         );
         const filePathDev = `./dist/images/uploads/${currentApp.appId}/`;
         const filePathProd = `./images/uploads/${currentApp.appId}/`;
+        const currentPath = currentPort === "3000" ? filePathDev : filePathProd;
 
         return (
             <div>
-                {this.state.showModal && (
-                    <div className={`modal`}>
-                        <div
-                            className="modal-background"
-                            onClick={this.handleDisplayImage}
-                        ></div>
-                        <div className="modal-content">
-                            <img
-                                src={`${
-                                    currentPort === "3000"
-                                        ? filePathDev
-                                        : filePathProd
-                                }${this.state.imageName}`}
-                                alt={this.state.imageName}
-                            />
-                        </div>
-                        <button
-                            className="modal-close is-large"
-                            onClick={this.handleDisplayImage}
-                        ></button>
-                    </div>
-                )}
                 <table className="table is-bordered is-striped">
                     <thead>
                         <tr className="has-background-link">
@@ -104,18 +72,12 @@ class List extends Component {
                                                         <img
                                                             className="subcategory-img"
                                                             onClick={() =>
-                                                                this.handleDisplayImage(
-                                                                    subcat.filename
+                                                                toggleModal(
+                                                                    `${currentPath}${subcat.filename}`,
+                                                                    subcat.name
                                                                 )
                                                             }
-                                                            src={`${
-                                                                currentPort ===
-                                                                "3000"
-                                                                    ? filePathDev
-                                                                    : filePathProd
-                                                            }${
-                                                                subcat.filename
-                                                            }`}
+                                                            src={`${currentPath}${subcat.filename}`}
                                                             alt={subcat.name}
                                                         />
                                                     )}
