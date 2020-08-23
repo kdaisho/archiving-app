@@ -1,228 +1,228 @@
 .m-t-15 {
-    margin-top: 15px;
+	margin-top: 15px;
 }
 
 .m-b-15 {
-    margin-bottom: 15px;
+	margin-bottom: 15px;
 }
 
 .m-b-30 {
-    margin-bottom: 30px;
+	margin-bottom: 30px;
 }
 
 .subcategory-img {
-    height: 40px;
+	height: 40px;
 }
 
 .subcategory-img:hover {
-    cursor: pointer;
+	cursor: pointer;
 }
 
 .title-group {
-    display: flex;
-    justify-content: space-between;
+	display: flex;
+	justify-content: space-between;
 }
 
 .table {
-    width: 100%;
+	width: 100%;
 }
 
 thead th {
-    color: #fff;
-    text-align: center;
+	color: #fff;
+	text-align: center;
 }
 
 thead th:last-child {
-    width: 200px;
+	width: 200px;
 }
 
 thead th.thumbnail:not([align]),
 thead th.action:not([align]) {
-    text-align: center;
+	text-align: center;
 }
 
 .table td {
-    vertical-align: middle;
+	vertical-align: middle;
 }
 
 .table th:first-child,
 .table td:first-child,
 .table th.status,
 .table td.status {
-    text-align: center;
-    width: 5%;
+	text-align: center;
+	width: 5%;
 }
 
 .table td.thumbnail,
 .table td.action {
-    position: relative;
-    text-align: center;
+	position: relative;
+	text-align: center;
 }
 
 .is-search .field {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    justify-content: flex-end;
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	justify-content: flex-end;
 }
 
 .is-search .field .label {
-    margin: 0 16px 0 0;
+	margin: 0 16px 0 0;
 }
 
 .action-button-container {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-between;
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-between;
 }
 
 .action-button-container .button {
-    flex: 0 0 45%;
+	flex: 0 0 45%;
 }
 
 .modal {
-    display: block;
+	display: block;
 }
 
 .modal .modal-content {
-    top: 50%;
-    transform: translateY(-50%);
-    width: 100%;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 100%;
 }
 
 .modal .modal-content img {
-    width: 100%;
+	width: 100%;
 }
 
 @media (min-width: 769px) {
-    .modal .modal-content {
-        max-width: 960px;
-    }
+	.modal .modal-content {
+		max-width: 960px;
+	}
 }
 
 .field.is-checkbox {
-    display: inline-block;
+	display: inline-block;
 }
 
 form {
-    position: relative;
-    width: 100%;
+	position: relative;
+	width: 100%;
 }
 
 form .error-msg {
-    background: #fff;
-    position: absolute;
-    bottom: -55px;
-    left: 0;
+	background: #fff;
+	position: absolute;
+	bottom: -55px;
+	left: 0;
 }
 
 form .select select {
-    width: 200px;
+	width: 200px;
 }
 
 nav.section {
-    background: #ffff;
-    box-shadow: 0 0 16px rgba(0, 0, 0, 0.25);
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: flex-start;
-    max-width: 600px;
-    padding-bottom: 60px;
-    position: fixed;
-    right: -600px;
-    top: 0;
-    transition: right 0.2s ease-out;
-    width: 100%;
-    z-index: 30;
+	background: #ffff;
+	box-shadow: 0 0 16px rgba(0, 0, 0, 0.25);
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	max-width: 600px;
+	padding-bottom: 60px;
+	position: fixed;
+	right: -600px;
+	top: 0;
+	transition: right 0.2s ease-out;
+	width: 100%;
+	z-index: 30;
 }
 
 nav.section.active {
-    right: 0;
-    transition: right 0.2s ease-out;
+	right: 0;
+	transition: right 0.2s ease-out;
 }
 
 nav.section .knob {
-    align-items: center;
-    background: #fff;
-    bottom: 0;
-    box-shadow: -6px 0 12px rgba(0, 0, 0, 0.2);
-    color: #fff;
-    display: flex;
-    font-size: 1.5rem;
-    left: -50px;
-    height: 50px;
-    justify-content: center;
-    position: absolute;
-    width: 50px;
+	align-items: center;
+	background: #fff;
+	bottom: 0;
+	box-shadow: -6px 0 12px rgba(0, 0, 0, 0.2);
+	color: #fff;
+	display: flex;
+	font-size: 1.5rem;
+	left: -50px;
+	height: 50px;
+	justify-content: center;
+	position: absolute;
+	width: 50px;
 }
 
 nav.section.active .knob {
-    box-shadow: none;
+	box-shadow: none;
 }
 
 nav.section .knob:hover {
-    cursor: pointer;
+	cursor: pointer;
 }
 
 .backdrop {
-    background: rgba(0, 0, 0, 0.5);
-    left: 0;
-    height: 100%;
-    opacity: 0;
-    pointer-events: none;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 20;
-    transition: opacity 0.5s;
+	background: rgba(0, 0, 0, 0.5);
+	left: 0;
+	height: 100%;
+	opacity: 0;
+	pointer-events: none;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 20;
+	transition: opacity 0.5s;
 }
 
 .backdrop.active {
-    opacity: 1;
-    pointer-events: auto;
-    transition: opacity 0.5s;
+	opacity: 1;
+	pointer-events: auto;
+	transition: opacity 0.5s;
 }
 
 .spinner {
-    animation: spin 1.5s linear infinite;
-    color: #fff;
-    font-size: 3rem;
-    left: calc(50% - 0.625rem);
-    position: fixed;
-    top: calc(50% - 0.8rem);
-    z-index: 100;
+	animation: spin 1.5s linear infinite;
+	color: #fff;
+	font-size: 3rem;
+	left: calc(50% - 0.625rem);
+	position: fixed;
+	top: calc(50% - 0.8rem);
+	z-index: 100;
 }
 
 table .spinner {
-    font-size: 1.25rem;
-    position: absolute;
+	font-size: 1.25rem;
+	position: absolute;
 }
 
 @keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(359deg);
-    }
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(359deg);
+	}
 }
 
 .no-application-msg {
-    color: #fff;
-    font-size: 20px;
-    left: 50%;
-    padding: 0 12px;
-    position: fixed;
-    max-width: 600px;
-    text-align: center;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    z-index: 30;
+	color: #fff;
+	font-size: 20px;
+	left: 50%;
+	padding: 0 12px;
+	position: fixed;
+	max-width: 600px;
+	text-align: center;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+	z-index: 30;
 }
 
 .no-application-msg code {
-    background: transparent;
-    color: inherit;
-    font-weight: bold;
+	background: transparent;
+	color: inherit;
+	font-weight: bold;
 }
