@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 
 const SortAndSearch = ({ applySort, sortAl, currentApp, handleSearch }) => (
 	<React.Fragment>
@@ -16,4 +17,6 @@ const SortAndSearch = ({ applySort, sortAl, currentApp, handleSearch }) => (
 	</React.Fragment>
 );
 
-export default SortAndSearch;
+const mapStateToProps = ({ currentApp }) => ({ currentApp });
+
+export default connect(mapStateToProps)(SortAndSearch);

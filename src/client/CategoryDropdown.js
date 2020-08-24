@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 
 const CategoryDropdown = ({ currentApp, category, handleChange, categoryList, inputDisabled }) => {
 	return (
@@ -18,4 +19,6 @@ const CategoryDropdown = ({ currentApp, category, handleChange, categoryList, in
 	);
 };
 
-export default CategoryDropdown;
+const mapStateToProps = ({ currentApp }) => ({ currentApp });
+
+export default connect(mapStateToProps)(CategoryDropdown);

@@ -3,9 +3,7 @@ import Spinner from "./Spinner";
 import { connect } from "react-redux";
 
 const List = (props) => {
-	console.log("ho", props);
 	const {
-		// currentApp,
 		categoryList,
 		searchTerm,
 		sortAl,
@@ -75,7 +73,7 @@ const List = (props) => {
 												<span className="action-button-container">
 													<button
 														className="button is-warning"
-														onClick={() => editOne(currentApp.appId, subcat.id)}
+														onClick={() => editOne(props.currentApp.appId, subcat.id)}
 													>
 														Edit
 													</button>
@@ -83,7 +81,7 @@ const List = (props) => {
 														className="button is-danger"
 														onClick={() =>
 															deleteOne(
-																currentApp.appId,
+																props.currentApp.appId,
 																category.name,
 																subcat.id,
 																subcat.name,

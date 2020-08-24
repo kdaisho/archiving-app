@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 
 const SubcategoryInput = ({ currentApp, handleChange, subcategory }) => (
 	<div className="field">
@@ -16,4 +17,6 @@ const SubcategoryInput = ({ currentApp, handleChange, subcategory }) => (
 	</div>
 );
 
-export default SubcategoryInput;
+const mapStateToProps = ({ currentApp }) => ({ currentApp });
+
+export default connect(mapStateToProps)(SubcategoryInput);

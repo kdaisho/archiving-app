@@ -18,7 +18,6 @@ import "./App.css";
 class App extends Component {
 	state = {
 		applications: {},
-		currentApp: {},
 		categoryList: [],
 		category: "",
 		subcategory: "",
@@ -52,7 +51,6 @@ class App extends Component {
 	}
 
 	getInitialApp = () => {
-		console.log("PR", this.props);
 		fetch(`/api/init`)
 			.then((res) => res.json())
 			.then((applications) => {
@@ -62,12 +60,10 @@ class App extends Component {
 					break;
 				}
 				this.props.updateApp(defaultApp);
-				// this.setState({ currentApp: defaultApp, applications }, () => {
 				this.setState({ applications }, () => {
 					!Object.keys(this.state.applications).length
 						? this.setState({ showNoAppMsg: true })
-						: // : this.getList(this.state.currentApp.appId);
-						  this.getList(this.props.currentApp.appId);
+						: this.getList(this.props.currentApp.appId);
 				});
 			})
 			.catch((error) => {
@@ -163,7 +159,6 @@ class App extends Component {
 						this.state.file &&
 						this.state.file.name
 					) {
-						// this.handleSubmitFile(this.state.currentApp.appId, fileName);
 						this.handleSubmitFile(this.props.currentApp.appId, fileName);
 						this.setState({ editing: false });
 					}
@@ -309,16 +304,13 @@ class App extends Component {
 		this.setState({ keyPressed: {} });
 	};
 
-	handleChangeApp = (currentApp) => {
-		// this.props.changeApp(this.state.applications[event.target.value]);
+	handleChangeApp = () => {
 		this.props.updateApp(this.state.applications[event.target.value]);
 		this.setState(
 			{
-				// currentApp: this.state.applications[event.target.value],
 				switching: true
 			},
 			() => {
-				// this.getList(this.state.currentApp["appId"]);
 				this.getList(this.props.currentApp["appId"]);
 			}
 		);
@@ -333,10 +325,8 @@ class App extends Component {
 	};
 
 	render() {
-		console.log("UU", this.props);
 		const {
 			applications,
-			// currentApp,
 			categoryList,
 			navOpen,
 			status,
@@ -460,5 +450,4 @@ const mapDispatchToProps = (dispatch) => ({
 	updateApp: (currentApp) => dispatch(changeApp(currentApp))
 });
 
-// export default App;
 export default connect(mapStateToProps, mapDispatchToProps)(App);
