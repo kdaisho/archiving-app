@@ -8,7 +8,11 @@ import FileUpload from "./FileUpload";
 import Status from "./Status";
 import SortAndSearch from "./SortAndSearch";
 import Spinner from "./Spinner";
-import Modal from "./Modal.js";
+import Modal from "./Modal";
+
+import { connect } from "react-redux";
+import changeApp from "./actionCreators/changeApp";
+
 import "./App.css";
 
 class App extends Component {
@@ -48,6 +52,7 @@ class App extends Component {
 	}
 
 	getInitialApp = () => {
+		console.log("PR", this.props);
 		fetch(`/api/init`)
 			.then((res) => res.json())
 			.then((applications) => {
@@ -56,10 +61,13 @@ class App extends Component {
 					defaultApp = applications[key];
 					break;
 				}
-				this.setState({ currentApp: defaultApp, applications }, () => {
+				this.props.updateApp(defaultApp);
+				// this.setState({ currentApp: defaultApp, applications }, () => {
+				this.setState({ applications }, () => {
 					!Object.keys(this.state.applications).length
 						? this.setState({ showNoAppMsg: true })
-						: this.getList(this.state.currentApp.appId);
+						: // : this.getList(this.state.currentApp.appId);
+						  this.getList(this.props.currentApp.appId);
 				});
 			})
 			.catch((error) => {
@@ -155,7 +163,8 @@ class App extends Component {
 						this.state.file &&
 						this.state.file.name
 					) {
-						this.handleSubmitFile(this.state.currentApp.appId, fileName);
+						// this.handleSubmitFile(this.state.currentApp.appId, fileName);
+						this.handleSubmitFile(this.props.currentApp.appId, fileName);
 						this.setState({ editing: false });
 					}
 					this.getList(appId);
@@ -300,14 +309,17 @@ class App extends Component {
 		this.setState({ keyPressed: {} });
 	};
 
-	handleChangeApp = () => {
+	handleChangeApp = (currentApp) => {
+		// this.props.changeApp(this.state.applications[event.target.value]);
+		this.props.updateApp(this.state.applications[event.target.value]);
 		this.setState(
 			{
-				currentApp: this.state.applications[event.target.value],
+				// currentApp: this.state.applications[event.target.value],
 				switching: true
 			},
 			() => {
-				this.getList(this.state.currentApp["appId"]);
+				// this.getList(this.state.currentApp["appId"]);
+				this.getList(this.props.currentApp["appId"]);
 			}
 		);
 	};
@@ -321,9 +333,10 @@ class App extends Component {
 	};
 
 	render() {
+		console.log("UU", this.props);
 		const {
 			applications,
-			currentApp,
+			// currentApp,
 			categoryList,
 			navOpen,
 			status,
@@ -338,7 +351,7 @@ class App extends Component {
 		return (
 			<div className="section">
 				<div className="title-group">
-					<h1 className="title is-size-4">{currentApp.name}</h1>
+					<h1 className="title is-size-4">{this.props.currentApp.name}</h1>
 					<p>
 						{lastUpdated && (
 							<span>
@@ -373,14 +386,14 @@ class App extends Component {
 						{editing ? (
 							<button
 								className="button is-warning is-fullwidth"
-								onClick={() => this.saveEdit(currentApp.appId, event)}
+								onClick={() => this.saveEdit(this.props.currentApp.appId, event)}
 							>
 								Save Edit
 							</button>
 						) : (
 							<button
 								className="button is-link is-fullwidth"
-								onClick={() => this.handleSubmit(currentApp.appId, event)}
+								onClick={() => this.handleSubmit(this.props.currentApp.appId, event)}
 							>
 								Save
 							</button>
@@ -441,4 +454,11 @@ class App extends Component {
 	}
 }
 
-export default App;
+const mapStateToProps = ({ currentApp }) => ({ currentApp });
+
+const mapDispatchToProps = (dispatch) => ({
+	updateApp: (currentApp) => dispatch(changeApp(currentApp))
+});
+
+// export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);

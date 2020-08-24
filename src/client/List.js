@@ -1,9 +1,11 @@
 import React from "react";
 import Spinner from "./Spinner";
+import { connect } from "react-redux";
 
 const List = (props) => {
+	console.log("ho", props);
 	const {
-		currentApp,
+		// currentApp,
 		categoryList,
 		searchTerm,
 		sortAl,
@@ -16,8 +18,8 @@ const List = (props) => {
 
 	let total = 0;
 	const currentPort = window.location.href.replace(/https?:\/\/localhost:(\d{4})\//, "$1");
-	const filePathDev = `./dist/images/uploads/${currentApp.appId}/`;
-	const filePathProd = `./images/uploads/${currentApp.appId}/`;
+	const filePathDev = `./dist/images/uploads/${props.currentApp.appId}/`;
+	const filePathProd = `./images/uploads/${props.currentApp.appId}/`;
 	const currentPath = currentPort === "3000" ? filePathDev : filePathProd;
 
 	return (
@@ -26,8 +28,8 @@ const List = (props) => {
 				<thead>
 					<tr className="has-background-link">
 						<th className="has-text-white">Index</th>
-						<th className="has-text-white">{currentApp.category}</th>
-						<th className="has-text-white">{currentApp.subcategory}</th>
+						<th className="has-text-white">{props.currentApp.category}</th>
+						<th className="has-text-white">{props.currentApp.subcategory}</th>
 						<th className="has-text-white thumbnail">Image</th>
 						<th className="has-text-white status">Status</th>
 						<th className="has-text-white action">Action</th>
@@ -103,4 +105,6 @@ const List = (props) => {
 	);
 };
 
-export default List;
+const mapStateToProps = ({ currentApp }) => ({ currentApp });
+
+export default connect(mapStateToProps)(List);
