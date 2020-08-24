@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 
 const CategoryInput = ({ currentApp, handleChange, category, inputDisabled }) => (
 	<div className="field">
@@ -18,4 +19,6 @@ const CategoryInput = ({ currentApp, handleChange, category, inputDisabled }) =>
 	</div>
 );
 
-export default CategoryInput;
+const mapStateToProps = ({ currentApp }) => ({ currentApp });
+
+export default connect(mapStateToProps)(CategoryInput);

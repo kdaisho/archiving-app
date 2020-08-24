@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Component } from "react";
 import List from "./List";
 import CategoryDropdown from "./CategoryDropdown";
 import CategoryInput from "./CategoryInput";
@@ -8,198 +8,129 @@ import FileUpload from "./FileUpload";
 import Status from "./Status";
 import SortAndSearch from "./SortAndSearch";
 import Spinner from "./Spinner";
-import Modal from "./Modal.js";
+import Modal from "./Modal";
+
+import { connect } from "react-redux";
+import changeApp from "./actionCreators/changeApp";
+
 import "./App.css";
 
-// class App extends Component {
-const App = () => {
-	const [applications, setApplications] = useState({});
-	const [currentApp, setCurrentApp] = useState({});
-	// const [defaultApp, setDefaultApp] = useState("");
-	const [categoryList, setCategoryList] = useState([]);
-	const [category, setCategory] = useState("");
-	const [subcategory, setSubcategory] = useState("");
-	const [searchTerm, setSearchTerm] = useState("");
-	const [errorMessage, setErrorMessage] = useState("");
-	const [file, setFile] = useState({});
-	const [path, setPath] = useState("");
-	const [sortAl, setSortAl] = useState(false);
-	const [loading, setLoading] = useState(false);
-	const [switching, setSwitching] = useState(false);
-	const [editing, setEditing] = useState(false);
-	const [resetting, setResetting] = useState(false);
-	const [status, setStatus] = useState(false);
-	const [inputDisabled, setInputDisabled] = useState(false);
-	const [navOpen, setNavOpen] = useState(false);
-	const [keyPressed, setKeyPressed] = useState({});
-	const [editTargetId, setEditTargetId] = useState("");
-	const [newFileName, setNewFileName] = useState("");
-	const [showModal, setShowModal] = useState(false);
-	const [showNoAppMsg, setShowNoAppMsg] = useState(false);
-	const [lastUpdated, setLastUpdated] = useState("");
-	let defaultApp = "";
+class App extends Component {
+	state = {
+		applications: {},
+		categoryList: [],
+		category: "",
+		subcategory: "",
+		searchTerm: "",
+		errorMessage: "",
+		file: {},
+		sortAl: false,
+		loading: false,
+		switching: false,
+		editing: false,
+		resetting: false,
+		status: false,
+		inputDisabled: false,
+		navOpen: false,
+		keyPressed: {},
+		editTargetId: "",
+		newFileName: "",
+		showModal: false,
+		showNoAppMsg: false
+	};
 
-	useEffect(() => {
-		getInitialApp();
-		window.addEventListener("keydown", handleKeyDown);
-		window.addEventListener("keyup", handleKeyUp);
-		return () => {
-			window.removeEventListener("keydown", handleKeyDown);
-			window.removeEventListener("keyup", handleKeyUp);
-		};
-	}, []);
+	componentDidMount() {
+		this.getInitialApp();
+		window.addEventListener("keydown", this.handleKeyDown);
+		window.addEventListener("keyup", this.handleKeyUp);
+	}
 
-	// useEffect(() => {
-	// 	// if (Object.keys(applications).length <= 0) return;
-	// 	if (!defaultApp) return;
-	// 	console.log("using default app", applications);
-	// 	setCurrentApp(defaultApp);
-	// 	setApplications(applications);
-	// 	// !Object.keys(applications).length ? setShowNoAppMsg(true) : getList(currentApp.appId);
-	// }, [defaultApp]);
+	componentWillUnmount() {
+		window.removeEventListener("keydown", this.handleKeyDown);
+		window.removeEventListener("keyup", this.handleKeyUp);
+	}
 
-	useEffect(() => {
-		console.log("Len of currentApp", Object.keys(currentApp).length);
-		if (Object.keys(currentApp).length <= 0) return;
-		console.log("CALLING GET_LIST", currentApp);
-		// !Object.keys(applications).length ? setShowNoAppMsg(true) : getList(currentApp.appId);
-		if (!Object.keys(applications).length <= 0) {
-			setShowNoAppMsg(true);
-		} else {
-			// getList(currentApp.appId);
-			setShowNoAppMsg(false);
-		}
-	}, [currentApp]);
-
-	useEffect(() => {
-		if (Object.keys(applications).length <= 0) return;
-		console.log("Getting list called", currentApp);
-		getList(currentApp.appId);
-	}, [applications]);
-
-	const getInitialApp = () => {
+	getInitialApp = () => {
 		fetch(`/api/init`)
 			.then((res) => res.json())
-			.then((ap) => {
-				// let defaultApp = {};
-				console.log(ap);
-				for (let key in ap) {
-					defaultApp = ap[key];
-					// setDefaultApp(ap[key]);
-					// console.log("setting default app", ap[key]);
+			.then((applications) => {
+				let defaultApp = {};
+				for (let key in applications) {
+					defaultApp = applications[key];
 					break;
 				}
-				// !Object.keys(ap).length ? setShowNoAppMsg(true) : getList(currentApp.appId);
-				setCurrentApp(defaultApp);
-				setApplications(ap);
-				// this.setState({ currentApp: defaultApp, applications }, () => {
-				// 	!Object.keys(this.state.applications).length
-				// 		? this.setState({ showNoAppMsg: true })
-				// 		: this.getList(this.state.currentApp.appId);
-				// });
-				// !Object.keys(ap).length ? setShowNoAppMsg(true) : getList(currentApp.appId);
-				// setCurrentApp(defaultApp);
-				// setApplications(ap);
+				this.props.updateApp(defaultApp);
+				this.setState({ applications }, () => {
+					!Object.keys(this.state.applications).length
+						? this.setState({ showNoAppMsg: true })
+						: this.getList(this.props.currentApp.appId);
+				});
 			})
 			.catch((error) => {
-				console.log("ERROR and currentApp", currentApp);
 				throw error;
 			});
 	};
 
-	useEffect(() => {
-		if (categoryList.length <= 0) return;
-	}, [categoryList]);
-
-	const getList = (appId) => {
-		console.log("Getting List", appId);
-		if (!appId) return;
+	getList = (appId) => {
 		fetch(`/api/getList/${appId}`)
 			.then((res) => res.json())
 			.then((data) => {
-				console.log("DATA is HERE", data);
-				// this.setState(
-				// 	{
-				// 		categoryList: data.list,
-				// 		lastUpdated: data.ts
-				// 			? new Date(data.ts).toLocaleDateString("default", {
-				// 					month: "short",
-				// 					weekday: "short",
-				// 					year: "numeric",
-				// 					day: "numeric",
-				// 					hour: "numeric",
-				// 					minute: "numeric"
-				// 			  })
-				// 			: null
-				// 	},
-				// 	() => this.setState({ switching: false })
-				// );
-				setCategoryList(data.list);
-				setLastUpdated(
-					data.ts
-						? new Date(data.ts).toLocaleDateString("default", {
-								month: "short",
-								weekday: "short",
-								year: "numeric",
-								day: "numeric",
-								hour: "numeric",
-								minute: "numeric"
-						  })
-						: null
+				this.setState(
+					{
+						categoryList: data.list,
+						lastUpdated: data.ts
+							? new Date(data.ts).toLocaleDateString("default", {
+									month: "short",
+									weekday: "short",
+									year: "numeric",
+									day: "numeric",
+									hour: "numeric",
+									minute: "numeric"
+							  })
+							: null
+					},
+					() => this.setState({ switching: false })
 				);
-			})
-			.catch((error) => console.log("GET LIST FAILED", error));
+			});
 	};
 
-	const handleSearch = (event) => {
-		// this.setState({ searchTerm: event.target.value.toLowerCase() });
-		setSearchTerm(event.target.value.toLowerCase());
+	handleSearch = (event) => {
+		this.setState({ searchTerm: event.target.value.toLowerCase() });
 	};
 
-	const handleChange = async (event) => {
+	handleChange = async (event) => {
 		const { name, value, files } = event.target;
-		// this.setState({ [name]: files ? await files[0] : value });
-		console.log("NAME, VALUE, FILES", name, value, files);
+		this.setState({ [name]: files ? await files[0] : value });
 	};
 
-	const handleCheckbox = (event) => {
-		// this.setState({ status: event.target.checked });
-		setStatus(event.target.checked);
+	handleCheckbox = (event) => {
+		this.setState({ status: event.target.checked });
 	};
 
-	const clearField = (event) => {
+	clearField = (event) => {
 		event.preventDefault();
-		// this.setState({
-		// 	category: "",
-		// 	subcategory: "",
-		// 	file: {
-		// 		name: ""
-		// 	},
-		// 	status: false,
-		// 	editing: false,
-		// 	inputDisabled: false,
-		// 	editTargetId: ""
-		// });
-		setCategory("");
-		setSubcategory("");
-		setFile({ name: "" });
-		setStatus(false);
-		setEditing(false);
-		setInputDisabled(false);
-		setEditTargetId("");
+		this.setState({
+			category: "",
+			subcategory: "",
+			file: {
+				name: ""
+			},
+			status: false,
+			editing: false,
+			inputDisabled: false,
+			editTargetId: ""
+		});
 	};
 
-	const applySort = () => {
-		// this.setState(() => ({ sortAl: !this.state.sortAl }));
-		setSortAl((sortAl) => !sortAl);
+	applySort = () => {
+		this.setState(() => ({ sortAl: !this.state.sortAl }));
 	};
 
-	const toggleNav = () => {
-		// this.setState({ navOpen: !this.state.navOpen });
-		setNavOpen((navOpen) => !navOpen);
+	toggleNav = () => {
+		this.setState({ navOpen: !this.state.navOpen });
 	};
 
-	const handleSubmit = (appId, event) => {
+	handleSubmit = (appId, event) => {
 		event.preventDefault();
 		const ts = Date.now();
 		const fileName =
@@ -228,7 +159,7 @@ const App = () => {
 						this.state.file &&
 						this.state.file.name
 					) {
-						this.handleSubmitFile(this.state.currentApp.appId, fileName);
+						this.handleSubmitFile(this.props.currentApp.appId, fileName);
 						this.setState({ editing: false });
 					}
 					this.getList(appId);
@@ -241,7 +172,7 @@ const App = () => {
 		}
 	};
 
-	const handleSubmitFile = (appId, n) => {
+	handleSubmitFile = (appId, n) => {
 		const formData = new FormData();
 		formData.append("file", this.state.file);
 		formData.append("fileName", n);
@@ -263,7 +194,7 @@ const App = () => {
 			.catch((error) => console.error(error.message));
 	};
 
-	const getErrorMessage = (...names) => {
+	getErrorMessage = (...names) => {
 		names = this.state.editing && names[2] ? names.slice(0, 2) : names;
 		this.setState({ errorMessage: "" });
 		if (names.filter((name) => !name).length) {
@@ -274,7 +205,7 @@ const App = () => {
 		}
 	};
 
-	const deleteOne = (appId, category, id, subcategory, image) => {
+	deleteOne = (appId, category, id, subcategory, image) => {
 		const ts = Date.now();
 		const data = {
 			appId,
@@ -298,7 +229,7 @@ const App = () => {
 			.catch((error) => console.error(error.message));
 	};
 
-	const editOne = (appId, id) => {
+	editOne = (appId, id) => {
 		fetch(`/api/edit/${appId}/${id}`)
 			.then((res) => res.json())
 			.then((data) => {
@@ -314,11 +245,10 @@ const App = () => {
 			});
 	};
 
-	const saveEdit = (appId, event) => {
+	saveEdit = (appId, event) => {
 		event.preventDefault();
 		const ts = Date.now();
-		// const tsName = this.state.file && this.state.file.name ? `${ts}-${this.state.file.name}` : null;
-		const tsName = file && file.name ? `${ts}-${file.name}` : null;
+		const tsName = this.state.file && this.state.file.name ? `${ts}-${this.state.file.name}` : null;
 
 		const data = {
 			appId,
@@ -330,13 +260,11 @@ const App = () => {
 
 		if (tsName) {
 			data.fileName = tsName;
-			handleSubmitFile(appId, tsName);
+			this.handleSubmitFile(appId, tsName);
 		}
 
-		// this.setState({ inputDisabled: false, navOpen: false });
-		setInputDisabled(false);
-		setNavOpen(false);
-		clearField(event);
+		this.setState({ inputDisabled: false, navOpen: false });
+		this.clearField(event);
 
 		fetch(`/api/edit/${this.state.editTargetId}`, {
 			method: "POST",
@@ -347,213 +275,179 @@ const App = () => {
 		})
 			.then((res) => res.json())
 			.then((data) => {
-				// this.setState({ editTargetId: "" });
-				setEditTargetId("");
-				getList(appId);
+				this.setState({ editTargetId: "" });
+				this.getList(appId);
 			})
 			.catch((error) => console.error(error.message));
 	};
 
-	const handleKeyDown = (event) => {
+	handleKeyDown = (event) => {
 		if (event.key === "Alt") {
 			const alt = { [event.key]: event.key };
-			// this.setState({ keyPressed: alt });
-			setKeyPressed(alt);
+			this.setState({ keyPressed: alt });
 		}
-		// if (this.state.keyPressed["Alt"] && event.key === "Shift") {
-		if (keyPressed["Alt"] && event.key === "Shift") {
-			// this.setState({ navOpen: !this.state.navOpen });
-			setNavOpen((navOpen) => !navOpen);
+		if (this.state.keyPressed["Alt"] && event.key === "Shift") {
+			this.setState({ navOpen: !this.state.navOpen });
 			document.getElementById("categoryInput").focus();
 		}
-		if (event.key === "Escape" && navOpen) {
-			// this.setState({ navOpen: false });
-			setNavOpen(false);
+		if (event.key === "Escape" && this.state.navOpen) {
+			this.setState({ navOpen: false });
 		}
-		if (event.key === "Escape" && showModal) {
-			// this.setState((prevState) => ({
-			// 	showModal: !prevState.showModal
-			// }));
-			setShowModal((showModal) => !showModal);
+		if (event.key === "Escape" && this.state.showModal) {
+			this.setState((prevState) => ({
+				showModal: !prevState.showModal
+			}));
 		}
 	};
 
-	const handleKeyUp = () => {
-		// this.setState({ keyPressed: {} });
-		setKeyPressed({});
+	handleKeyUp = () => {
+		this.setState({ keyPressed: {} });
 	};
 
-	useEffect(() => {
-		getList(currentApp["appId"]);
-		setSwitching(false);
-		setShowNoAppMsg(false);
-	}, [switching]);
-
-	const handleChangeApp = () => {
-		// this.setState(
-		// 	{
-		// 		currentApp: this.state.applications[event.target.value],
-		// 		switching: true
-		// 	},
-		// 	() => {
-		// 		this.getList(this.state.currentApp["appId"]);
-		// 	}
-		// );
-		console.log("CHANGING", applications);
-		setCurrentApp(applications[event.target.value]);
-		setSwitching(true);
+	handleChangeApp = () => {
+		this.props.updateApp(this.state.applications[event.target.value]);
+		this.setState(
+			{
+				switching: true
+			},
+			() => {
+				this.getList(this.props.currentApp["appId"]);
+			}
+		);
 	};
 
-	const toggleModal = (src, filename) => {
-		// this.setState({
-		// 	path: src,
-		// 	filename,
-		// 	showModal: !this.state.showModal
-		// });
-		setPath(src);
-		setFileName(filename);
-		setShowModal((showModal) => !showModal);
+	toggleModal = (src, filename) => {
+		this.setState({
+			path: src,
+			filename,
+			showModal: !this.state.showModal
+		});
 	};
 
-	// const {
-	// 	applications,
-	// 	currentApp,
-	// 	categoryList,
-	// 	navOpen,
-	// 	status,
-	// 	errorMessage,
-	// 	editing,
-	// 	switching,
-	// 	lastUpdated,
-	// 	showModal,
-	// 	showNoAppMsg
-	// } = this.state;
+	render() {
+		const {
+			applications,
+			categoryList,
+			navOpen,
+			status,
+			errorMessage,
+			editing,
+			switching,
+			lastUpdated,
+			showModal,
+			showNoAppMsg
+		} = this.state;
 
-	return (
-		<div className="section">
-			<div className="title-group">
-				<h1 className="title is-size-4">{currentApp.name}</h1>
-				<p>
-					{lastUpdated && (
-						<span>
-							Last Updated: <time>{lastUpdated}</time>
-						</span>
-					)}
-				</p>
-			</div>
-			<div className="field">
-				<div className="select">
-					<select value="" name="currentApp" onChange={handleChangeApp}>
-						<option value="">-- Select Application --</option>
-						{Object.keys(applications).map((key) => (
-							<option key={key} value={key}>
-								{applications[key].name}
-							</option>
-						))}
-					</select>
-				</div>
-			</div>
-			<nav className={`section ${navOpen && !showNoAppMsg ? "active" : ""}`}>
-				<span className="knob has-text-link" onClick={toggleNav}>
-					<i className="fas fa-paper-plane"></i>
-				</span>
-				<form>
-					<CategoryDropdown
-						handleChange={handleChange}
-						currentApp={currentApp}
-						category={category}
-						categoryList={categoryList}
-						inputDisabled={inputDisabled}
-					/>
-					<CategoryInput
-						handleChange={handleChange}
-						currentApp={currentApp}
-						category={category}
-						inputDisabled={inputDisabled}
-					/>
-					<SubcategoryInput
-						handleChange={handleChange}
-						currentApp={currentApp}
-						subcategory={subcategory}
-					/>
-					<Status status={status} handleCheckbox={handleCheckbox} />
-					<FileUpload handleChange={handleChange} resetting={resetting} file={file} />
-					<ErrorMessage errorMessage={errorMessage} />
-					{editing ? (
-						<button
-							className="button is-warning is-fullwidth"
-							onClick={() => saveEdit(currentApp.appId, event)}
-						>
-							Save Edit
-						</button>
-					) : (
-						<button
-							className="button is-link is-fullwidth"
-							onClick={() => handleSubmit(currentApp.appId, event)}
-						>
-							Save
-						</button>
-					)}
-					<button
-						className="button m-t-15 is-danger is-fullwidth"
-						onClick={() => clearField(event)}
-					>
-						Clear
-					</button>
-				</form>
-			</nav>
-
-			<main className="is-search">
-				<SortAndSearch
-					applySort={applySort}
-					handleSearch={handleSearch}
-					sortAl={sortAl}
-					currentApp={currentApp}
-				/>
-				{categoryList && !switching ? (
-					<List
-						toggleModal={toggleModal}
-						editOne={editOne}
-						deleteOne={deleteOne}
-						currentApp={currentApp}
-						categoryList={categoryList}
-						searchTerm={searchTerm}
-						sortAl={sortAl}
-						loading={loading}
-						newFileName={newFileName}
-					/>
-				) : (
-					<Spinner />
-				)}
-			</main>
-			<div
-				className={`backdrop ${navOpen || showNoAppMsg ? "active" : ""}`}
-				// onClick={() => this.setState({ navOpen: false })}
-				onClick={() => setNavOpen(false)}
-			></div>
-			{showModal && (
-				<Modal>
-					<div className={`modal`}>
-						<div className="modal-background" onClick={toggleModal}></div>
-						<div className="modal-content">
-							<img src={this.state.path} alt={this.state.filename} />
-						</div>
-						<button className="modal-close is-large" onClick={toggleModal}></button>
-					</div>
-				</Modal>
-			)}
-			{showNoAppMsg && (
-				<div className="no-application-msg">
-					<p>Hummm...</p>
-					<p>It looks like you haven't set up the application yet.</p>
+		return (
+			<div className="section">
+				<div className="title-group">
+					<h1 className="title is-size-4">{this.props.currentApp.name}</h1>
 					<p>
-						Go to application root directory, enter <code>node&nbsp;setup</code>
+						{lastUpdated && (
+							<span>
+								Last Updated: <time>{lastUpdated}</time>
+							</span>
+						)}
 					</p>
-					<p>Then follow the instructions to create initial file.</p>
 				</div>
-			)}
-		</div>
-	);
-};
+				<div className="field">
+					<div className="select">
+						<select value="" name="currentApp" onChange={this.handleChangeApp}>
+							<option value="">-- Select Application --</option>
+							{Object.keys(applications).map((key) => (
+								<option key={key} value={key}>
+									{applications[key].name}
+								</option>
+							))}
+						</select>
+					</div>
+				</div>
+				<nav className={`section ${navOpen && !showNoAppMsg ? "active" : ""}`}>
+					<span className="knob has-text-link" onClick={this.toggleNav}>
+						<i className="fas fa-paper-plane"></i>
+					</span>
+					<form>
+						<CategoryDropdown handleChange={this.handleChange} {...this.state} />
+						<CategoryInput handleChange={this.handleChange} {...this.state} />
+						<SubcategoryInput handleChange={this.handleChange} {...this.state} />
+						<Status status={status} handleCheckbox={this.handleCheckbox} />
+						<FileUpload handleChange={this.handleChange} {...this.state} />
+						<ErrorMessage errorMessage={errorMessage} />
+						{editing ? (
+							<button
+								className="button is-warning is-fullwidth"
+								onClick={() => this.saveEdit(this.props.currentApp.appId, event)}
+							>
+								Save Edit
+							</button>
+						) : (
+							<button
+								className="button is-link is-fullwidth"
+								onClick={() => this.handleSubmit(this.props.currentApp.appId, event)}
+							>
+								Save
+							</button>
+						)}
+						<button
+							className="button m-t-15 is-danger is-fullwidth"
+							onClick={() => this.clearField(event)}
+						>
+							Clear
+						</button>
+					</form>
+				</nav>
 
-export default App;
+				<main className="is-search">
+					<SortAndSearch
+						{...this.state}
+						applySort={this.applySort}
+						handleSearch={this.handleSearch}
+					/>
+					{categoryList && !switching ? (
+						<List
+							{...this.state}
+							toggleModal={this.toggleModal}
+							editOne={this.editOne}
+							deleteOne={this.deleteOne}
+						/>
+					) : (
+						<Spinner />
+					)}
+				</main>
+				<div
+					className={`backdrop ${navOpen || showNoAppMsg ? "active" : ""}`}
+					onClick={() => this.setState({ navOpen: false })}
+				></div>
+				{showModal && (
+					<Modal>
+						<div className={`modal`}>
+							<div className="modal-background" onClick={this.toggleModal}></div>
+							<div className="modal-content">
+								<img src={this.state.path} alt={this.state.filename} />
+							</div>
+							<button className="modal-close is-large" onClick={this.toggleModal}></button>
+						</div>
+					</Modal>
+				)}
+				{showNoAppMsg && (
+					<div className="no-application-msg">
+						<p>Hummm...</p>
+						<p>It looks like you haven't set up the application yet.</p>
+						<p>
+							Go to application root directory, enter <code>node&nbsp;setup</code>
+						</p>
+						<p>Then follow the instructions to create initial file.</p>
+					</div>
+				)}
+			</div>
+		);
+	}
+}
+
+const mapStateToProps = ({ currentApp }) => ({ currentApp });
+
+const mapDispatchToProps = (dispatch) => ({
+	updateApp: (currentApp) => dispatch(changeApp(currentApp))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
